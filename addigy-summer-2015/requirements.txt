@@ -1,0 +1,5 @@
+boto==2.35.0
+Django==1.7.2
+django-filter==0.9.1
+djangorestframework==3.0.2
+Markdown==2.5.2

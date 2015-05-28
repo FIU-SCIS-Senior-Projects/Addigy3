@@ -1,0 +1,14 @@
+assets/resources/homebrew-cask/
+__pycache__
+macmanage/__pycache__
+managementconsole/__pycache__
+managementconsole/resedit/__pycache__
+.idea/
+macmanage/__pycache__/
+managementconsole/__pycache__/
+managementconsole/resedit/__pycache__/
+*.pyc
+*.pyo
+managementconsole/__pycache__/
+.DS_Store
+macmanage/settings.py

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":NumberInt(1),"key":{"_id":NumberInt(1)},"name":"_id_","ns":"test.addigyAudits"},{"v":NumberInt(1),"key":{"connectorId":"hashed"},"name":"connectorId_hashed","ns":"test.addigyAudits"},{"v":NumberInt(1),"key":{"auditDate":1},"name":"auditDate_1","ns":"test.addigyAudits"}]}
