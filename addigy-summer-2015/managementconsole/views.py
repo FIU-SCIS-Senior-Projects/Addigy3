@@ -20,6 +20,17 @@ def listTables(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
+def getHistory(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    table = db.audits
+    result = table.find_one({},{"loginHistory":True})
+    del result['_id']
+    jsonstr = json.dumps(result, cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
 def storeCollectedData(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
