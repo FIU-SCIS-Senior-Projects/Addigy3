@@ -1,0 +1,13 @@
+Crontab instructions
+
+1. Build AdgCollector Java project using maven.
+	$ mvn package
+
+2. Create directory for addigy in user's home.
+	$ mkdir -p ~/addigy
+
+2. Move the jar file to the user's home directory.
+	$ cp target/adgcollector-1.0-SNAPSHOT.jar ~/addigy/
+
+3. Register cronjob with crontab.
+	$ crontab adgcollector.cron

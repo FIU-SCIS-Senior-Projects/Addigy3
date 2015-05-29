@@ -1,0 +1,2 @@
+1 * * * *	java -jar ~/addigy/adgcollector-1.0-SNAPSHOT.jar > /tmp/out.txt 2>&1
+10 * * * *	java -jar ~/addigy/adgcollector-1.0-SNAPSHOT.jar > /dev/null 2>&1
