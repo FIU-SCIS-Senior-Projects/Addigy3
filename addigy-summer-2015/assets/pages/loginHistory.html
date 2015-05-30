@@ -1,3 +1,16 @@
 <div ng-controller="LoginHistoryController as ctrl">
-    <p>In Login History</p>
+    <div >
+        <button ng-click="ctrl.getHistory()">Get last login audit</button>
+    </div>
+    <div ng-show="ctrl.showHistory">
+        <div ng-repeat="username in ctrl.activities">
+            <h2>{{ username.username }}</h2>
+            <ul>
+            <li ng-repeat="activity in username.activity">
+                {{ ctrl.dateToString(activity.start) }} -
+                {{ (activity.end == 0)? 'Still logged in':ctrl.dateToString( activity.end) }}
+            </li>
+            </ul>
+        </div>
+    </div>
 </div>
