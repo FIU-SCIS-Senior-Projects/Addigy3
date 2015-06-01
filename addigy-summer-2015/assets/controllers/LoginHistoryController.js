@@ -11,10 +11,31 @@
                  success(function(data, status, headers, config) {
                      self.activities=data["loginHistory"];
                      self.showHistory=true;
+                     console.log(data);
                  }).error(function(data, status, headers, config) {
                      console.log(data);
                  });
         }
+        new Morris.Line({
+            element: 'myfirstchart',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            parseTime: false,
+            data: [
+                { hour: '8 am', value: 20 },
+                { hour: '9 am', value: 10 },
+                { hour: '10 am', value: 5 },
+                { hour: '11 am', value: 5 },
+                { hour: '12 am', value: 20 }
+            ],
+            // The name of the data record attribute that contains x-values.
+            xkey: 'hour',
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['value'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: ['Users']
+        });
         self.dateToString = function (timestamp){
             var date = new Date(timestamp*1000);
             var year = date.getFullYear();

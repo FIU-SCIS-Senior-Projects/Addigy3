@@ -67,22 +67,28 @@ public class LoginHistoryCollector implements Collector{
         return null;
     }
     private static HashMap parseOutput() throws IOException {
-        String delims = "[ ]+";
+        HashMap<String, Set<Long>> usersLogin = new HashMap<>();
         String line = "";
         HashMap<String, List<TimePeriod>> actHistory = new HashMap<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(LOGIN_HISTORY_PATH));
             while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split(delims);
+                String[] tokens = line.split("\\s+");
                 List<TimePeriod> times = actHistory.get(tokens[0]);
-                long loginTime = getLoginTime(tokens);
+                long loginTime = Long.parseLong(tokens[1]);
                 if(times==null){
                     times=new ArrayList<>();
-                    times.add(new TimePeriod(loginTime, getLogoutTime(tokens, loginTime)));
+                    Set<Long> logins = new HashSet<>();
+                    logins.add(loginTime);
+                    usersLogin.put(tokens[0], logins);
+                    times.add(new TimePeriod(loginTime, Long.parseLong(tokens[2]),0));//not update
                     actHistory.put(tokens[0],times);
                 }
                 else{
-                    times.add(new TimePeriod(loginTime, getLogoutTime(tokens, loginTime)));
+                    Set<Long> logins = usersLogin.get(tokens[0]);
+                    int update=0;
+                    if(!logins.add(loginTime)) update = 1;
+                    times.add(new TimePeriod(loginTime, Long.parseLong(tokens[2]),update));
                 }
             }
             return actHistory;
@@ -103,24 +109,28 @@ public class LoginHistoryCollector implements Collector{
         boolean firstRun = false;
         boolean hasNewData = loginHasNewData();
         boolean isFirstLineInFile = false;
-        String delims = "[ ]+";
+//        String delims = "[ ]+";
         String [] cachedTokens;
         String lastLine = getLastLine();
         if (lastLine==null){
             firstRun=true;
             lastLine="";
         }
-        cachedTokens = lastLine.split(delims);
+        cachedTokens = lastLine.split("\\s+");
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         String dataToAdd="";
         while ((line = stdInput.readLine()) != null) {
-            String[] currTokens = line.split(delims);
             if(!isRelevantLine(line)){
                 continue;
             }
+            String [] tokensToAdd = line.split("\\s+");
+            long loginTime = getLoginTime(tokensToAdd);
+
+            String lineToAdd = tokensToAdd[0]+" " + loginTime+" " +getLogoutTime(tokensToAdd,loginTime);
+            String[] currTokens = line.split("\\s+");
             if(firstRun) {
-                appendTop(line);
+                appendTop(lineToAdd);
                 updateNewDataFlag(NEW_DATA);
                 continue;
             }
@@ -135,7 +145,8 @@ public class LoginHistoryCollector implements Collector{
                 updateNewDataFlag(NEW_DATA);
                 hasNewData=true;
             }
-            dataToAdd = dataToAdd.isEmpty()?line:line + "\n" + dataToAdd;
+//            dataToAdd = dataToAdd.isEmpty()?line:line + "\n" + dataToAdd;
+            dataToAdd = dataToAdd.isEmpty()?lineToAdd:lineToAdd + "\n" + dataToAdd;
         }
         
     }
@@ -172,7 +183,8 @@ public class LoginHistoryCollector implements Collector{
         return lastLine;
     }
     private boolean continueScanning(String[] cachedTokens,String currLine, String [] currTokens){
-        long cachedLogin = getLoginTime(cachedTokens);
+//        long cachedLogin = getLoginTime(cachedTokens);
+        long cachedLogin = Long.parseLong(cachedTokens[1]);
         long currLogin = getLoginTime(currTokens);
         if(currLogin>cachedLogin || (currLogin==cachedLogin && !currLine.contains("still")))
             return true;
@@ -198,8 +210,9 @@ public class LoginHistoryCollector implements Collector{
             List<TimePeriod> timePeriods = (List<TimePeriod>)pair.getValue();
             for(TimePeriod tp:timePeriods){
                 JSONObject currAct = new JSONObject();
-                currAct.put("start", tp.getStartTime());
-                currAct.put("end", tp.getEndTime());
+                currAct.put("login", tp.getStartTime());
+                currAct.put("logout", tp.getEndTime());
+                currAct.put("update",tp.isUpdate());
                 userActivity.put(currAct);
             }
             user.put("activity",userActivity);
