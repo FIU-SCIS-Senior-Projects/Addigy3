@@ -43,11 +43,9 @@ def storeCollectedData(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb #get the database ("addigydb")
-    table = db.audits #get the collection("audits")
     str=request.body.decode('utf-8')
     data = ast.literal_eval(str)
-    # collectors.storeLoginActivity(table,data["loginHistory"])
-    collectors.storeActivity(table,data)
+    collectors.storeLoginActivity(db,data)
     jsonstr = json.dumps(str, cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
