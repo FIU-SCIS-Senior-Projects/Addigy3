@@ -7,10 +7,10 @@ import java.util.UUID;
 
 public class Main {
     public static final String LAST_UPLOAD_TIME_PATH = "./logs/lastUploadTime";
-    public static final long UPLOAD_INTERVAL_SEC = 30;
+    public static final long UPLOAD_INTERVAL_SEC = 20;
     static Collector[] collectors=new Collector[]{
             new LoginHistoryCollector(),
-//            new FacterCollector()
+            new FacterCollector()
     };
     public static void main(String[] args) {
         collect();
