@@ -7,6 +7,7 @@ import ast
 import datetime
 from pymongo import MongoClient
 import managementconsole.collectors as collectors
+import managementconsole.dbhandler as dbhandler
 import calendar
 
 
@@ -26,16 +27,7 @@ def getHistory(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb
-    table = db.audits
-    date = datetime.datetime(2015, 5, 24, 9)
-    dateUnix = calendar.timegm(date.timetuple())
-    # result = table.find_one({},{"loginHistory":True})
-    result = table.find_one({"loginHistory.activity.start":{"$gt": dateUnix}},{"loginHistory":True})
-    if(result):
-        del result['_id']
-    else:
-        result = {}
-    jsonstr = json.dumps(result, cls=ResponseEncoder)
+    jsonstr = json.dumps(dbhandler.getHistory(db), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
