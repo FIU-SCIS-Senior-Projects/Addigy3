@@ -5,8 +5,8 @@ import calendar
 
 def getHistory(db):
     table = db.loginAudits
-    date = datetime.datetime(2015, 5, 24, 9)
-    dateUnix = calendar.timegm(date.timetuple())
+    # date = datetime.datetime(2015, 5, 24, 9)
+    # dateUnix = calendar.timegm(date.timetuple())
     # result = table.find(({'orgId': '5678' }), {'activity': {'$elemMatch': {'login': {'$gte': 1433170500}}},'_id': False})
     # try:
     #     result =table.aggregate([
