@@ -9,9 +9,8 @@
         self.getHistory = function(){
              DataRequest.getHistory().
                  success(function(data, status, headers, config) {
-                     self.activities=data["loginHistory"];
+                     self.activities=data['loginHistory'];
                      self.showHistory=true;
-                     console.log(data);
                  }).error(function(data, status, headers, config) {
                      console.log(data);
                  });
@@ -35,7 +34,9 @@
             // Labels for the ykeys -- will be displayed when you hover over the
             // chart.
             labels: ['Users']
-        });
+        }).on('click', function(i, row){
+            console.log(i, row);
+        });;
         self.dateToString = function (timestamp){
             var date = new Date(timestamp*1000);
             var year = date.getFullYear();
@@ -53,7 +54,7 @@
             var hourStr = hours<10?'0'+hours:''+hours;
             var minuteStr = minutes<10?'0'+minutes:''+minutes;
             var secondStr = seconds<10?'0'+seconds:''+seconds;
-            return month+"/"+day+"/"+year+" - "+hourStr+":"+minuteStr+":"+secondStr+" "+ampm;
+            return month+"/"+day+"/"+year+"  "+hourStr+":"+minuteStr+":"+secondStr+" "+ampm;
     };
     }]);
 })();
