@@ -6,8 +6,6 @@ Crontab instructions
 2. Create directory for addigy in user's home.
 	$ mkdir -p ~/addigy
 
-2. Move the jar file to the user's home directory.
-	$ cp target/adgcollector-1.0-SNAPSHOT.jar ~/addigy/
+3. Move the jar file to the user's home directory.
+	$ ./installAddigyCron.sh
 
-3. Register cronjob with crontab.
-	$ crontab adgcollector.cron

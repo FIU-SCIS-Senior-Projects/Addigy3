@@ -7,8 +7,9 @@ import java.util.*;
 public class LoginHistoryCollector implements Collector{
     public static final String MAC_LAST_COMMAND = "last";
     public static final String UNIX_LAST_COMMAND = "last -R";
-    public static final String LOGIN_HISTORY_PATH = "./logs/loginHistoryLog";
-    public static final String LOGIN_HAS_DATA_PATH = "./logs/loginNewDataFlag";
+    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
+    public static final String LOGIN_HISTORY_PATH = PROJECT_DIRECTORY + "logs/loginHistoryLog";
+    public static final String LOGIN_HAS_DATA_PATH = PROJECT_DIRECTORY + "logs/loginNewDataFlag";
     public static final String NEW_DATA = "1";
     public static final String NO_NEW_DATA = "0";
 
