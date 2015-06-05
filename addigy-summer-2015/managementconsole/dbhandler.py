@@ -7,12 +7,11 @@ def getHistory(db):
     table = db.loginAudits
     date = datetime.datetime(2015, 5, 24, 9)
     dateUnix = calendar.timegm(date.timetuple())
-    result = table.find(({'orgId': '5678' }), {'activity': {'$elemMatch': {'login': {'$gte': 1433170500}}},'_id': False})
     try:
         result = table.aggregate([
-            {'$match': {'orgId': '5678'}},
+            {'$match': {'orgId': 'addigy'}},
             {'$unwind': '$activity'},
-            {'$match': {'activity.login': {'$gte': 1433215080}}},
+            {'$match': {'activity.login': {'$lte': 1433386800}, 'activity.logout': {'$gte': 1433307600}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},
             {'$project': {'_id': 0, 'connectorId': '$connectorId', 'orgId': '$orgId', 'username': '$username', 'activity': 1}}])
 

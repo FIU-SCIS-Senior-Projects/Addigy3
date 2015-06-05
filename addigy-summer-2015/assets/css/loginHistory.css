@@ -1,6 +1,8 @@
-div {
-    width: 300px;
-    padding: 25px;
-    border: 25px solid navy;
-    margin: 25px;
+.line-chart {
+    /*width: 600px;*/
+    /*height: 250px;*/
+}
+.login-section{
+    /*margin-left: 15px;*/
+    padding: 10px;
 }

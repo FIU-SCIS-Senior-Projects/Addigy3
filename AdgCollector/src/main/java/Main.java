@@ -9,14 +9,15 @@ public class Main {
 
     public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
     public static final String LAST_UPLOAD_TIME_PATH = PROJECT_DIRECTORY + "logs/lastUploadTime";
-    public static final long UPLOAD_INTERVAL_SEC = 240;
+//    public static final String LAST_UPLOAD_TIME_PATH = "./logs/lastUploadTime";
+    public static final long UPLOAD_INTERVAL_SEC = 2;
 
     static Collector[] collectors=new Collector[]{
             new LoginHistoryCollector(),
 //            new FacterCollector()
     };
     public static void main(String[] args) {
-        collect();
+//        collect();
         try {
             if(needUpload()){
                 uploadData();
@@ -34,8 +35,8 @@ public class Main {
         JSONObject toSend=new JSONObject();
         for(Collector c: collectors) {
             toSend.put(c.getKey(), c.getData());
-            toSend.put("connectorId", "1234");
-            toSend.put("orgId", "5678");
+            toSend.put("connectorId", "9876");
+            toSend.put("orgId", "addigy");
         }
         System.out.println(toSend.toString());
         sendToServer(toSend.toString());
