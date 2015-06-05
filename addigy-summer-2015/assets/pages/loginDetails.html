@@ -1,0 +1,18 @@
+<div ng-controller="LoginDetailsController as ctrl" id='login-chart'class="row">
+    <div ng-show="ctrl.pointSelected.selected" class="col-sm-11">
+        <table class="table table-striped table-bordered">
+            <tr  style="height: 40px">
+                <td>Connector Id</td>
+                <td>Username</td>
+                <td>Login</td>
+                <td>Logout</td>
+            </tr>
+            <tr ng-repeat="user in ctrl.usersAtHour.values">
+                <td>{{ user.connectorId }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ ctrl.dateToString(user.login)}}</td>
+                <td>{{ ctrl.dateToString(user.logout)}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
