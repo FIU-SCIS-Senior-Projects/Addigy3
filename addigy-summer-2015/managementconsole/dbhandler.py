@@ -1,17 +1,20 @@
 
 import datetime
 import calendar
+import json
+import ast
 
-
-def getHistory(db):
+def getHistory(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    login = dic['login']
+    logout = dic['logout']
     table = db.loginAudits
-    date = datetime.datetime(2015, 5, 24, 9)
-    dateUnix = calendar.timegm(date.timetuple())
     try:
         result = table.aggregate([
             {'$match': {'orgId': 'addigy'}},
             {'$unwind': '$activity'},
-            {'$match': {'activity.login': {'$lte': 1433386800}, 'activity.logout': {'$gte': 1433307600}}},
+            {'$match': {'activity.login': {'$lte': logout}, 'activity.logout': {'$gte': login}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},
             {'$project': {'_id': 0, 'connectorId': '$connectorId', 'orgId': '$orgId', 'username': '$username', 'activity': 1}}])
 

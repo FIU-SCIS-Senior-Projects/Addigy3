@@ -11,20 +11,19 @@
         self.series = ['Login History'];
         self.data = [];
         self.usersAtHour=[];
+        self.calendarMaxDate=new Date();
 
-        populateTimesArray();
-        getHistory();
-        function getHistory(){
-            DataRequest.getHistory().
-                success(function(data, status, headers, config) {
-                    self.activities=data['loginHistory'];
-                    processLoginData();
-                }).error(function(data, status, headers, config) {
-                     console.log(data);
-                });
+        self.today = function() {
+            self.dt = new Date();
         };
-        self.getHistoryFromChooser = function(date){
-            DataRequest.getHistory().
+        self.getActivity = function(){
+            self.showHourDetail=false;
+            var chosenDate = self.dt;
+            chosenDate.setHours(0,0,0,0);
+            var startTime=chosenDate.getTime()/1000;
+            chosenDate.setHours(23,0,0,0);
+            var endTime=chosenDate.getTime()/1000;
+            DataRequest.getHistory(startTime, endTime).
                 success(function(data, status, headers, config) {
                     self.activities=data['loginHistory'];
                     processLoginData();
@@ -32,19 +31,41 @@
                      console.log(data);
                 });
         }
+        self.today();
+        populateTimesArray(getCurrentHour());
+        self.getActivity();
         self.onPointClick = function (points, evt) {
             var hour=points[0].label;
             self.usersAtHour=self.usersPerHour[hour];
             self.showHourDetail=true;
         };
 
-        function populateTimesArray() {
+        function populateTimesArray(lastHour) {
+            self.usersPerHour={};
             var i;
-            for(i=1;i<24;i++){
+            for(i=1;i<=lastHour;i++){
                 self.usersPerHour[i]=[]
             }
         };
+        function isShowingToday(){
+            var todayDate = new Date();
+            var selectedData = self.dt;
+            return todayDate.setHours(0,0,0,0) == selectedData.setHours(0,0,0,0);
+        }
+        function isStillLoggedIn(logout){
+            return logout ==9999999999;
+        }
+        function getCurrentHour(){
+            return new Date().getHours();
+        }
+        function getDateBeginingTimeStamp(){
+            var selected = self.dt;
+            selected.setHours(0,0,0,0);
+            return selected.getTime()/1000;
+        }
         function processLoginData(){
+            if(isShowingToday()) populateTimesArray(getCurrentHour());
+            else populateTimesArray(23);
             var i, j,k;
             for(i=0; i<self.activities.length;i++){
                 var curr = self.activities[i];
@@ -57,6 +78,14 @@
                     var logoutHour = logoutDate.getHours();
                     if(loginDate.getMinutes()!=0&&loginHour!=23)
                         loginHour+=1;
+                    if(isStillLoggedIn(currAct.logout)){
+                        if(isShowingToday())
+                            logoutHour=getCurrentHour();
+                        else
+                            logoutHour=23;
+                    }
+                    if(currAct.login<getDateBeginingTimeStamp())
+                        loginHour=1;
                     for(k=loginHour;k<=logoutHour;k++)
                         self.usersPerHour[k].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
                 }
@@ -80,32 +109,6 @@
             this.logout=logout;
             this.connectorId = connectorId;
         }
-        //function generateGraph(data){
-        //    var line = new Morris.Line({
-        //        element: 'line-chart',
-        //        resize: true,
-        //        parseTime: false,
-        //        data: data,
-        //        xkey: 'hour',
-        //        ykeys: ['value'],
-        //        labels: ['Users'],
-        //        lineColors: ['#3C8DBC'],
-        //        lineWidth: 2,
-        //        hideHover: 'auto',
-        //        gridTextColor: "#000000",
-        //        gridStrokeWidth: 0.4,
-        //        pointSize: 4,
-        //        pointStrokeColors: ["#efefef"],
-        //        gridLineColor: "#efefef",
-        //        gridTextFamily: "Open Sans",
-        //        gridTextSize: 10
-        //    }).on('click', function(i, row){
-        //            var d = new Date();
-        //            var n = d.getHours();
-        //            console.log(n);
-        //            console.log(i, row);
-        //        });
-        //}
         self.dateToString = function (timestamp){
             var date = new Date(timestamp*1000);
             var year = date.getFullYear();
@@ -125,11 +128,6 @@
             var secondStr = seconds<10?'0'+seconds:''+seconds;
             return month+"/"+day+"/"+year+"  "+hourStr+":"+minuteStr+":"+secondStr+" "+ampm;
         };
-
-        self.today = function() {
-            self.dt = new Date();
-        };
-        self.today();
         self.clear = function () {
             self.dt = null;
         };
@@ -153,38 +151,17 @@
         };
         self.formats = ['MMMM-dd-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         self.format = self.formats[0];
-
-        var tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          var afterTomorrow = new Date();
-          afterTomorrow.setDate(tomorrow.getDate() + 2);
-          self.events =
-            [
-              {
-                date: tomorrow,
-                status: 'full'
-              },
-              {
-                date: afterTomorrow,
-                status: 'partially'
-              }
-            ];
-
-      self.getDayClass = function(date, mode) {
-        if (mode === 'day') {
-          var dayToCheck = new Date(date).setHours(0,0,0,0);
-
-          for (var i=0;i<self.events.length;i++){
-            var currentDay = new Date(self.events[i].date).setHours(0,0,0,0);
-
-            if (dayToCheck === currentDay) {
-              return self.events[i].status;
+        self.getDayClass = function(date, mode) {
+            if (mode === 'day') {
+                var dayToCheck = new Date(date).setHours(0,0,0,0);
+                for (var i=0;i<self.events.length;i++){
+                    var currentDay = new Date(self.events[i].date).setHours(0,0,0,0);
+                    if (dayToCheck === currentDay) {
+                        return self.events[i].status;
+                    }
+                }
             }
-          }
-        }
-
-        return '';
-      };
+            return '';
+        };
     }]);
-
 })();

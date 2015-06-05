@@ -4,11 +4,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import json
 import ast
-import datetime
 from pymongo import MongoClient
 import managementconsole.collectors as collectors
 import managementconsole.dbhandler as dbhandler
-import calendar
 
 
 def index(request):
@@ -27,7 +25,7 @@ def getHistory(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb
-    jsonstr = json.dumps(dbhandler.getHistory(db), cls=ResponseEncoder)
+    jsonstr = json.dumps(dbhandler.getHistory(db, request), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt

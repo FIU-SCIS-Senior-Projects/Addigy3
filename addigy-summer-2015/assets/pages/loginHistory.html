@@ -2,17 +2,14 @@
     <div class="row">
         <div class="col-sm-3">
             <p class="input-group">
-              <input type="text" class="form-control" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.dt"
-                     is-open="ctrl.opened" min-date="ctrl.minDate" max-date="'2015-06-22'"
+              <input ng-change="ctrl.getActivity()" type="text" class="form-control" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.dt"
+                     is-open="ctrl.opened"  max-date="{{ ctrl.calendarMaxDate }}"
                      datepicker-options="ctrl.dateOptions" date-disabled="ctrl.disabled(date, mode)"
                      ng-required="true" close-text="Close" />
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="ctrl.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
             </p>
-        </div>
-        <div class="col-sm-3">
-            <button type="button" class="btn btn-primary">Get History</button>
         </div>
     </div>
 
