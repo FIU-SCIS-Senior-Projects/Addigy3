@@ -55,7 +55,6 @@
         };
         self.onPointClick = function (points, evt) {
             var hour=points[0].label;
-            console.log(hour);
             LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
             self.pointSelected.selected=true;
         };
