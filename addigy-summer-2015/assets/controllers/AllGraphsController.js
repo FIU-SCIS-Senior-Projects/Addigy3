@@ -24,7 +24,7 @@
         });
         $('#graphModal').on('hidden.bs.modal', function (e) {
             LoginData.pointSelected.selected=false;
-        })
+        });
     }]);
 })();
 

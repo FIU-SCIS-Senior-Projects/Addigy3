@@ -44,6 +44,7 @@
             return '';
         };
         self.onPointClick = function (points, evt) {
+            $('#'+points[0].label).collapse("toggle");
             var hour=points[0].label;
             LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
             self.pointSelected.selected=true;
