@@ -13,6 +13,7 @@
         self.showHourDetail=false;
         self.pointSelected={'selected':false};
         self.usersAtHour={'values':[]};
+        self.datePickedDate={'date':new Date()};
 
         self.getActivity=function(chosenDate){
             self.selectedDate=chosenDate;

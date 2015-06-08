@@ -1,17 +1,6 @@
 .login-chart{
-    border-top:2px solid #3C8DBC;
-    background-color: white;
-    border-top-left-radius: 1em;
-    border-top-right-radius: 1em;
+    padding:5px
 }
 .all-main{
     padding: 30px;
-}
-.login-header{
-    border-bottom: 1px solid #e6e6e6;
-    height: 30px;
-}
-
-.login-header p{
-    /*color:yellow;*/
 }

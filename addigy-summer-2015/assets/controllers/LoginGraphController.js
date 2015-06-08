@@ -11,19 +11,9 @@
         self.data = LoginData.graphData;
         self.pointSelected=LoginData.pointSelected;
         self.calendarMaxDate=new Date();
+        self.datePickedDate=LoginData.datePickedDate;
         self.getActivity=function(){
-            LoginData.getActivity(self.dt);
-        };
-        self.today = function() {
-            self.dt = new Date();
-        };
-        self.today();
-        self.clear = function () {
-            self.dt = null;
-        };
-        // Disable weekend selection
-        self.disabled = function(date, mode) {
-            return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+            LoginData.getActivity(self.datePickedDate.date);
         };
         self.toggleMin = function() {
             self.minDate = self.minDate ? null : new Date();
