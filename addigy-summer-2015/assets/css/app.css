@@ -1,3 +1,22 @@
 .main-background{
     background-color: #F1F1F1;
 }
+.main-header{
+    height: 60px;
+    background-color: #222D32;
+    padding: 5px 10px ;
+
+}
+.main-header img{
+    max-height:100%;
+    max-width:100%;
+}
+.modal-header{
+    background-color: #222D32;
+}
+.modal-header h4{
+    color: white;
+}
+.box.box-primary {
+  border-top-color: #222D32 !important;
+}

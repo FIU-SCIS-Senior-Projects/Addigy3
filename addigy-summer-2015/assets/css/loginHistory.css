@@ -5,7 +5,7 @@
     padding: 10px;
 }
 .login-details-btn{
-    padding: 3px;
+    padding: 5px;
 }
 @media (min-width: 768px) {
  .modal-dialog {
@@ -13,12 +13,6 @@
    margin: 30px auto;
  }
 }
-
-.table-striped>tbody>tr:nth-child(odd)>td,
-.table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: #3C8DBC;
- }
-
 @media (min-width: 992px) {
  .modal-lg {
    width: 900px;

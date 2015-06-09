@@ -14,7 +14,32 @@
         self.pointSelected={'selected':false};
         self.usersAtHour={'values':[]};
         self.datePickedDate={'date':new Date()};
+        self.hoursLabels={
+            "1":"1:00am",
+            "2":"2:00am",
+            "3":"3:00am",
+            "4":"4:00am",
+            "5":"5:00am",
+            "6":"6:00am",
+            "7":"7:00am",
+            "8":"8:00am",
+            "9":"9:00am",
+            "10":"10:00am",
+            "11":"11:00am",
+            "12":"12:00pm",
+            "13":"1:00pm",
+            "14":"2:00pm",
+            "15":"3:00pm",
+            "16":"4:00pm",
+            "17":"5:00pm",
+            "18":"6:00pm",
+            "19":"7:00pm",
+            "20":"8:00pm",
+            "21":"9:00pm",
+            "22":"10:00pm",
+            "23":"11:00pm",
 
+        };
         self.getActivity=function(chosenDate){
             self.selectedDate=chosenDate;
             chosenDate.setHours(0,0,0,0);
@@ -32,7 +57,7 @@
         function populateTimesArray(lastHour) {
             self.usersPerHour={};
             var i;
-            for(i=1;i<=lastHour;i++){
+            for(i=0;i<=lastHour;i++){
                 self.usersPerHour[i]=[]
             }
         };
@@ -77,8 +102,12 @@
                     }
                     if(currAct.login<getDateBeginingTimeStamp())
                         loginHour=1;
-                    for(k=loginHour;k<=logoutHour;k++)
+                    if(logoutHour==0)
+                        self.usersPerHour[0].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
+                    for(k=loginHour;k<=logoutHour;k++){
                         self.usersPerHour[k].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
+                    }
+
                 }
             }
             populateGraphData();

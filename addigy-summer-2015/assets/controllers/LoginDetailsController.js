@@ -37,5 +37,9 @@
             LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
             return LoginData.usersAtHour.values;
         }
+        self.parseLabel=function(label){
+          var n = label.indexOf(":");
+          return label.substring(0, n+1);
+        };
     }]);
 })();

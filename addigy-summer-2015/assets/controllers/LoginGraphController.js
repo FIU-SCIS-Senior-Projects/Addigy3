@@ -44,7 +44,13 @@
             return '';
         };
         self.onPointClick = function (points, evt) {
-            $('#'+points[0].label).collapse("toggle");
+            var i;
+            for(i=0;i<self.labels.length;i++)
+                $('#'+self.labels[i]).collapse("hide");
+            $('#detailsCollapse').collapse("show");
+            var element = $('#'+points[0].label);
+            element.collapse("toggle");
+            element.get(0).scrollIntoView();
             var hour=points[0].label;
             LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
             self.pointSelected.selected=true;

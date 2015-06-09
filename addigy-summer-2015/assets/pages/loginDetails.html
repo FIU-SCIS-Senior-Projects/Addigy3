@@ -1,20 +1,24 @@
 <div ng-controller="LoginDetailsController as ctrl" id='login-chart'class="row login-details-main">
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
+    <div>
+        <button class="btn btn-primary" style="margin:10px" type="button" data-toggle="collapse" data-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
         Users Details
     </button>
-    <div class="collapse" id="detailsCollapse">
+    </div>
+    <div id="detailsCollapse" class="collapse" id="detailsCollapse">
         <div class="well">
             <div ng-repeat="label in ctrl.labels">
                 <button data-toggle="collapse" data-target="{{ '#'+label }}" href="" aria-expanded="false" aria-controls="{{ label }}" class="btn btn-box-tool"><i class="fa fa-play"> {{ label }}</i></button>
                 <div class="collapse" id="{{ label }}">
                     <div class="well" style="background-color: white">
                         <table class="table table-condensed">
-                            <tr style="height: 40px">
-                                <td>Connector Id</td>
-                                <td>Username</td>
-                                <td>Login</td>
-                                <td>Logout</td>
-                            </tr>
+                            <thead>
+                                <tr style="height: 40px">
+                                    <td>Connector Id</td>
+                                    <td>Username</td>
+                                    <td>Login</td>
+                                    <td>Logout</td>
+                                </tr>
+                            </thead>
                             <tr ng-repeat="user in ctrl.getUsersAtHour(label)">
                                 <td>{{ user.connectorId }}</td>
                                 <td>{{ user.username }}</td>

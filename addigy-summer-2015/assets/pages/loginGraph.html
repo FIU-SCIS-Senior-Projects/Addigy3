@@ -1,6 +1,6 @@
 <div class="login-section" ng-controller="LoginGraphController as ctrl">
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <p class="input-group">
               <input ng-change="ctrl.getActivity()" type="text" class="form-control" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.datePickedDate.date"
                      is-open="ctrl.opened"  max-date="{{ ctrl.calendarMaxDate }}"
@@ -15,9 +15,9 @@
 
     <div id='login-chart'class="row">
         <div>
-            <canvas id="login_canvas" class="chart chart-line" data="ctrl.data"
+            <canvas style="height: 250px" id="login_canvas" class="chart chart-line" data="ctrl.data"
                 labels="ctrl.labels" legend="true" series="ctrl.series"
-                click="ctrl.onPointClick" options="{datasetFill : false}">
+                click="ctrl.onPointClick" options="{datasetFill : false,  scaleShowVerticalLines: false}">
             </canvas>
         </div>
     </div>
