@@ -2,18 +2,18 @@
  * Created by ayme on 5/27/15.
  */
 (function () {
-    angular.module('app').controller('LoginGraphController', ['DataRequest', 'LoginData', function(DataRequest, LoginData) {
+    angular.module('app').controller('LoginGraphController', ['DataRequest', 'LoginDataService', function(DataRequest, LoginDataService) {
         var self = this;
-        self.activities=LoginData.activities;
-        self.usersPerHour=LoginData.usersPerHour;
-        self.labels = LoginData.labels;
-        self.series = LoginData.series;
-        self.data = LoginData.graphData;
-        self.pointSelected=LoginData.pointSelected;
+        self.activities=LoginDataService.activities;
+        self.usersPerHour=LoginDataService.usersPerHour;
+        self.labels = LoginDataService.labels;
+        self.series = LoginDataService.series;
+        self.data = LoginDataService.graphData;
+        self.pointSelected=LoginDataService.pointSelected;
         self.calendarMaxDate=new Date();
-        self.datePickedDate=LoginData.datePickedDate;
+        self.datePickedDate=LoginDataService.datePickedDate;
         self.getActivity=function(){
-            LoginData.getActivity(self.datePickedDate.date);
+            LoginDataService.getActivity(self.datePickedDate.date);
         };
         self.toggleMin = function() {
             self.minDate = self.minDate ? null : new Date();
@@ -56,7 +56,7 @@
             element.collapse("toggle");
             element.get(0).scrollIntoView();
             var hour=points[0].label;
-            LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
+            LoginDataService.usersAtHour.values=LoginDataService.usersPerHour[hour];
             self.pointSelected.selected=true;
         };
     }]);

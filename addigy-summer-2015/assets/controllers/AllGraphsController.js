@@ -2,7 +2,7 @@
  * Created by ayme on 5/27/15.
  */
 (function () {
-    angular.module('app').controller('AllGraphsController',['LoginData', '$timeout',function(LoginData, $timeout) {
+    angular.module('app').controller('AllGraphsController',['LoginDataService', '$timeout',function(LoginDataService, $timeout) {
         var self = this;
         self.graphToShow='';
         self.toIncludeHtml=[];
@@ -23,7 +23,7 @@
             });
         });
         $('#graphModal').on('hidden.bs.modal', function (e) {
-            LoginData.pointSelected.selected=false;
+            LoginDataService.pointSelected.selected=false;
         });
     }]);
 })();

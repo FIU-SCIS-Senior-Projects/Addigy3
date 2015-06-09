@@ -11,23 +11,28 @@
                     <button data-toggle="collapse" data-target="{{ '#'+ ctrl.parseLabel(label) }}" href="" aria-expanded="false" aria-controls="{{ ctrl.parseLabel(label)}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ label }}</i></button>
                 </div>
                 <div class="collapse" id="{{ ctrl.parseLabel(label) }}">
-                    <div class="well" style="background-color: white">
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr style="height: 40px">
-                                    <td>Connector Id</td>
-                                    <td>Username</td>
-                                    <td>Login</td>
-                                    <td>Logout</td>
+                    <div class="well users-table">
+                        <div ng-show="ctrl.getUsersAtHour(label).length==0">
+                            <p>No users were logged in at this time</p>
+                        </div>
+                        <div ng-show="ctrl.getUsersAtHour(label).length>0">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr style="height: 40px">
+                                        <td>Connector Id</td>
+                                        <td>Username</td>
+                                        <td>Login</td>
+                                        <td>Logout</td>
+                                    </tr>
+                                </thead>
+                                <tr ng-repeat="user in ctrl.getUsersAtHour(label)">
+                                    <td>{{ user.connectorId }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ ctrl.dateToOnlyTimeString(user.login)}}</td>
+                                    <td>{{ ctrl.dateToOnlyTimeString(user.logout)}}</td>
                                 </tr>
-                            </thead>
-                            <tr ng-repeat="user in ctrl.getUsersAtHour(label)">
-                                <td>{{ user.connectorId }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ ctrl.dateToOnlyTimeString(user.login)}}</td>
-                                <td>{{ ctrl.dateToOnlyTimeString(user.logout)}}</td>
-                            </tr>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

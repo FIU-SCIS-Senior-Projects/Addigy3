@@ -2,7 +2,7 @@
  * Created by ayme on 6/5/15.
  */
 (function () {
-    angular.module('app').service('LoginData',['DataRequest', function(DataRequest) {
+    angular.module('app').service('LoginDataService',['DataRequest', function(DataRequest) {
         var self = this;
         self.usersPerHour={};
         self.selectedDate=new Date();
@@ -102,7 +102,7 @@
                             logoutHour=23;
                     }
                     if(currAct.login<getDateBeginingTimeStamp())
-                        loginHour=1;
+                        loginHour=0;
                     if(logoutHour==0)
                         self.usersPerHour[self.hoursLabels[0]].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
                     for(k=loginHour;k<=logoutHour;k++){

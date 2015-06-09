@@ -1,16 +1,13 @@
 /**
  * Created by ayme on 6/5/15.
  */
-/**
- * Created by ayme on 5/27/15.
- */
 (function () {
-    angular.module('app').controller('LoginDetailsController', ['LoginData', function(LoginData) {
+    angular.module('app').controller('LoginDetailsController', ['LoginDataService', function(LoginDataService) {
         var self = this;
-        self.pointSelected=LoginData.pointSelected;
-        self.usersAtHour=LoginData.usersAtHour;
-        self.showingDate=LoginData.datePickedDate;
-        self.labels = LoginData.labels;
+        self.pointSelected=LoginDataService.pointSelected;
+        self.usersAtHour=LoginDataService.usersAtHour;
+        self.showingDate=LoginDataService.datePickedDate;
+        self.labels = LoginDataService.labels;
         self.dateToOnlyDateString= function (date) {
             var year = date.getFullYear();
             var month = date.getMonth()+1;
@@ -34,8 +31,8 @@
             return hourStr+":"+minuteStr+":"+secondStr+" "+ampm;
          };
         self.getUsersAtHour=function(hour){
-            LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
-            return LoginData.usersAtHour.values;
+            LoginDataService.usersAtHour.values=LoginDataService.usersPerHour[hour];
+            return LoginDataService.usersAtHour.values;
         };
         self.parseLabel=function(label){
             var replaced = label.replace(":","");

@@ -11,6 +11,12 @@
     background-color: white;
     border-top:1px solid lightgrey;
 }
+.users-table{
+    background-color: white;
+}
+.users-table p{
+    color: red;
+}
 @media (min-width: 768px) {
  .modal-dialog {
    width: 600px;
