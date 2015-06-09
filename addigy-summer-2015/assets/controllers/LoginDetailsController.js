@@ -36,10 +36,10 @@
         self.getUsersAtHour=function(hour){
             LoginData.usersAtHour.values=LoginData.usersPerHour[hour];
             return LoginData.usersAtHour.values;
-        }
+        };
         self.parseLabel=function(label){
-          var n = label.indexOf(":");
-          return label.substring(0, n+1);
+            var replaced = label.replace(":","");
+            return replaced;
         };
     }]);
 })();

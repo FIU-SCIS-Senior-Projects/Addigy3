@@ -15,6 +15,7 @@
         self.usersAtHour={'values':[]};
         self.datePickedDate={'date':new Date()};
         self.hoursLabels={
+            "0":"12:00am",
             "1":"1:00am",
             "2":"2:00am",
             "3":"3:00am",
@@ -58,7 +59,7 @@
             self.usersPerHour={};
             var i;
             for(i=0;i<=lastHour;i++){
-                self.usersPerHour[i]=[]
+                self.usersPerHour[self.hoursLabels[i]]=[]
             }
         };
         populateTimesArray(getCurrentHour());
@@ -103,9 +104,9 @@
                     if(currAct.login<getDateBeginingTimeStamp())
                         loginHour=1;
                     if(logoutHour==0)
-                        self.usersPerHour[0].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
+                        self.usersPerHour[self.hoursLabels[0]].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
                     for(k=loginHour;k<=logoutHour;k++){
-                        self.usersPerHour[k].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
+                        self.usersPerHour[self.hoursLabels[k]].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
                     }
 
                 }

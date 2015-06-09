@@ -43,12 +43,16 @@
             }
             return '';
         };
+        function parseLabel(label){
+            var replaced = label.replace(":","");
+            return replaced;
+        };
         self.onPointClick = function (points, evt) {
             var i;
             for(i=0;i<self.labels.length;i++)
-                $('#'+self.labels[i]).collapse("hide");
+                $('#'+parseLabel(self.labels[i])).collapse("hide");
             $('#detailsCollapse').collapse("show");
-            var element = $('#'+points[0].label);
+            var element = $('#'+parseLabel((points[0]).label));
             element.collapse("toggle");
             element.get(0).scrollIntoView();
             var hour=points[0].label;
