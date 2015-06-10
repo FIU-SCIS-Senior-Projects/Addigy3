@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":NumberInt(1),"key":{"_id":NumberInt(1)},"name":"_id_","ns":"addigydb.loginAudits"},{"v":NumberInt(1),"key":{"orgId":"hashed"},"name":"orgId_hashed","ns":"addigydb.loginAudits"},{"v":NumberInt(1),"unique":true,"key":{"connectorId":1,"username":1},"name":"connectorId_1_username_1","ns":"addigydb.loginAudits"}]}
