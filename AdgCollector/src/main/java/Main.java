@@ -40,7 +40,7 @@ public class Main {
             toSend.put("orgId", "addigy");
         }
         System.out.println(toSend.toString());
-//        sendToServer(toSend.toString());
+        sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
         createFileIfNotExists();

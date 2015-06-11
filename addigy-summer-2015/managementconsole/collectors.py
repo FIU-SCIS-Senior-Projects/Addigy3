@@ -42,8 +42,29 @@ def getLoginUpdates(loginData):
                 if username in userUpdates:
                     userUpdates[username].append(timeList)
                 else:
-                    userUpdates[username]=updateArray
+                    userUpdates[username] = updateArray
             else:
                 del time['isUpdate']
     return userUpdates
 
+def storeBrowsingHistory(db,data):
+    table = db.browsingHistoryAudits
+    browisngData = data['browsingHistory']
+    connectorId = data['connectorId']
+    orgId = data['orgId']
+    for elem in browisngData:
+        username=elem['username']
+        domains = elem['domains']
+        for domain in domains:
+            domainName = domain['domainName']
+            visitedDates = domain['visitDates']
+            cursor = table.find({'connectorId': connectorId, 'username': username, 'domain':domainName})
+            size = cursor.count()
+            if(size==0):
+                post_id = table.insert_one({'orgId': orgId, 'connectorId': connectorId, 'username': username,
+                                            'domain': domainName, 'visits': visitedDates}).inserted_id
+            else:
+                addNewDomainVisists(table, username, connectorId, domainName, visitedDates)
+
+def addNewDomainVisists(table,username,connectorId, domain, visitedDates):
+    table.update({'connectorId': connectorId, 'username': username, 'domain':domain}, {'$push': {'visits': {'$each': visitedDates}}})
