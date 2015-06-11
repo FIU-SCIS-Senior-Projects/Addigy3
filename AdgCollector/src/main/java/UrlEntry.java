@@ -41,15 +41,6 @@ public class UrlEntry {
     public String toString(){
         return this.username + " " + this.url + " " + this.visitDate;
     }
-    public String getUrl(){
-        return this.url;
-    }
-    public String getTitle(){
-        return this.title;
-    }
-    public long getVisitDate(){
-        return this.visitDate;
-    }
     private long getTimestamp(String strDate){
         long sub=11644473600000L;
         Date date = new Date((Long.parseLong(strDate)/1000)-sub);

@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by ayme on 6/11/15.
  */
 public class BrowsingHistoryCachedParser {
-    public static final String LOGIN_BROWSING_PATH = "./logs/BrowsingHistoryLog";
+    public static final String BROWSING_HISTORY_PATH = "./logs/BrowsingHistoryLog";
     public BrowsingHistoryCachedParser(){
 
     }
@@ -21,7 +21,7 @@ public class BrowsingHistoryCachedParser {
         Map<String,HashMap<String,JSONArray>> userDomainVisitDates = new HashMap<>();
         JSONArray allHistory = new JSONArray();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(LOGIN_BROWSING_PATH));
+            BufferedReader reader = new BufferedReader(new FileReader(BROWSING_HISTORY_PATH));
             while ((line = reader.readLine()) != null) {
                 if (line.isEmpty()) continue;
                 String[] tokens = line.split("\\s+");

@@ -22,7 +22,7 @@ public class Main {
         try {
             if(needUpload()){
                 uploadData();
-//                updateLogs();
+                updateLogs();
             }
         } catch (IOException e) {
             e.printStackTrace();
