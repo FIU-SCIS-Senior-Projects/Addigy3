@@ -8,8 +8,8 @@ import java.util.UUID;
 public class Main {
 
     public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
-    public static final String LAST_UPLOAD_TIME_PATH = PROJECT_DIRECTORY + "logs/lastUploadTime";
-//    public static final String LAST_UPLOAD_TIME_PATH = "./logs/lastUploadTime";
+//    public static final String LAST_UPLOAD_TIME_PATH = PROJECT_DIRECTORY + "logs/lastUploadTime";
+    public static final String LAST_UPLOAD_TIME_PATH = "./logs/lastUploadTime";
     public static final long UPLOAD_INTERVAL_SEC = 2;
 
     static Collector[] collectors=new Collector[]{
@@ -19,14 +19,14 @@ public class Main {
     };
     public static void main(String[] args) {
         collect();
-//        try {
-//            if(needUpload()){
-//                uploadData();
+        try {
+            if(needUpload()){
+                uploadData();
 //                updateLogs();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private static void collect(){
         for(Collector c: collectors)
@@ -40,7 +40,7 @@ public class Main {
             toSend.put("orgId", "addigy");
         }
         System.out.println(toSend.toString());
-        sendToServer(toSend.toString());
+//        sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
         createFileIfNotExists();

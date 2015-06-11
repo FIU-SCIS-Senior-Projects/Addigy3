@@ -1,28 +1,37 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by ayme on 6/10/15.
  */
 public class BrowsingHistoryParser {
-    private BufferedReader reader;
-    private String line;
-    public BrowsingHistoryParser(InputStream input){
-        this.reader = new BufferedReader(new InputStreamReader(input));
+    private ResultSet queryResult;
+    private String username;
+    public BrowsingHistoryParser(String username, ResultSet queryResult){
+        this.queryResult = queryResult;
+        this.username = username;
     }
     public boolean hasNextEntry(){
         try {
-            while ((line = reader.readLine()) != null)
+            while (queryResult.next ()) {
                 return true;
-        } catch (IOException e) {
+            }
+            queryResult.close ();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
     public UrlEntry getNextEntry(){
-        String[] tokens = line.split("\\|");
-        return new UrlEntry(tokens[0], tokens[1], Long.parseLong(tokens[2]), tokens[3], tokens[4]);
+        try {
+            return new UrlEntry(this.username, queryResult.getString("url"), queryResult.getString("title"),
+                    Long.parseLong(queryResult.getString("visit_count")),
+                    queryResult.getString("last_visit_time"),
+                    queryResult.getString("visit_time"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
