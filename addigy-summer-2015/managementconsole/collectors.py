@@ -47,3 +47,10 @@ def getLoginUpdates(loginData):
                 del time['isUpdate']
     return userUpdates
 
+def storeFacterReport(db, data):
+    table = db.facterAudits
+    facterReport = data["facterReport"]
+    connectorId = data['connectorId']
+    orgId = data['orgId']
+    sp_serial_number = facterReport["sp_serial_number"]
+    postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'sp_serial_number':sp_serial_number, 'facterReport':facterReport}).inserted_id

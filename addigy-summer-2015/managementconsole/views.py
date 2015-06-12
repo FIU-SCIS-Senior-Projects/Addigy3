@@ -29,6 +29,15 @@ def getHistory(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
+def getFacter(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    test = dbhandler.getFacter(db)
+    jsonstr = json.dumps(dbhandler.getFacter(db), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
 def storeCollectedData(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')

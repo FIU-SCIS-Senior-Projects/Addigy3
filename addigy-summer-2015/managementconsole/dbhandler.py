@@ -25,3 +25,10 @@ def getHistory(db, request):
         docList.append(doc)
     history = {'loginHistory': docList}
     return history
+
+def getFacter(db):
+    try:
+        query = db.facterAudits.find_one( {}, {"_id":0} )
+        return query
+    except Exception as e:
+        return []
