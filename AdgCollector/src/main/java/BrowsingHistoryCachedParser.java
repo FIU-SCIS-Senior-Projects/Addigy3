@@ -33,7 +33,6 @@ public class BrowsingHistoryCachedParser {
                     domains = new JSONArray();
                     userDomains.put(username, domains);
                     HashMap<String, JSONArray>domainVisits = new HashMap<>();
-                    domainVisits.put(domain, new JSONArray());
                     userDomainVisitDates.put(username, domainVisits);
                     JSONObject currObj = new JSONObject();
                     currObj.put("username", username);
