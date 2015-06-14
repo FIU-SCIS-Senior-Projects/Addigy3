@@ -68,3 +68,12 @@ def storeBrowsingHistory(db,data):
 
 def addNewDomainVisists(table,username,connectorId, domain, visitedDates):
     table.update({'connectorId': connectorId, 'username': username, 'domain':domain}, {'$push': {'visits': {'$each': visitedDates}}})
+
+def storeFacterReport(db, data):
+    table = db.facterAudits
+    facterReport = data["facterReport"]
+    connectorId = data['connectorId']
+    orgId = data['orgId']
+    sp_serial_number = facterReport["sp_serial_number"]
+    postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'sp_serial_number':sp_serial_number, 'facterReport':facterReport}).inserted_id
+

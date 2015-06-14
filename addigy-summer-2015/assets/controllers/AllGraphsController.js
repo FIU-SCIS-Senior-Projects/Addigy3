@@ -8,6 +8,7 @@
         self.toIncludeHtml=[];
         self.includeHtml=[];
         self.loginIncludes=['/assets/pages/loginGraph.html', '/assets/pages/loginDetails.html'];
+        self.facterIncludes=['/assets/pages/facterReport.html'];
         self.modalTitle='';
 
         self.expandLogin=function(){
@@ -25,6 +26,24 @@
         $('#graphModal').on('hidden.bs.modal', function (e) {
             LoginDataService.pointSelected.selected=false;
         });
+
+        self.expandFacter=function(){
+            self.toIncludeHtml=self.facterIncludes;
+            self.modalTitle='Facter Report';
+        };
+        $('#facterModal').on('shown.bs.modal', function (e) {
+            $timeout(function() {
+                self.includeHtml.splice(0,self.includeHtml.length)
+                var i;
+                for(i=0; i< self.facterIncludes.length;i++)
+                    self.includeHtml.push(self.facterIncludes[i]);
+            });
+        });
+        $('#facterModal').on('hidden.bs.modal', function (e) {
+
+        });
+
+
     }]);
 })();
 

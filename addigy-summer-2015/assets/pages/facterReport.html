@@ -1,0 +1,10 @@
+<div ng-controller="FacterReportController as ctrl">
+
+    <div >
+        <button ng-click="ctrl.displayTable()">Display Facter Report</button>
+    </div>
+
+    <div ng-show="ctrl.showFacter">
+        <div bind-html-unsafe="ctrl.table"></div>
+    </div>
+</div>
