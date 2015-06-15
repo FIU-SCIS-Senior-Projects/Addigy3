@@ -21,11 +21,19 @@ def listTables(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
-def getHistory(request):
+def getLoginHistory(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb
-    jsonstr = json.dumps(dbhandler.getHistory(db, request), cls=ResponseEncoder)
+    jsonstr = json.dumps(dbhandler.getLoginHistory(db, request), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
+def getMostVisistedDomains(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getMostVisistedDomains(db, request), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
