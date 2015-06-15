@@ -14,7 +14,6 @@
             DataRequest.getMostVisistedDomains().
                 success(function(data, status, headers, config) {
                     self.domains=data['mostVisited'];
-                    console.log(self.domains);
                     processDomainsData();
                 }).error(function(data, status, headers, config) {
                      console.log(data);
@@ -25,12 +24,9 @@
             var i;
             //self.labels.splice(0,self.labels.length);
             //self.graphData.splice(0,self.data.length);
-            console.log(self.domains);
             var domainsData=[];
             for(i=0; i< self.domains.length; i++){
                 var currDomain = self.domains[i];
-                console.log(currDomain['domain']);
-                console.log(currDomain['size']);
                 self.labels.push(currDomain['domain']);
                 domainsData.push(currDomain['size']);
             }

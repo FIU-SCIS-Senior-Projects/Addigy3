@@ -1,0 +1,8 @@
+<div ng-controller="SearchDomainController as  ctrl">
+    <div class="selectRow">
+        <select class="col-sm-3" id="singleSelectExample">
+            <option></option><!-- Needed to show X image to clear the select -->
+                <option ng-repeat="domain in ctrl.allDomains" value="1">{{ domain.domain }}</option>
+        </select>
+    </div>
+</div>

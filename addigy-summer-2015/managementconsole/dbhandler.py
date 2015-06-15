@@ -48,3 +48,18 @@ def getMostVisistedDomains(db, request):
         docList.append(doc)
     mostVisited = {'mostVisited': docList}
     return mostVisited
+
+def getAllDomains(db, request):
+    table = db.browsingHistoryAudits
+    try:
+        result = db.browsingHistoryAudits.aggregate([
+            {'$unwind': "$visits"},
+            {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+            {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+    except Exception as e:
+        return []
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    allDomains = {'allDomains': docList}
+    return allDomains

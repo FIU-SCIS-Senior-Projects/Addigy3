@@ -9,5 +9,6 @@ urlpatterns = patterns('',
     url(r'^resource/getLoginHistory/$', views.getLoginHistory, name='getLoginHistory'),
     url(r'^resource/getFacter/$', views.getFacter, name='getFacter'),
     url(r'^resource/getMostVisistedDomains/$', views.getMostVisistedDomains, name='getMostVisistedDomains'),
+    url(r'^resource/getAllDomains/$', views.getAllDomains, name='getAllDomains'),
 )
 

@@ -12,6 +12,9 @@
             },
             getMostVisistedDomains: function () {
                 return $http.post('/resource/getMostVisistedDomains/');
+            },
+            getAllDomains: function () {
+                return $http.post('/resource/getAllDomains/');
             }
         }
     }]);

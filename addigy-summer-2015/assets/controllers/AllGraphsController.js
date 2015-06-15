@@ -10,17 +10,22 @@
         self.loginIncludes=['/assets/pages/loginGraph.html', '/assets/pages/loginDetails.html'];
         self.facterIncludes=['/assets/pages/facterReport.html'];
         self.modalTitle='';
+        self.domainsIncludes=['/assets/pages/browsingHistory.html','/assets/pages/searchDomains.html'];
 
         self.expandLogin=function(){
-            self.toIncludeHtml=self.loginIncludes
+            self.toIncludeHtml=self.loginIncludes;
             self.modalTitle='Login History';
+        };
+        self.expandDomains=function(){
+            self.toIncludeHtml=self.domainsIncludes;
+            self.modalTitle='Domains History';
         };
         $('#graphModal').on('shown.bs.modal', function (e) {
             $timeout(function() {
-                self.includeHtml.splice(0,self.includeHtml.length)
+                self.includeHtml.splice(0,self.includeHtml.length);
                 var i;
-                for(i=0; i< self.loginIncludes.length;i++)
-                    self.includeHtml.push(self.loginIncludes[i]);
+                for(i=0; i< self.toIncludeHtml.length;i++)
+                    self.includeHtml.push(self.toIncludeHtml[i]);
             });
         });
         $('#graphModal').on('hidden.bs.modal', function (e) {
