@@ -3,7 +3,6 @@
  */
 (function () {
     angular.module('app').service('DomainsInfoService',['DataRequest', function(DataRequest) {
-        console.log('in domain service');
         var self = this;
         self.domains=null;
         self.labels = [];
@@ -31,8 +30,6 @@
                 domainsData.push(currDomain['size']);
             }
             self.graphData.push(domainsData);
-            console.log(self.labels);
-            console.log(self.graphData);
         };
     }]);
 })();

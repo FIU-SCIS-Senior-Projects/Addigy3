@@ -53,9 +53,9 @@ def getAllDomains(db, request):
     table = db.browsingHistoryAudits
     try:
         result = db.browsingHistoryAudits.aggregate([
-            {'$unwind': "$visits"},
-            {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
-            {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+            {'$match': {'orgId': 'addigy'}},
+            {'$group': {'_id': "org_id", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$addToSet': '$domain'}, 'visits': {'$first': "$visits"}}},
+            {'$project': {'_id': 0, 'domain': 1, 'username': 1}}]);
     except Exception as e:
         return []
     docList = []
@@ -63,3 +63,17 @@ def getAllDomains(db, request):
         docList.append(doc)
     allDomains = {'allDomains': docList}
     return allDomains
+
+def getDomainInfo(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    domain = dic['domain']
+    try:
+        result = db.browsingHistoryAudits.find({'domain': domain}, {'_id':0});
+    except Exception as e:
+        return []
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    domainList = {'domainList': docList}
+    return domainList

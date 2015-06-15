@@ -45,6 +45,14 @@ def getAllDomains(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
+def getDomainInfo(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getDomainInfo(db, request), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
 def getFacter(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')

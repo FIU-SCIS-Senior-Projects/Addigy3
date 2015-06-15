@@ -15,6 +15,9 @@
             },
             getAllDomains: function () {
                 return $http.post('/resource/getAllDomains/');
+            },
+            getDomainInfo: function (domain) {
+                return $http.post('/resource/getDomainInfo/', {domain:domain});
             }
         }
     }]);
