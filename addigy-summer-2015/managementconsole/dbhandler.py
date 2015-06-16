@@ -34,7 +34,6 @@ def getFacter(db):
         return []
 
 def getMostVisistedDomains(db, request):
-    table = db.browsingHistoryAudits
     try:
         result = db.browsingHistoryAudits.aggregate([
             {'$unwind': "$visits"},
@@ -50,7 +49,6 @@ def getMostVisistedDomains(db, request):
     return mostVisited
 
 def getAllDomains(db, request):
-    table = db.browsingHistoryAudits
     try:
         result = db.browsingHistoryAudits.aggregate([
             {'$match': {'orgId': 'addigy'}},
@@ -69,21 +67,17 @@ def getDomainInfo(db, request):
     dic = ast.literal_eval(body.decode('utf'))
     matchClause = getMatchClause(dic)
     qtyToSelect = float(dic['qtyToSelect'])
+    startDate = dic['startDate']
+    endDate = dic['endDate']
     try:
         if qtyToSelect != 0:
-            if not matchClause:
-                result = db.browsingHistoryAudits.aggregate([
-                    {'$unwind': "$visits"},
-                    {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
-                    {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
-                    {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
-            else:
-                result = db.browsingHistoryAudits.aggregate([
-                    {'$match': matchClause},
-                    {'$unwind': "$visits"},
-                    {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
-                    {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
-                    {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+            result = db.browsingHistoryAudits.aggregate([
+                {'$match': matchClause},
+                {'$unwind': "$visits"},
+                {'$match': {'visits': {'$lte': endDate, '$gte': startDate}}},
+                {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+                {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
+                {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
         else:
             result = db.browsingHistoryAudits.find(matchClause, {'_id': 0})
     except Exception as e:
@@ -98,8 +92,14 @@ def getMatchClause(dic):
     matchClause={}
     domain = dic['domain']
     user = dic['user']
+    startDate = dic['startDate']
+    endDate = dic['endDate']
     if domain != 'All':
         matchClause['domain'] = dic['domain']
     if user != 'All':
         matchClause['username'] = dic['user']
+    dateRange={}
+    dateRange['$lte'] = endDate
+    dateRange['$gte'] = startDate
+    matchClause['visits'] = dateRange
     return matchClause

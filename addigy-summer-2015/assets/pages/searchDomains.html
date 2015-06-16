@@ -1,34 +1,42 @@
-<div ng-controller="SearchDomainController as  ctrl">
-    <div class="container row">
+<div  class="container" ng-controller="SearchDomainController as  ctrl">
+    <div class="row">
         <div class="col-sm-3">
+            <label>Domain</label>
             <select id="domainSelect"  style="width: 100%" ng-options="domain for domain in ctrl.allDomains"
                     ng-model="ctrl.selectedDomain" ng-change="ctrl.update()">
                 <option value="">All</option>
             </select>
         </div>
         <div class="col-sm-2">
+            <label>Top Domains</label>
             <select id="topSelect" style="width: 100%" ng-options="num for num in ctrl.topSelectData"
                     ng-model="ctrl.selectedTopNum" ng-change="ctrl.update()">
                 <option value="">1</option>
             </select>
         </div>
         <div class="col-sm-3">
+            <label>User</label>
             <select id="userSelect"  style="width: 100%" ng-options="user for user in ctrl.allUsers"
                     ng-model="ctrl.selectedUser" ng-change="ctrl.update()">
                 <option value="">All</option>
             </select>
         </div>
     </div>
-<!--    <div class="row">
-            <div class="input-daterange" id="datepicker" >
-                <input type="text" class="input-small" name="start" />
-                <span class="add-on" style="vertical-align: top;height:20px">to</span>
-                <input type="text" class="input-small" name="end" />
+
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Start</label>
+            <div>
+                <input ng-change="ctrl.startChanged()" type="text" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.startDate" is-open="ctrl.startOpened" min-date="{{ ctrl.minStartDate }}" max-date="{{ ctrl.maxStartDate }}" datepicker-options="ctrl.dateOptions" close-text="Close" />
+                <button class="btn" ng-click="ctrl.openStart()"><i class="glyphicon glyphicon-calendar"></i></button>
             </div>
-    </div>-->
-    <div ng-show="ctrl.domainSelected">
-        <p>Total visits: {{ ctrl.domainVisitsCount }}</p>
-        <p>Users:</p>
-        <p ng-repeat="user in ctrl.domainUsers">{{user}}</p>
+        </div>
+         <div class="col-sm-3">
+            <label>End</label>
+            <div>
+                <input ng-change="ctrl.endChanged()" type="text" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.endDate" is-open="ctrl.endOpened" min-date="{{ ctrl.minEndDate }}" max-date="{{ ctrl.maxEndDate }}" datepicker-options="ctrl.dateOptions" close-text="Close" />
+                <button type="button" class="btn btn-default" ng-click="ctrl.openEnd()"><i class="glyphicon glyphicon-calendar"></i></button>
+            </div>
+         </div>
     </div>
 </div>
