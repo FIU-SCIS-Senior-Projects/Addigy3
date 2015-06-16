@@ -12,10 +12,12 @@
         self.domainVisitsCount=0;
         self.domainUsers=[];
         self.domainSelected=false;
-        self.topSelectData=[1,5,10,20];
-        self.selectedDomain="";
-        self.selectedTopNum="";
-        self.selectedUser="";
+        self.topSelectData=[2,3,4,5,10,20];
+        self.selectedDomain="All";
+        self.selectedTopNum=1;
+        self.selectedUser="All";
+        self.selectedStart=0;
+        self.selectedEnd=0;
 
         function getAllDomains(){
             DataRequest.getAllDomains().
@@ -23,57 +25,46 @@
                     var domainsData=data['allDomains'];
                     self.allDomains=domainsData[0].domain;
                     self.allUsers=domainsData[0].username;
-                    console.log(self.allUsers);
                 }).error(function(data, status, headers, config) {
                      console.log(data);
                 });
         };
         getAllDomains();
-        $.fn.select2.defaults = $.extend($.fn.select2.defaults, {
-            allowClear: true, // Adds X image to clear select
-            closeOnSelect: true, // Only applies to multiple selects. Closes the select upon selection.
-            placeholder: 'Select...',
-            minimumResultsForSearch: 15 // Removes search when there are 15 or fewer options
-        });
-        self.update = function() {
-            console.log('selected');
-            console.log(self.selectedDomain);
-            console.log(self.selectedTopNum);
-        };
+
         function updateGraph(){
-            DataRequest.getDomainInfo(self.selectedDomain)
+            var topQty=(self.selectedDomain==='All')?self.selectedTopNum:0;
+            DataRequest.getDomainInfo(self.selectedDomain, self.selectedUser,
+                topQty, self.selectedStart, self.selectedEnd)
                 .success(function(data, status, headers, config) {
-                    self.domainVisitsCount=0;
-                    self.domainUsers.length=0;
-                    var domainsList = data['domainList'];
-                    var i;
-                    for(i=0; i<domainsList.length;i++){
-                        var currDomain=domainsList[i];
-                        self.domainVisitsCount+=currDomain['visits'].length;
-                        self.domainUsers.push(currDomain['username']);
-                    }
-                    console.log(self.domainVisitsCount);
-                    self.domainSelected=true;
+                    console.log(data);
             }).error(function(data, status, headers, config) {
                  console.log(data);
             });
         };
         $(document).ready(
             function () {
-                //var configParamsObj = {
-                //    placeholder: 'Select a domain...', // Place holder text to place in the select
-                //    minimumResultsForSearch: 3 // Overrides default of 15 set above
-                //};
                 $("#topSelect").select2().on("select2:select", function (e) {
-                    self.selectedTopNum = $('#topSelect :selected').text();
-                });
-                $("#domainSelect").select2({placeholder:"Select Domain"}).on("select2:select", function (e) {
-                    self.selectedDomain = $('#domainSelect :selected').text();
+                    self.selectedTopNum = ($('#topSelect :selected').text());
                     updateGraph();
                 });
-                $("#userSelect").select2({placeholder:"Select User"}).on("select2:select", function (e) {
-                    self.selectedUser = $('#userSelect :selected').text();
+                $("#domainSelect").select2().on("select2:select", function (e) {
+                    self.selectedDomain = $('#domainSelect :selected').text();
+                    updateTopSelector();
+                    updateGraph();
                 });
-            });
+                $("#userSelect").select2().on("select2:select", function (e) {
+                    self.selectedUser = $('#userSelect :selected').text();
+                    updateGraph();
+                });
+            }
+        );
+        function updateTopSelector(){
+            if (self.selectedDomain==='All') {
+                $('#topSelect').prop('disabled', false);
+            }
+            else {
+                $('#topSelect').prop('disabled', 'disabled');
+            }
+        };
     }]);
 })();

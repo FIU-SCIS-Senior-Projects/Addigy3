@@ -1,18 +1,21 @@
 <div ng-controller="SearchDomainController as  ctrl">
     <div class="container row">
-        <div class="col-sm-2">
-            <select id="topSelect" style="width: 100%" ng-options="num for num in ctrl.topSelectData"
-                    ng-model="ctrl.selectedTopNum" ng-change="ctrl.update()">
-            </select>
-        </div>
         <div class="col-sm-3">
             <select id="domainSelect"  style="width: 100%" ng-options="domain for domain in ctrl.allDomains"
                     ng-model="ctrl.selectedDomain" ng-change="ctrl.update()">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select id="topSelect" style="width: 100%" ng-options="num for num in ctrl.topSelectData"
+                    ng-model="ctrl.selectedTopNum" ng-change="ctrl.update()">
+                <option value="">1</option>
             </select>
         </div>
         <div class="col-sm-3">
             <select id="userSelect"  style="width: 100%" ng-options="user for user in ctrl.allUsers"
                     ng-model="ctrl.selectedUser" ng-change="ctrl.update()">
+                <option value="">All</option>
             </select>
         </div>
     </div>

@@ -67,13 +67,39 @@ def getAllDomains(db, request):
 def getDomainInfo(db, request):
     body = request.body
     dic = ast.literal_eval(body.decode('utf'))
-    domain = dic['domain']
+    matchClause = getMatchClause(dic)
+    qtyToSelect = float(dic['qtyToSelect'])
     try:
-        result = db.browsingHistoryAudits.find({'domain': domain}, {'_id':0});
+        if qtyToSelect != 0:
+            if not matchClause:
+                result = db.browsingHistoryAudits.aggregate([
+                    {'$unwind': "$visits"},
+                    {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+                    {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
+                    {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+            else:
+                result = db.browsingHistoryAudits.aggregate([
+                    {'$match': matchClause},
+                    {'$unwind': "$visits"},
+                    {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+                    {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
+                    {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+        else:
+            result = db.browsingHistoryAudits.find(matchClause, {'_id': 0})
     except Exception as e:
-        return []
+            return []
     docList = []
     for doc in result:
         docList.append(doc)
     domainList = {'domainList': docList}
     return domainList
+
+def getMatchClause(dic):
+    matchClause={}
+    domain = dic['domain']
+    user = dic['user']
+    if domain != 'All':
+        matchClause['domain'] = dic['domain']
+    if user != 'All':
+        matchClause['username'] = dic['user']
+    return matchClause
