@@ -1,6 +1,6 @@
-<div  class="container" ng-controller="SearchDomainController as  ctrl">
+<div style="padding-top: 20px" class="col-md-12" ng-controller="SearchDomainController as  ctrl">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-5">
             <label>Domain</label>
             <select id="domainSelect"  style="width: 100%" ng-options="domain for domain in ctrl.allDomains"
                     ng-model="ctrl.selectedDomain" ng-change="ctrl.update()">
@@ -14,7 +14,7 @@
                 <option value="">1</option>
             </select>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-5">
             <label>User</label>
             <select id="userSelect"  style="width: 100%" ng-options="user for user in ctrl.allUsers"
                     ng-model="ctrl.selectedUser" ng-change="ctrl.update()">
@@ -22,20 +22,22 @@
             </select>
         </div>
     </div>
-
-    <div style="padding-top: 10px" class="col-sm-3">
-        <div class="btn-group" data-toggle="buttons">
-            <label ng-click="ctrl.lastWeekSelected()" class="btn btn-default">
-                <input type="radio" id="q156" name="quality[25]" value="1" />Last Week
-            </label>
-            <label ng-click="ctrl.lastMonthSelected()"  class="btn btn-default">
-                <input type="radio" id="q157" name="quality[25]" value="2" />Last Month
-            </label>
+    <div class="row">
+        <div style="padding-top: 10px" class="col-sm-6">
+            <div class="btn-group" data-toggle="buttons">
+                <label ng-click="ctrl.lastWeekSelected()" class="btn btn-default">
+                    <input type="radio" id="q156" name="quality[25]" value="1" />Last Week
+                </label>
+                <label ng-click="ctrl.lastMonthSelected()"  class="btn btn-default">
+                    <input type="radio" id="q157" name="quality[25]" value="2" />Last Month
+                </label>
+            </div>
         </div>
     </div>
-
-    <canvas id="line" class="chart chart-line" data="data"
-        labels="labels" legend="true" series="series"
-        click="onClick">
-    </canvas>
+    <div class="row">
+        <canvas id="line" class="chart chart-line" data="ctrl.graphData"
+            labels="ctrl.labels" legend="true" series="ctrl.series"
+            click="onClick">
+        </canvas>
+    </div>
 </div>
