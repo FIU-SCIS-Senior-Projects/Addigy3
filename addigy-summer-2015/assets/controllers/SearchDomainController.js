@@ -8,14 +8,18 @@
         self.allUsers=[];
         self.domainVisitsCount=0;
         self.domainUsers=[];
+        self.domainsFiltered=[];
         self.domainSelected=false;
         self.topSelectData=[2,3,4,5,10,20];
         self.selectedDomain="All";
         self.selectedTopNum=1;
         self.selectedUser="All";
-        self.months=['Jan','Feb','March','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+        self.daysLabels={'0':'', '1':'', '2':'', '3':'', '4':'', '5':'', '6':'', '7':'', '8':'', '9':'', '10':'',
+            '11':'', '12':'', '13':'', '14':'', '15':'', '16':'', '17':'', '18':'', '19':'', '20':'', '21':'', '22':'',
+            '23':'', '24':'', '25':'', '26':'', '27':'', '28':'', '29':'', '30':'', '31':''};
         self.labels=[];
-
+        self.startDate=0;
+        self.endDate=0;
         function getAllDomains(){
             DataRequest.getAllDomains().
                 success(function(data, status, headers, config) {
@@ -29,23 +33,16 @@
         getAllDomains();
 
         function updateGraph(){
-            populateGraphScale();
             var topQty=(self.selectedDomain==='All')?self.selectedTopNum:0;
-            var fromDate = new Date(self.startDate);
-            fromDate = fromDate.setHours(0,0,0,0);
-            var toDate = new Date(self.endDate);
-            toDate = toDate.setHours(23,59,0,0);
             DataRequest.getDomainInfo(self.selectedDomain, self.selectedUser,
-                topQty, fromDate, toDate)
+                topQty, self.startDate, self.endDate)
                 .success(function(data, status, headers, config) {
+                    self.domainsFiltered=data['domainsList'];
                     console.log(data);
             }).error(function(data, status, headers, config) {
                  console.log(data);
             });
         };
-        self.dateRangeChanged = function(){
-            updateGraph();
-        }
         $(document).ready(
             function () {
                 $("#topSelect").select2().on("select2:select", function (e) {
@@ -67,95 +64,7 @@
             if (self.selectedDomain==='All') $('#topSelect').prop('disabled', false);
             else $('#topSelect').prop('disabled', 'disabled');
         };
-        self.endDate = new Date();
-        self.startDate = new Date (self.endDate);
-        self.startDate=self.startDate.setMonth(self.startDate.getMonth()-1);
-        self.minStartDate = new Date('05/01/15'); //fixed date
-        self.maxStartDate = self.endDate; //init value
-        self.minEndDate = self.startDate; //init value
-        self.maxEndDate = self.endDate; //fixed date same as $scope.maxStartDate init value
 
-        self.startChanged = function(){
-            self.minEndDate = new Date(self.startDate);
-            //console.log(self.minEndDate);
-            updateGraph();
-        };
-        self.endChanged = function(){
-            self.maxStartDate = self.endDate;
-            updateGraph();
-        };
-        self.openStart = function() {
-            $timeout(function() {
-                self.startOpened = true;
-            });
-        };
-        self.openEnd = function() {
-            $timeout(function() {
-                self.endOpened = true;
-            });
-        };
-        self.dateOptions = {
-            'year-format': "'yy'",
-            'starting-day': 1
-        };
-        Date.prototype.addDays = function(days) {
-            var dat = new Date(this.valueOf())
-            dat.setDate(dat.getDate() + days);
-            return dat;
-        }
-        function populateGraphScale(){
-            var elapsedTime = self.endDate.getTime()-self.startDate.getTime();
-            var elapsedDays = elapsedTime / (1000*60*60*24);
-            if(elapsedDays<2) setScaleToHours();
-            else if(elapsedDays>=2 && elapsedDays<14) setScaleToDays();
-            else if(elapsedDays>=14 && elapsedDays<31) setScaleToWeeks();
-            else setScaleToMonths();
-        }
-        function setScaleToHours(){
-            self.labels.splice(0, self.labels.length);
-            var stopDate=0;
-            if(isDateToday(new Date(self.startDate)))
-                stopDate=new Date().getHours();
-            else stopDate=23;
-            var i;
-            for(i=0;i<=stopDate;i++){
-                self.labels.push(i);
-            }
-            console.log(self.labels);
-        }
-        function setScaleToDays(){
-            self.labels.splice(0,self.labels.length);
-            var currentDate = new Date(self.startDate);
-            while (currentDate <= self.endDate) {
-                self.labels.push(currentDate.toDateString());
-                currentDate = currentDate.addDays(1);
-            }
-            console.log(self.labels);
-        }
-        function setScaleToWeeks(){
-            self.labels.splice(0,self.labels.length);
-            var currentDate = new Date(self.startDate);
-            while (currentDate <= self.endDate) {
-                self.labels.push(currentDate.toDateString()+"-"+currentDate.addDays(7).toDateString())
-                currentDate = currentDate.addDays(8);
-            }
-            console.log(self.labels);
-        }
-        function setScaleToMonths(){
-            self.labels.splice(0,self.labels.length);
-            var currMonth=self.startDate.getMonth();
-            var endMonth = self.endDate.getMonth();
-            while (currMonth <= endMonth) {
-                self.labels.push(self.months[currMonth]);
-                currMonth++;
-            }
-            console.log(self.labels);
-        }
-        function isDateToday(inputDate){
-            var todaysDate = new Date();
-            return (inputDate.setHours(0,0,0,0) == todaysDate.setHours(0,0,0,0));
-
-        }
         //$scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
         //$scope.series = ['Series A', 'Series B', 'Series C'];
         //$scope.data = [
@@ -163,6 +72,45 @@
         //    [30, 45, 58, 75, 56, 53, 26],
         //    [28, 48, 40, 19, 86, 27, 90]
         //];
+        self.lastMonthSelected=function(){
+            var today=new Date();
+            var oneMonthAgo=new Date();
+            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+            today.setHours(23,59,0,0);
+            oneMonthAgo.setHours(0,0,0,0);
+            self.startDate=oneMonthAgo.getTime();
+            self.endDate=today.getTime();
+            populateGraphLabels();
+            updateGraph();
+        };
+        self.lastWeekSelected=function(){
+            var today=new Date();
+            var oneWeekAgo=new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
+            today.setHours(23,59,0,0);
+            oneWeekAgo.setHours(0,0,0,0);
+            self.startDate=oneWeekAgo.getTime();
+            self.endDate=today.getTime();
+            populateGraphLabels();
+            updateGraph();
+        };
+        Date.prototype.addDays = function(days) {
+            var dat = new Date(this.valueOf())
+            dat.setDate(dat.getDate() + days);
+            return dat;
+        }
+        function populateGraphLabels(){
+            var i=0;
+            var start = new Date(self.startDate);
+            var end = new Date(self.endDate);
+            self.daysLabels={};
+            while(start <= end){
+                self.daysLabels[i]= start.toDateString();
+                start = start.addDays(1);
+                i++;
+            }
+            console.log(self.daysLabels);
+        }
 
     }]);
 })();
