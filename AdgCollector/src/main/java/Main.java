@@ -19,14 +19,14 @@ public class Main {
     };
     public static void main(String[] args) {
         collect();
-        try {
-            if(needUpload()){
-                uploadData();
-                updateLogs();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if(needUpload()){
+//                uploadData();
+//                updateLogs();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
     private static void collect(){
         for(Collector c: collectors)

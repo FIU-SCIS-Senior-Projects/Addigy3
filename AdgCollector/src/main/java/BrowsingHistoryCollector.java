@@ -1,8 +1,5 @@
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,17 +35,23 @@ public class BrowsingHistoryCollector implements Collector {
         try {
             copyBrowsingDatabase();
             Class.forName ("org.sqlite.JDBC");
-            long lastCollected =getLastCollectedTime();
-            String query = "SELECT urls.url, urls.title, urls.visit_count, " +
-                    "urls.last_visit_time, visits.visit_time FROM urls, visits " +
-                    "WHERE urls.id = visits.url AND visits.visit_time >" +lastCollected +
-                    " order by visits.visit_time desc limit 10";
+            String query = getChromeQuery();
             connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/history.tmp");
             statement = connection.createStatement ();
             resultSet = statement.executeQuery(query);
             BrowsingHistoryParser parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
             while (parser.hasNextEntry()) {
-                UrlEntry currEntry = parser.getNextEntry();
+                UrlEntry currEntry = parser.getNextChromeEntry();
+                urls.add(currEntry);
+                System.out.println(currEntry.toString());
+            }
+            query = getFirefoxQuery();
+            connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/mozilla_history.tmp");
+            statement = connection.createStatement ();
+            resultSet = statement.executeQuery(query);
+            parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
+            while (parser.hasNextEntry()) {
+                UrlEntry currEntry = parser.getNextFireFoxEntry();
                 urls.add(currEntry);
                 System.out.println(currEntry.toString());
             }
@@ -91,9 +94,11 @@ public class BrowsingHistoryCollector implements Collector {
         if(!file.exists())
             return 0;
         BufferedReader reader = new BufferedReader(new FileReader(BROWSING_LAST_COLLECTED_DATE));
-        long lastDateTimestamp = Long.parseLong(reader.readLine());
+        return Long.parseLong(reader.readLine());
+    }
+    private long getChromeFormatDate(long date){
         long toAdd=11644473600000L;
-        return (lastDateTimestamp+toAdd)*1000;
+        return (date+toAdd)*1000;
     }
     private void copyBrowsingDatabase() throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder("./scripts/chromeDbCp.sh");
@@ -114,5 +119,23 @@ public class BrowsingHistoryCollector implements Collector {
         catch (Exception e){
             System.out.println(e.getStackTrace());
         }
+    }
+    private String getChromeQuery() throws IOException {
+        long lastCollected=getLastCollectedTime();
+        long lastDateInChromeFormat = getChromeFormatDate(lastCollected);
+        String query = "SELECT urls.url, urls.title, urls.visit_count, " +
+                "urls.last_visit_time, visits.visit_time FROM urls, visits " +
+                "WHERE urls.id = visits.url AND visits.visit_time >" +lastDateInChromeFormat +
+                " order by visits.visit_time desc limit 10";
+        return query;
+    }
+    private String getFirefoxQuery() throws IOException {
+        long lastCollected =getLastCollectedTime();
+        String query = "SELECT moz_places.url, moz_historyvisits.visit_date " +
+                "FROM moz_places, moz_historyvisits " +
+                "WHERE moz_places.id = moz_historyvisits.id " +
+                "AND moz_historyvisits.visit_date > " +lastCollected +
+                " order by moz_historyvisits.visit_date desc limit 10";
+        return query;
     }
 }

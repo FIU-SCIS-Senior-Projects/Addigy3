@@ -23,12 +23,18 @@ public class BrowsingHistoryParser {
         }
         return false;
     }
-    public UrlEntry getNextEntry(){
+    public UrlEntry getNextChromeEntry(){
         try {
-            return new UrlEntry(this.username, queryResult.getString("url"), queryResult.getString("title"),
-                    Long.parseLong(queryResult.getString("visit_count")),
-                    queryResult.getString("last_visit_time"),
-                    queryResult.getString("visit_time"));
+            return new UrlEntry("Chrome",this.username, queryResult.getString("url"), queryResult.getString("visit_time"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public UrlEntry getNextFireFoxEntry(){
+        try {
+            return new UrlEntry("Firefox",this.username, queryResult.getString("url"), queryResult.getString("visit_date"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

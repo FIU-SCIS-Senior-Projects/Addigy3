@@ -7,20 +7,16 @@ import java.util.Date;
  * Created by ayme on 6/10/15.
  */
 public class UrlEntry {
+    private String browser;
     private String username;
     private String url;
-    private String title;
-    private long visitCount;
-    private long lastVisitDate;
     private long visitDate;
 
-    public UrlEntry(String username, String url, String title, long visitCount, String lastVisitDate, String visitDate){
+    public UrlEntry(String browser, String username, String url, String visitDate){
+        this.browser=browser;
         this.username=username;
         this.url=extractDomain(url);
-        this.title=title;
-        this.visitCount=visitCount;
-        this.lastVisitDate=getTimestamp(lastVisitDate);
-        this.visitDate=getTimestamp(visitDate);
+        this.visitDate=isChromeBrowser()?getTimestamp(visitDate):Long.parseLong(visitDate);
     }
 //    public String toString(){
 //        return "URL: " + this.url + "\n" +
@@ -29,6 +25,9 @@ public class UrlEntry {
 //                "LAST VISIT DATE: " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(this.lastVisitDate) + "\n"+
 //                "VISIT DATE: " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(this.visitDate) + "\n";
 //    }
+    private boolean isChromeBrowser(){
+        return this.browser.equals("Chrome");
+    }
     private String extractDomain(String url){
         try {
             URI uri = new URI(url);
