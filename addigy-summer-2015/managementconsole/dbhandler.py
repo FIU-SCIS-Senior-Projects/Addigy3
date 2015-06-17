@@ -38,7 +38,7 @@ def getMostVisistedDomains(db, request):
         result = db.browsingHistoryAudits.aggregate([
             {'$unwind': "$visits"},
             {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
-            {'$sort': {'size': -1}}, {'$limit': 10},
+            {'$sort': {'size': -1}}, {'$limit': 5},
             {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
     except Exception as e:
         return []
@@ -66,7 +66,7 @@ def getDomainInfo(db, request):
     body = request.body
     dic = ast.literal_eval(body.decode('utf'))
     matchClause = getMatchClause(dic)
-    qtyToSelect = float(dic['qtyToSelect'])
+    qtyToSelect = int(dic['qtyToSelect'])
     startDate = dic['startDate']
     endDate = dic['endDate']
     try:
@@ -79,7 +79,13 @@ def getDomainInfo(db, request):
                 {'$sort': {'size': -1}}, {'$limit': qtyToSelect},
                 {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
         else:
-            result = db.browsingHistoryAudits.find(matchClause, {'_id': 0})
+            result = db.browsingHistoryAudits.aggregate([
+                {'$match': matchClause},
+                {'$unwind': "$visits"},
+                {'$match': {'visits': {'$lte': endDate, '$gte': startDate}}},
+                {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+                {'$sort': {'size': -1}},
+                {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
     except Exception as e:
             return []
     docList = []

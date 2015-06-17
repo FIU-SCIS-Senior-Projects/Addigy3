@@ -7,7 +7,7 @@
         self.allDomains=[];
         self.allUsers=[];
         self.domainsFiltered=[];
-        self.topSelectData=[1,2,3,4,5,6,7,8,9,10];
+        self.topSelectData = [{id:0,text:1},{id:1,text:2},{id:2,text:3},{id:3,text:4},{id:4,text:5}];
         self.selectedDomain="All";
         self.selectedTopNum=1;
         self.selectedUser="All";
@@ -36,14 +36,15 @@
                 topQty, self.startDate, self.endDate)
                 .success(function(data, status, headers, config) {
                     self.domainsFiltered=data['domainList'];
-                    processDomainsData();
+                    if (self.domainsFiltered.length!==0) processDomainsData();
+                    else setValuesForNoDomains();
             }).error(function(data, status, headers, config) {
                  console.log(data);
             });
         };
         $(document).ready(
             function () {
-                $("#topSelect").select2().on("select2:select", function (e) {
+                $("#topSelect").select2({data: self.topSelectData}).on("select2:select", function (e) {
                     self.selectedTopNum = ($('#topSelect :selected').text());
                     updateGraph();
                 });
@@ -69,11 +70,14 @@
             dateRangeChanged(today, oneMonthAgo);
         };
         self.lastWeekSelected=function(){
+            setGraphForLastWeek();
+        };
+        function setGraphForLastWeek (){
             var today=new Date();
             var oneWeekAgo=new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
             dateRangeChanged(today, oneWeekAgo);
-        };
+        }
         function dateRangeChanged(today, pastDate){
             today.setHours(23,59,0,0);
             pastDate.setHours(0,0,0,0);
@@ -128,7 +132,6 @@
                 self.series.push(domainName);
                 var domainGraphData=[];
                 var domainData=self.visitsPerDayPerDomain[domainName];
-                console.log(domainData)
                 for(j=0;j<self.labels.length;j++){
                     var visitCount=domainData[self.labels[j]];
                     if(visitCount==null) domainGraphData.push(0);
@@ -137,6 +140,17 @@
                 self.graphData.push(domainGraphData);
             }
         }
+        setGraphForLastWeek();
 
+        function setValuesForNoDomains(){
+            self.series.splice(0,self.series.length);
+            self.labels.splice(0,self.labels.length);
+            self.graphData.splice(0,self.graphData.length);
+            for(var key in self.daysLabels) self.labels.push(self.daysLabels[key]);
+            self.series.push(self.selectedDomain);
+            var data=[];
+            for(var label in self.daysLabels) data.push(0);
+            self.graphData.push(data);
+        }
     }]);
 })();
