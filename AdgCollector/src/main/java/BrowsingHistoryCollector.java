@@ -1,8 +1,7 @@
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -28,44 +27,41 @@ public class BrowsingHistoryCollector implements Collector {
 
     @Override
     public void collectData() {
-        Connection connection = null;
-        ResultSet resultSet;
-        Statement statement = null;
-        List<UrlEntry> urls = new ArrayList<>();
-        try {
-            copyBrowsingDatabase();
-            Class.forName ("org.sqlite.JDBC");
-            String query = getChromeQuery();
-            connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/history.tmp");
-            statement = connection.createStatement ();
-            resultSet = statement.executeQuery(query);
-            BrowsingHistoryParser parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
-            while (parser.hasNextEntry()) {
-                UrlEntry currEntry = parser.getNextChromeEntry();
-                urls.add(currEntry);
-                System.out.println(currEntry.toString());
-            }
-            query = getFirefoxQuery();
-            connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/mozilla_history.tmp");
-            statement = connection.createStatement ();
-            resultSet = statement.executeQuery(query);
-            parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
-            while (parser.hasNextEntry()) {
-                UrlEntry currEntry = parser.getNextFireFoxEntry();
-                urls.add(currEntry);
-                System.out.println(currEntry.toString());
-            }
-            addEntriesToCachedFile(urls);
-            saveLastCollectedTime();
-        }
-        catch (Exception e) {
-            e.printStackTrace ();
-        }
-        finally {
+        List<String> users = getUsersList();
+        for(String user:users){
+            Connection connection = null;
+            ResultSet resultSet;
+            Statement statement = null;
+            List<UrlEntry> urls = new ArrayList<>();
             try {
+                copyBrowsingDatabase(user);
+                Class.forName ("org.sqlite.JDBC");
+                String query = getChromeQuery();
+                connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/history.tmp");
+                statement = connection.createStatement ();
+                resultSet = statement.executeQuery(query);
+                BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
+                while (parser.hasNextEntry()) {
+                    UrlEntry currEntry = parser.getNextChromeEntry();
+                    urls.add(currEntry);
+                    System.out.println(currEntry.toString());
+                }
+                query = getFirefoxQuery();
+                connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/mozilla_history.tmp");
+                statement = connection.createStatement ();
+                resultSet = statement.executeQuery(query);
+                parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
+                while (parser.hasNextEntry()) {
+                    UrlEntry currEntry = parser.getNextFireFoxEntry();
+                    urls.add(currEntry);
+                    System.out.println(currEntry.toString());
+                }
+                addEntriesToCachedFile(urls);
+                saveLastCollectedTime();
                 statement.close ();
                 connection.close ();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace ();
             }
         }
@@ -78,6 +74,38 @@ public class BrowsingHistoryCollector implements Collector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private List<String> getUsersList (){
+        Set<String> users = new HashSet<>();
+        String line="";
+        try {
+            Process process = Runtime.getRuntime().exec("users");
+            InputStream input = process.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            line=reader.readLine();
+            if(line!=null){
+                String tokens[] = line.split("\\s+");
+                for(String token:tokens) {
+                    users.add(token);
+                }
+            }
+            List<String> allUsers = new ArrayList<>();
+            allUsers.addAll(users);
+            return allUsers;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private String getUserPath(String username) throws IOException, InterruptedException {
+        String grepCmd="grep " + username + " /etc/passwd | cut -d \":\" -f6";
+        String[] cmd = {"/bin/sh", "-c", grepCmd};
+        Process process = Runtime.getRuntime().exec(cmd);
+        process.waitFor();
+        InputStream input = process.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        String line=reader.readLine();
+        return line;
     }
     private void saveLastCollectedTime(){
         try {
@@ -100,8 +128,8 @@ public class BrowsingHistoryCollector implements Collector {
         long toAdd=11644473600000L;
         return (date+toAdd)*1000;
     }
-    private void copyBrowsingDatabase() throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("./scripts/chromeDbCp.sh");
+    private void copyBrowsingDatabase(String user) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("./scripts/chromeDbCp.sh", getUserPath(user));
         Process copyProcess = pb.start();
         copyProcess.waitFor();
     }
@@ -130,11 +158,11 @@ public class BrowsingHistoryCollector implements Collector {
         return query;
     }
     private String getFirefoxQuery() throws IOException {
-        long lastCollected =getLastCollectedTime();
+        long lastCollected =getLastCollectedTime()*1000;
         String query = "SELECT moz_places.url, moz_historyvisits.visit_date " +
                 "FROM moz_places, moz_historyvisits " +
-                "WHERE moz_places.id = moz_historyvisits.id " +
-                "AND moz_historyvisits.visit_date > " +lastCollected +
+                "WHERE moz_places.id = moz_historyvisits.place_id " +
+                "AND moz_historyvisits.visit_date>" +lastCollected +
                 " order by moz_historyvisits.visit_date desc limit 10";
         return query;
     }

@@ -16,7 +16,8 @@ public class UrlEntry {
         this.browser=browser;
         this.username=username;
         this.url=extractDomain(url);
-        this.visitDate=isChromeBrowser()?getTimestamp(visitDate):Long.parseLong(visitDate);
+        this.visitDate=isChromeBrowser()?getTimestamp(visitDate):(Long.parseLong(visitDate)/1000);
+        System.out.println(visitDate);
     }
 //    public String toString(){
 //        return "URL: " + this.url + "\n" +

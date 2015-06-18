@@ -3,7 +3,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
+import java.util.*;
 
 public class Main {
 
@@ -19,14 +19,14 @@ public class Main {
     };
     public static void main(String[] args) {
         collect();
-//        try {
-//            if(needUpload()){
-//                uploadData();
-//                updateLogs();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if(needUpload()){
+                uploadData();
+                updateLogs();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private static void collect(){
         for(Collector c: collectors)
