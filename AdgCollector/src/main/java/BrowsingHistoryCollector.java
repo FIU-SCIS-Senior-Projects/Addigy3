@@ -8,8 +8,9 @@ import java.util.Date;
  * Created by ayme on 6/10/15.
  */
 public class BrowsingHistoryCollector implements Collector {
-    public static final String BROWSING_LAST_COLLECTED_DATE = "./logs/browsingLastCollectedDate";
-    public static final String BROWSING_HISTORY_PATH = "./logs/BrowsingHistoryLog";
+    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
+    public static final String BROWSING_LAST_COLLECTED_DATE = PROJECT_DIRECTORY + "logs/browsingLastCollectedDate";
+    public static final String BROWSING_HISTORY_PATH = PROJECT_DIRECTORY + "logs/BrowsingHistoryLog";
     @Override
     public Object getData() {
         try {
@@ -37,8 +38,8 @@ public class BrowsingHistoryCollector implements Collector {
                 copyBrowsingDatabase(user);
                 Class.forName ("org.sqlite.JDBC");
                 String query = getChromeQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/history.tmp");
-                statement = connection.createStatement ();
+                connection = DriverManager.getConnection("jdbc:sqlite:"+ getUserPath(user) +"/addigy/logs/history.tmp");
+                statement = connection.createStatement();
                 resultSet = statement.executeQuery(query);
                 BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
                 while (parser.hasNextEntry()) {
@@ -47,7 +48,7 @@ public class BrowsingHistoryCollector implements Collector {
                     System.out.println(currEntry.toString());
                 }
                 query = getFirefoxQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:/home/ayme/repos/Addigy3/AdgCollector/logs/mozilla_history.tmp");
+                connection = DriverManager.getConnection("jdbc:sqlite:"+ getUserPath(user) + "/addigy/logs/mozilla_history.tmp");
                 statement = connection.createStatement ();
                 resultSet = statement.executeQuery(query);
                 parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
