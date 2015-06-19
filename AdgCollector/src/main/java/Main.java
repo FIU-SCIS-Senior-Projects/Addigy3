@@ -12,7 +12,7 @@ public class Main {
     public static final long UPLOAD_INTERVAL_SEC = 2;
 
     static Collector[] collectors=new Collector[]{
-//            new LoginHistoryCollector(),
+            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
 //            new FacterCollector()
     };

@@ -5,8 +5,6 @@ import java.util.*;
  * Created by ayme on 5/20/15.
  */
 public class LoginHistoryCollector implements Collector{
-    public static final String MAC_LAST_COMMAND = "last";
-    public static final String UNIX_LAST_COMMAND = "last -R";
     public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
     public static final String LOGIN_HISTORY_PATH = PROJECT_DIRECTORY + "logs/loginHistoryLog";
     public static final String LOGIN_HAS_DATA_PATH = PROJECT_DIRECTORY + "logs/loginNewDataFlag";
@@ -86,11 +84,8 @@ public class LoginHistoryCollector implements Collector{
         return reader.readLine().equals(NEW_DATA);
     }
     private Process getProcess() throws IOException {
-        String command;
-        String os = System.getProperty("os.name").toLowerCase();
-        if (isUnix(os)) command=UNIX_LAST_COMMAND;
-        else command=MAC_LAST_COMMAND;
-        return Runtime.getRuntime().exec(command);
+        CommandFactory commandFac= new CommandFactory();
+        return Runtime.getRuntime().exec(commandFac.getLoginHistoryCommand());
     }
     public static boolean isUnix(String os) {
         return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0 );

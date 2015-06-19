@@ -11,6 +11,8 @@ public class BrowsingHistoryCollector implements Collector {
     public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
     public static final String BROWSING_LAST_COLLECTED_DATE = PROJECT_DIRECTORY + "logs/browsingLastCollectedDate";
     public static final String BROWSING_HISTORY_PATH = PROJECT_DIRECTORY + "logs/BrowsingHistoryLog";
+    public static final String CHROME_DB_COPY = PROJECT_DIRECTORY + "logs/chrome_db.tmp";
+    public static final String FIREFOX_DB_COPY = PROJECT_DIRECTORY + "logs/firefox_db.tmp";
     @Override
     public Object getData() {
         try {
@@ -35,10 +37,10 @@ public class BrowsingHistoryCollector implements Collector {
             Statement statement = null;
             List<UrlEntry> urls = new ArrayList<>();
             try {
-                copyBrowsingDatabase(user);
+                copyBrowsingDatabases(getUserPath(user));
                 Class.forName ("org.sqlite.JDBC");
                 String query = getChromeQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:"+ getUserPath(user) +"/addigy/logs/history.tmp");
+                connection = DriverManager.getConnection("jdbc:sqlite:"+ CHROME_DB_COPY);
                 statement = connection.createStatement();
                 resultSet = statement.executeQuery(query);
                 BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
@@ -48,10 +50,10 @@ public class BrowsingHistoryCollector implements Collector {
                     System.out.println(currEntry.toString());
                 }
                 query = getFirefoxQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:"+ getUserPath(user) + "/addigy/logs/mozilla_history.tmp");
-                statement = connection.createStatement ();
+                connection = DriverManager.getConnection("jdbc:sqlite:"+ FIREFOX_DB_COPY);
+                statement = connection.createStatement();
                 resultSet = statement.executeQuery(query);
-                parser = new BrowsingHistoryParser(System.getProperty("user.name"),resultSet);
+                parser = new BrowsingHistoryParser(user,resultSet);
                 while (parser.hasNextEntry()) {
                     UrlEntry currEntry = parser.getNextFireFoxEntry();
                     urls.add(currEntry);
@@ -77,10 +79,11 @@ public class BrowsingHistoryCollector implements Collector {
         }
     }
     private List<String> getUsersList (){
+        CommandFactory commandFac = new CommandFactory();
         Set<String> users = new HashSet<>();
         String line="";
         try {
-            Process process = Runtime.getRuntime().exec("users");
+            Process process = Runtime.getRuntime().exec(commandFac.getUsersCommand());
             InputStream input = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             line=reader.readLine();
@@ -98,25 +101,20 @@ public class BrowsingHistoryCollector implements Collector {
         }
         return null;
     }
-    private String getUserPath(String username) throws IOException, InterruptedException {
-        String grepCmd="grep " + username + " /etc/passwd | cut -d \":\" -f6";
-        String[] cmd = {"/bin/sh", "-c", grepCmd};
-        Process process = Runtime.getRuntime().exec(cmd);
+    private String getUserPath(String user) throws IOException, InterruptedException {
+        CommandFactory commandFac = new CommandFactory();
+        Process process = Runtime.getRuntime().exec(commandFac.getUserHomePathCommand(user));
         process.waitFor();
         InputStream input = process.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         String line=reader.readLine();
         return line;
     }
-    private void saveLastCollectedTime(){
-        try {
-            FileWriter writer = new FileWriter(BROWSING_LAST_COLLECTED_DATE);
-            Date now = new Date();
-            writer.write(String.valueOf(now.getTime()));
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void saveLastCollectedTime() throws IOException {
+        FileWriter writer = new FileWriter(BROWSING_LAST_COLLECTED_DATE);
+        Date now = new Date();
+        writer.write(String.valueOf(now.getTime()));
+        writer.close();
     }
     private long getLastCollectedTime() throws IOException {
         File file = new File(BROWSING_LAST_COLLECTED_DATE);
@@ -129,25 +127,24 @@ public class BrowsingHistoryCollector implements Collector {
         long toAdd=11644473600000L;
         return (date+toAdd)*1000;
     }
-    private void copyBrowsingDatabase(String user) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("./scripts/chromeDbCp.sh", getUserPath(user));
-        Process copyProcess = pb.start();
-        copyProcess.waitFor();
+    private void copyBrowsingDatabases(String userHomePath) throws IOException, InterruptedException {
+        CommandFactory commandFact = new CommandFactory();
+        String chromePath = commandFact.getChromeDbPath(userHomePath);
+        String firefoxPath = commandFact.getFirefoxDbPath(userHomePath);
+        Process process = Runtime.getRuntime().exec(commandFact.getCopyCommand(chromePath, CHROME_DB_COPY));
+        process.waitFor();
+        process = Runtime.getRuntime().exec(commandFact.getCopyCommand(firefoxPath, FIREFOX_DB_COPY));
+        process.waitFor();
     }
     private void addEntriesToCachedFile(List<UrlEntry> entries) throws IOException {
         File file =new File(BROWSING_HISTORY_PATH);
         if(!file.exists()){
             file.createNewFile();
         }
-        try{
-            FileWriter writer = new FileWriter(BROWSING_HISTORY_PATH,true);
-            for(int i=entries.size()-1; i>=0; i--)
-                writer.write(entries.get(i).toString()+"\n");
-            writer.close();
-        }
-        catch (Exception e){
-            System.out.println(e.getStackTrace());
-        }
+        FileWriter writer = new FileWriter(BROWSING_HISTORY_PATH,true);
+        for(int i=entries.size()-1; i>=0; i--)
+            writer.write(entries.get(i).toString()+"\n");
+        writer.close();
     }
     private String getChromeQuery() throws IOException {
         long lastCollected=getLastCollectedTime();
