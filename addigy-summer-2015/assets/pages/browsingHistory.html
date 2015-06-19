@@ -1,5 +1,7 @@
 <div ng-controller="BrowsingHistoryController as ctrl">
     <div class="row">
-        <canvas  style="height: 250px" id="domains_canvas" class="chart chart-bar" legend="true" series="ctrl.series" data="ctrl.data" labels="ctrl.labels"></canvas>
+        <canvas colours="ctrl.lineChartColors"
+                style="height: 250px" id="domains_canvas" class="chart chart-bar"
+                legend="true" series="ctrl.series" data="ctrl.data" labels="ctrl.labels"></canvas>
     </div>
 </div>
