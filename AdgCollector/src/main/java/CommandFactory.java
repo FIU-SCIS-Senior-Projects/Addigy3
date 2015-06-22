@@ -19,19 +19,23 @@ public class CommandFactory {
 
     public String getUsersCommand(){
         if(isUnix()) return "users";
-        return "dscl /Local/Default -list /Users uid | awk '$2 >= 100 && $0 !~ /^_/ { print $1 }";
+        else if(isMac()) return "dscl /Local/Default -list /Users uid | awk '$2 >= 100 && $0 !~ /^_/ { print $1 }";
+        else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String getLoginHistoryCommand(){
         if(isUnix()) return "last -R";
-        return "last";
+        else if(isMac()) return "last";
+        else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String getChromeDbPath(String userHomePath){
         if(isUnix()) return  userHomePath + "/.config/google-chrome/Default/History";
-        return userHomePath + "/Library/Application Support/Google/Chrome/";
+        else if(isMac()) return userHomePath + "/Library/Application Support/Google/Chrome/";
+        else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String getFirefoxDbPath(String userHomePath){
         if(isUnix()) return userHomePath + "/.mozilla/firefox/cz7tfo3b.default/places.sqlite";
-        return userHomePath + "/Library/Application Support/Firefox/Profiles/default.lov/places.sqlite";
+        else if(isMac()) return userHomePath + "/Library/Application Support/Firefox/Profiles/default.lov/places.sqlite";
+        else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String[] getCopyCommand(String source, String dest){
         String cpCommand="cp " + source + " " +dest;

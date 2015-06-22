@@ -32,37 +32,14 @@ public class BrowsingHistoryCollector implements Collector {
     public void collectData() {
         List<String> users = getUsersList();
         for(String user:users){
-            Connection connection = null;
-            ResultSet resultSet;
-            Statement statement = null;
             List<UrlEntry> urls = new ArrayList<>();
             try {
-                copyBrowsingDatabases(getUserPath(user));
-                Class.forName ("org.sqlite.JDBC");
-                String query = getChromeQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:"+ CHROME_DB_COPY);
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery(query);
-                BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
-                while (parser.hasNextEntry()) {
-                    UrlEntry currEntry = parser.getNextChromeEntry();
-                    urls.add(currEntry);
-                    System.out.println(currEntry.toString());
-                }
-                query = getFirefoxQuery();
-                connection = DriverManager.getConnection("jdbc:sqlite:"+ FIREFOX_DB_COPY);
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery(query);
-                parser = new BrowsingHistoryParser(user,resultSet);
-                while (parser.hasNextEntry()) {
-                    UrlEntry currEntry = parser.getNextFireFoxEntry();
-                    urls.add(currEntry);
-                    System.out.println(currEntry.toString());
-                }
+                if(copyChromeDatabase(getUserPath(user)))
+                    collectChromeData(urls, user);
+                if(copyFirefoxDatabase(getUserPath(user)))
+                    collectFirefoxDbInfo(urls, user);
                 addEntriesToCachedFile(urls);
                 saveLastCollectedTime();
-                statement.close ();
-                connection.close ();
             }
             catch (Exception e) {
                 e.printStackTrace ();
@@ -77,6 +54,34 @@ public class BrowsingHistoryCollector implements Collector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void collectChromeData(List<UrlEntry> urls, String user) throws IOException, SQLException {
+        String query = getChromeQuery();
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:"+ CHROME_DB_COPY);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
+        while (parser.hasNextEntry()) {
+            UrlEntry currEntry = parser.getNextChromeEntry();
+            urls.add(currEntry);
+            System.out.println(currEntry.toString());
+        }
+        statement.close ();
+        connection.close ();
+    }
+    private void collectFirefoxDbInfo(List<UrlEntry> urls, String user) throws IOException, SQLException {
+        String query = getFirefoxQuery();
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:"+ FIREFOX_DB_COPY);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
+        while (parser.hasNextEntry()) {
+            UrlEntry currEntry = parser.getNextFireFoxEntry();
+            urls.add(currEntry);
+            System.out.println(currEntry.toString());
+        }
+        statement.close ();
+        connection.close ();
     }
     private List<String> getUsersList (){
         CommandFactory commandFac = new CommandFactory();
@@ -127,14 +132,29 @@ public class BrowsingHistoryCollector implements Collector {
         long toAdd=11644473600000L;
         return (date+toAdd)*1000;
     }
-    private void copyBrowsingDatabases(String userHomePath) throws IOException, InterruptedException {
+    private boolean copyChromeDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String chromePath = commandFact.getChromeDbPath(userHomePath);
+        File file = new File(chromePath);
+        Process process;
+        if(file.exists() && !file.isDirectory()){
+            process = Runtime.getRuntime().exec(commandFact.getCopyCommand(chromePath, CHROME_DB_COPY));
+            process.waitFor();
+            return true;
+        }
+        return false;
+    }
+    private boolean copyFirefoxDatabase(String userHomePath) throws IOException, InterruptedException {
+        CommandFactory commandFact = new CommandFactory();
         String firefoxPath = commandFact.getFirefoxDbPath(userHomePath);
-        Process process = Runtime.getRuntime().exec(commandFact.getCopyCommand(chromePath, CHROME_DB_COPY));
-        process.waitFor();
-        process = Runtime.getRuntime().exec(commandFact.getCopyCommand(firefoxPath, FIREFOX_DB_COPY));
-        process.waitFor();
+        Process process;
+        File file = new File(firefoxPath);
+        if(file.exists() && !file.isDirectory()){
+            process = Runtime.getRuntime().exec(commandFact.getCopyCommand(firefoxPath, FIREFOX_DB_COPY));
+            process.waitFor();
+            return true;
+        }
+        return false;
     }
     private void addEntriesToCachedFile(List<UrlEntry> entries) throws IOException {
         File file =new File(BROWSING_HISTORY_PATH);
