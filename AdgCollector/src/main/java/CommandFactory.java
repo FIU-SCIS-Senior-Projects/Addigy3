@@ -12,14 +12,17 @@ public class CommandFactory {
             String[] command = {"/bin/sh", "-c", grepCmd};
             return command;
         }
-        String dsclCommand= "dscl . -read Users/" + user + " NFSHomeDirectory";
-        String[] command = {"/bin/sh", "-c", dsclCommand};
-        return command;
+        else if(isMac()){
+//            String dsclCommand= "dscl . -read Users/" + user + " NFSHomeDirectory";
+            String[] command = {"bash", "scripts/iOSgetUserPath.sh", user};
+            return command;
+        }
+        else throw new UnsupportedOperationException("Operating system not supported");
     }
 
     public String getUsersCommand(){
         if(isUnix()) return "users";
-        else if(isMac()) return "dscl /Local/Default -list /Users uid | awk '$2 >= 100 && $0 !~ /^_/ { print $1 }";
+        else if(isMac()) return "bash scripts/iOSgetUsers.sh";
         else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String getLoginHistoryCommand(){
@@ -29,18 +32,13 @@ public class CommandFactory {
     }
     public String getChromeDbPath(String userHomePath){
         if(isUnix()) return  userHomePath + "/.config/google-chrome/Default/History";
-        else if(isMac()) return userHomePath + "/Library/Application Support/Google/Chrome/";
+        else if(isMac()) return userHomePath + "/Library/Application Support/Google/Chrome/Default/History";
         else throw new UnsupportedOperationException("Operating system not supported");
     }
     public String getFirefoxDbPath(String userHomePath){
         if(isUnix()) return userHomePath + "/.mozilla/firefox/cz7tfo3b.default/places.sqlite";
-        else if(isMac()) return userHomePath + "/Library/Application Support/Firefox/Profiles/default.lov/places.sqlite";
+        else if(isMac()) return userHomePath + "/Library/Application Support/Firefox/Profiles/egs7pr35.default/places.sqlite";
         else throw new UnsupportedOperationException("Operating system not supported");
-    }
-    public String[] getCopyCommand(String source, String dest){
-        String cpCommand="cp " + source + " " +dest;
-        String[] command = {"/bin/sh", "-c", cpCommand};
-        return command;
     }
     public static boolean isUnix() {
         return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );

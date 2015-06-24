@@ -132,14 +132,30 @@ public class BrowsingHistoryCollector implements Collector {
         long toAdd=11644473600000L;
         return (date+toAdd)*1000;
     }
+    private void copyFile(File source, File dest){
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = new FileInputStream(source);
+            output = new FileOutputStream(dest);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+            input.close();
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private boolean copyChromeDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String chromePath = commandFact.getChromeDbPath(userHomePath);
-        File file = new File(chromePath);
-        Process process;
-        if(file.exists() && !file.isDirectory()){
-            process = Runtime.getRuntime().exec(commandFact.getCopyCommand(chromePath, CHROME_DB_COPY));
-            process.waitFor();
+        File fileSource = new File(chromePath);
+        File fileDest = new File(CHROME_DB_COPY);
+        if(fileSource.exists() && !fileSource.isDirectory()){
+            copyFile(fileSource, fileDest);
             return true;
         }
         return false;
@@ -147,11 +163,10 @@ public class BrowsingHistoryCollector implements Collector {
     private boolean copyFirefoxDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String firefoxPath = commandFact.getFirefoxDbPath(userHomePath);
-        Process process;
-        File file = new File(firefoxPath);
-        if(file.exists() && !file.isDirectory()){
-            process = Runtime.getRuntime().exec(commandFact.getCopyCommand(firefoxPath, FIREFOX_DB_COPY));
-            process.waitFor();
+        File fileSource = new File(firefoxPath);
+        File fileDest = new File(FIREFOX_DB_COPY);
+        if(fileSource.exists() && !fileSource.isDirectory()){
+            copyFile(fileSource, fileDest);
             return true;
         }
         return false;
