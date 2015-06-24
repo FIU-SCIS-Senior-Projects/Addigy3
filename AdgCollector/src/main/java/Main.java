@@ -12,20 +12,21 @@ public class Main {
     public static final long UPLOAD_INTERVAL_SEC = 2;
 
     static Collector[] collectors=new Collector[]{
-            new LoginHistoryCollector(),
+//            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
+            new ApplicationsCollector()
 //            new FacterCollector()
     };
     public static void main(String[] args) {
         collect();
-        try {
-            if(needUpload()){
-                uploadData();
-                updateLogs();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if(needUpload()){
+//                uploadData();
+//                updateLogs();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
     private static void collect(){
         for(Collector c: collectors)
