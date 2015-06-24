@@ -40,16 +40,20 @@ public class CommandFactory {
         else if(isMac()) return userHomePath + "/Library/Application Support/Firefox/Profiles/egs7pr35.default/places.sqlite";
         else throw new UnsupportedOperationException("Operating system not supported");
     }
-    public static boolean isUnix() {
+    public String getSafariDbPath(String userHomePath){
+        if(isMac()) return userHomePath + "/Library/Safari/History.db";
+        else return null;
+    }
+    public boolean isUnix() {
         return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
     }
-    public static boolean isWindows() {
+    public boolean isWindows() {
         return (OS.indexOf("win") >= 0);
     }
-    public static boolean isMac() {
+    public boolean isMac() {
         return (OS.indexOf("mac") >= 0);
     }
-    public static boolean isSolaris() {
+    public boolean isSolaris() {
         return (OS.indexOf("sunos") >= 0);
     }
 

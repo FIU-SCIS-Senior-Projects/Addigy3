@@ -40,4 +40,12 @@ public class BrowsingHistoryParser {
         }
         return null;
     }
+    public UrlEntry getNextSafariEntry(){
+        try {
+            return new UrlEntry("Safari",this.username, queryResult.getString("url"), queryResult.getString("visit_time"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

