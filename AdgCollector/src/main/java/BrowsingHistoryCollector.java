@@ -8,12 +8,13 @@ import java.util.Date;
  * Created by ayme on 6/10/15.
  */
 public class BrowsingHistoryCollector implements Collector {
-    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
-    public static final String BROWSING_LAST_COLLECTED_DATE = PROJECT_DIRECTORY + "logs/browsingLastCollectedDate";
-    public static final String BROWSING_HISTORY_PATH = PROJECT_DIRECTORY + "logs/BrowsingHistoryLog";
-    public static final String CHROME_DB_COPY = PROJECT_DIRECTORY + "logs/chrome_db.tmp";
-    public static final String FIREFOX_DB_COPY = PROJECT_DIRECTORY + "logs/firefox_db.tmp";
-    public static final String SAFARI_DB_COPY = PROJECT_DIRECTORY + "logs/safari_db.db";
+    public static final String LOGS_PATH = "/var/log/";
+    public static final String TMP_PATH = "/tmp/";
+    public static final String BROWSING_LAST_COLLECTED_DATE = LOGS_PATH + "adgBrowsingLastCollectedDate";
+    public static final String BROWSING_HISTORY_PATH = LOGS_PATH + "adgBrowsingHistoryLog";
+    public static final String CHROME_DB_COPY = TMP_PATH + "adgChrome_db.tmp";
+    public static final String FIREFOX_DB_COPY = TMP_PATH + "adgFirefox_db.tmp";
+    public static final String SAFARI_DB_COPY = TMP_PATH + "adgSafari_db.db";
     @Override
     public Object getData() {
         try {

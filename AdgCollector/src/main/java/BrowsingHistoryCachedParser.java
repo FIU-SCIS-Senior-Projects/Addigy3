@@ -11,8 +11,8 @@ import java.util.Map;
  * Created by ayme on 6/11/15.
  */
 public class BrowsingHistoryCachedParser {
-    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
-    public static final String BROWSING_HISTORY_PATH = PROJECT_DIRECTORY + "logs/BrowsingHistoryLog";
+    public static final String LOGS_PATH = "/var/log/";
+    public static final String BROWSING_HISTORY_PATH = LOGS_PATH + "BrowsingHistoryLog";
     public BrowsingHistoryCachedParser(){
 
     }

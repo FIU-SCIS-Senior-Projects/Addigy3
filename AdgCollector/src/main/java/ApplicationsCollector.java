@@ -7,8 +7,8 @@ import java.util.*;
 
 public class ApplicationsCollector implements Collector {
     public static final int APP_LIFE_IN_MIN=15;
-    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/logs/";
-    public static final String RUNNING_APPS_SAVE_FILE_TAIL = "runningApps.ser";
+    public static final String LOGS_PATH = "/var/log/";
+    public static final String RUNNING_APPS_SAVE_FILE_TAIL = "adgRunningApps.ser";
     @Override
     public Object getData() {
         return null;
@@ -107,7 +107,7 @@ public class ApplicationsCollector implements Collector {
     }
     private void saveRunningApps(HashMap<String , ArrayList<ProcEntry>> runningApps, String user){
         try{
-            FileOutputStream fos = new FileOutputStream(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
+            FileOutputStream fos = new FileOutputStream(LOGS_PATH + user + RUNNING_APPS_SAVE_FILE_TAIL);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(runningApps);
             oos.close();
@@ -118,12 +118,12 @@ public class ApplicationsCollector implements Collector {
     }
 
     private HashMap<String, ArrayList<ProcEntry>> getRunningApps(String user){
-        File file = new File(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
+        File file = new File(LOGS_PATH + user + RUNNING_APPS_SAVE_FILE_TAIL);
         if(!file.exists())
             return new HashMap<String, ArrayList<ProcEntry>>();
         HashMap<String, ArrayList<ProcEntry>> runningApps = null;
         try {
-            FileInputStream fis = new FileInputStream(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
+            FileInputStream fis = new FileInputStream(LOGS_PATH + user + RUNNING_APPS_SAVE_FILE_TAIL);
             ObjectInputStream ois = new ObjectInputStream(fis);
             runningApps = (HashMap) ois.readObject();
             ois.close();
