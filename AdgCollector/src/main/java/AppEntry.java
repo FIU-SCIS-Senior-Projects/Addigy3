@@ -60,4 +60,8 @@ public class AppEntry {
     private String getBaseName(String path){
         return (new File(path)).getName();
     }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
 }

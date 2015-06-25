@@ -6,6 +6,7 @@ import java.util.*;
  */
 
 public class ApplicationsCollector implements Collector {
+    public static final int APP_LIFE_IN_MIN=1;
     @Override
     public Object getData() {
         return null;
@@ -18,8 +19,8 @@ public class ApplicationsCollector implements Collector {
 
     @Override
     public void collectData() {
-        HashMap<String, ArrayList<Integer>> oldRunningApps = getRunningApps();
-        HashMap<String, ArrayList<Integer>> newRunningApps = new HashMap<>();
+        HashMap<String, ArrayList<ProcEntry>> oldRunningApps = getRunningApps();
+        HashMap<String, ArrayList<ProcEntry>> newRunningApps = new HashMap<>();
         List<AppEntry> entriesToAdd = new ArrayList<>();
         if(oldRunningApps==null) oldRunningApps=new HashMap<>();
         try {
@@ -35,29 +36,35 @@ public class ApplicationsCollector implements Collector {
                 AppEntry currApp = new AppEntry("ayme", appPath, tokens[1], tokens[0], "syst");
                 String currAppName = currApp.getAppName();
                 int currAppPid = currApp.getAppPID();
-                ArrayList<Integer> appPids = oldRunningApps.get(currAppName);
+                long currAppStart=currApp.getStartTime();
+                ProcEntry currProcEntry = new ProcEntry(currAppPid, currAppStart);
+                ArrayList<ProcEntry> appPids = oldRunningApps.get(currAppName);
                 if(appPids==null){
                     entriesToAdd.add(currApp);
-                    ArrayList<Integer> pids = new ArrayList<>();
-                    pids.add(currAppPid);
+                    ArrayList<ProcEntry> pids = new ArrayList<>();
+                    pids.add(currProcEntry);
                     newRunningApps.put(currAppName, pids);
                 }
-                else if(appPids.contains(currAppPid)){
+                else if(appPids.contains(currProcEntry)){
+                    if(isNewEntry(currProcEntry.getProcStartTime())) {
+                        currApp.setStartTime(System.currentTimeMillis());
+                        entriesToAdd.add(currApp);
+                    }
                     if(newRunningApps.get(currAppName)==null){
-                        ArrayList<Integer> pids = new ArrayList<>();
+                        ArrayList<ProcEntry> pids = new ArrayList<>();
                         newRunningApps.put(currAppName, pids);
                     }
-                    ArrayList<Integer> pids = newRunningApps.get(currAppName);
-                    pids.add(currAppPid);
+                    ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
+                    pids.add(currProcEntry);
                 }
                 else{
                     entriesToAdd.add(currApp);
                     if(newRunningApps.get(currAppName)==null){
-                        ArrayList<Integer> pids = new ArrayList<>();
+                        ArrayList<ProcEntry> pids = new ArrayList<>();
                         newRunningApps.put(currAppName, pids);
                     }
-                    ArrayList<Integer> pids = newRunningApps.get(currAppName);
-                    pids.add(currAppPid);
+                    ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
+                    pids.add(currProcEntry);
                 }
             }
             addEntriesToCachedFile(entriesToAdd);
@@ -66,7 +73,11 @@ public class ApplicationsCollector implements Collector {
             e.printStackTrace();
         }
     }
-    private void saveRunningApps(HashMap<String , ArrayList<Integer>> runningApps){
+    public boolean isNewEntry(long appStartTime){
+        long currTime = System.currentTimeMillis();
+            return (currTime-appStartTime)>APP_LIFE_IN_MIN*60*1000;
+    }
+    private void saveRunningApps(HashMap<String , ArrayList<ProcEntry>> runningApps){
         try{
             FileOutputStream fos = new FileOutputStream("/Users/ayme/addigy/logs/runningApps.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -78,11 +89,11 @@ public class ApplicationsCollector implements Collector {
         }
     }
 
-    private HashMap<String, ArrayList<Integer>> getRunningApps(){
+    private HashMap<String, ArrayList<ProcEntry>> getRunningApps(){
         File file = new File("/Users/ayme/addigy/logs/runningApps.ser");
         if(!file.exists())
-            return new HashMap<String, ArrayList<Integer>>();
-        HashMap<String, ArrayList<Integer>> runningApps = null;
+            return new HashMap<String, ArrayList<ProcEntry>>();
+        HashMap<String, ArrayList<ProcEntry>> runningApps = null;
         try {
             FileInputStream fis = new FileInputStream("/Users/ayme/addigy/logs/runningApps.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
