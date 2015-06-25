@@ -16,9 +16,9 @@
             getAllDomains: function () {
                 return $http.post('/resource/getAllDomains/');
             },
-            getDomainInfo: function (domain, user, qtyToSelect, startDate, endDate) {
+            getDomainInfo: function (domain, user, qtyToSelect, startDate, endDate, type) {
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
-                    qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate});
+                    qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
             }
         }
     }]);

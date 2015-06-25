@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -12,11 +13,13 @@ public class AppEntry {
     private String appName;
     private int appPID;
     private long startTime;
-    public AppEntry(String username, String appName, String appPID, String startTimeStr){
+    private String type;
+    public AppEntry(String username, String appName, String appPID, String startTimeStr, String type){
         this.username = username;
-        this.appName = appName;
+        this.appName = getBaseName(appName);
         this.appPID=Integer.parseInt(appPID);
         this.startTime=getStartTimestamp(startTimeStr);
+        this.type=type;
     }
 
     private long getStartTimestamp(String startTimeStr){
@@ -26,9 +29,13 @@ public class AppEntry {
         else daysStrPos=0;
         startTimeStr=startTimeStr.substring(daysStrPos + 1);
         String [] timeTokens = startTimeStr.split(":");
-        hours = Integer.parseInt(timeTokens[0]);
-        min = Integer.parseInt(timeTokens[1]);
-        sec = Integer.parseInt(timeTokens[2]);
+        sec = Integer.parseInt(timeTokens[0]);
+        if(timeTokens.length==2)
+            min = Integer.parseInt(timeTokens[1]);
+        else if(timeTokens.length==3){
+            min = Integer.parseInt(timeTokens[1]);
+            hours = Integer.parseInt(timeTokens[2]);
+        }
         int totalSec= days*SECONDS_IN_DAY + hours*SECONDS_IN_HOUR + min*SECONDS_IN_MINUTES+sec;
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, -totalSec);
@@ -48,6 +55,9 @@ public class AppEntry {
         return startTime;
     }
     public String toString(){
-        return this.username + " " + this.appName + " " + this.startTime;
+        return this.username + " " + this.appName + " " + this.startTime + " " + this.type;
+    }
+    private String getBaseName(String path){
+        return (new File(path)).getName();
     }
 }

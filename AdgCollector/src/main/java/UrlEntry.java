@@ -13,14 +13,16 @@ public class UrlEntry {
     private String username;
     private String url;
     private long visitDate;
+    private String type;
 
-    public UrlEntry(String browser, String username, String url, String visitDate){
+    public UrlEntry(String browser, String username, String url, String visitDate, String type){
         this.browser=browser;
         this.username=username;
         this.url=extractDomain(url);
         if(isChromeBrowser()) this.visitDate=getTimestamp(visitDate);
         else if (isSafariBrowser()) this.visitDate=convertSafariDate(visitDate);
         else this.visitDate=(Long.parseLong(visitDate)/1000);
+        this.type=type;
         System.out.println(visitDate);
     }
     private boolean isChromeBrowser(){
@@ -37,7 +39,7 @@ public class UrlEntry {
         return null;
     }
     public String toString(){
-        return this.username + " " + this.url + " " + this.visitDate;
+        return this.username + " " + this.url + " " + this.visitDate + " " + this.type;
     }
     private long getTimestamp(String strDate){
         long sub=11644473600000L;

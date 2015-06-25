@@ -58,11 +58,12 @@ def storeBrowsingHistory(db,data):
         for domain in domains:
             domainName = domain['domainName']
             visitedDates = domain['visitDates']
+            type = domain = domain['domainType']
             cursor = table.find({'connectorId': connectorId, 'username': username, 'domain':domainName})
             size = cursor.count()
             if(size==0):
                 post_id = table.insert_one({'orgId': orgId, 'connectorId': connectorId, 'username': username,
-                                            'domain': domainName, 'visits': visitedDates}).inserted_id
+                                            'domain': domainName, 'visits': visitedDates, 'type': type}).inserted_id
             else:
                 addNewDomainVisists(table, username, connectorId, domainName, visitedDates)
 

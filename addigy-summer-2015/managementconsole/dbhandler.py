@@ -100,10 +100,13 @@ def getMatchClause(dic):
     user = dic['user']
     startDate = dic['startDate']
     endDate = dic['endDate']
+    type = dic['type']
     if domain != 'All':
         matchClause['domain'] = dic['domain']
     if user != 'All':
         matchClause['username'] = dic['user']
+    if type != 'All':
+        matchClause['type'] = dic['type']
     dateRange={}
     dateRange['$lte'] = endDate
     dateRange['$gte'] = startDate

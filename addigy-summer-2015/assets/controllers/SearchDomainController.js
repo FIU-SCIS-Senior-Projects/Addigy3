@@ -7,10 +7,11 @@
         self.allDomains=[];
         self.allUsers=[];
         self.domainsFiltered=[];
-        self.topSelectData = [{id:0,text:1},{id:1,text:2},{id:2,text:3},{id:3,text:4},{id:4,text:5}];
+        self.topSelectData = [{id:0,text:1},{id:1,text:2},{id:2,text:3},{id:3,text:4},{id:4,text:5}, {id:5,text:6} ,{id:6,text:7}, {id:7,text:8},{id:8,text:9}, {id:9,text:10}];
         self.selectedDomain="All";
         self.selectedTopNum=1;
         self.selectedUser="All";
+        self.selectedType="All";
         self.daysLabels={};
         self.visitsPerDayPerDomain={};
         self.labels=[];
@@ -28,7 +29,10 @@
             {"fillColor": "rgba(60,188,171,0.2) ","strokeColor": "rgba(60,188,171,1) ","pointColor": "rgba(60,188,171,1) ", "pointHighlightStroke":"rgba(60,188,171,1) "}
         ];
         self.options = {
-            legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"padding: 8px; background-color:<%=datasets[i].strokeColor%>\"><img style=\"background-color:#F7F7D4;\" src="http://www.google.com/s2/favicons?domain=<%=datasets[i].label%>"/></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
+            legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%>' +
+            '<li><span style=\"padding: 8px; background-color:<%=datasets[i].strokeColor%>\">' +
+            '<img style=\"background-color:#F7F7D4;\" src="http://www.google.com/s2/favicons?domain=<%=datasets[i].label%>"/>' +
+            '</span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
         }
         function getAllDomains(){
             DataRequest.getAllDomains().
@@ -45,7 +49,7 @@
         function updateGraph(){
             var topQty=(self.selectedDomain==='All')?self.selectedTopNum:0;
             DataRequest.getDomainInfo(self.selectedDomain, self.selectedUser,
-                topQty, self.startDate, self.endDate)
+                topQty, self.startDate, self.endDate, self.selectedType)
                 .success(function(data, status, headers, config) {
                     self.domainsFiltered=data['domainList'];
                     if (self.domainsFiltered.length!==0) processDomainsData();
@@ -83,6 +87,18 @@
         };
         self.lastWeekSelected=function(){
             setGraphForLastWeek();
+        };
+        self.cloudAppsSelected=function(){
+            self.selectedType="cloud";
+            updateGraph();
+        };
+        self.allAppsSelected=function(){
+            self.selectedType="All";
+            updateGraph();
+        };
+        self.systemAppsSelected=function(){
+            self.selectedType="syst";
+            updateGraph();
         };
         function setGraphForLastWeek (){
             var today=new Date();

@@ -28,6 +28,7 @@ public class BrowsingHistoryCachedParser {
                 String[] tokens = line.split("\\s+");
                 String username = tokens[0];
                 String domain = tokens[1];
+                String type = tokens[tokens.length-1];
                 long visitDate = Long.parseLong(tokens[2]);
                 JSONArray domains = userDomains.get(username);
                 if(domains==null){
@@ -46,6 +47,7 @@ public class BrowsingHistoryCachedParser {
                     JSONObject currDomain = new JSONObject();
                     visits = new JSONArray();
                     currDomain.put("domainName", domain);
+                    currDomain.put("domainType", type);
                     currDomain.put("visitDates", visits);
                     domainVisits.put(domain,visits);
                     domains.put(currDomain);

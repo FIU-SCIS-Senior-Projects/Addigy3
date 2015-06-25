@@ -25,7 +25,7 @@ public class BrowsingHistoryParser {
     }
     public UrlEntry getNextChromeEntry(){
         try {
-            return new UrlEntry("Chrome",this.username, queryResult.getString("url"), queryResult.getString("visit_time"));
+            return new UrlEntry("Chrome",this.username, queryResult.getString("url"), queryResult.getString("visit_time"), "cloud");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,7 +34,7 @@ public class BrowsingHistoryParser {
 
     public UrlEntry getNextFireFoxEntry(){
         try {
-            return new UrlEntry("Firefox",this.username, queryResult.getString("url"), queryResult.getString("visit_date"));
+            return new UrlEntry("Firefox",this.username, queryResult.getString("url"), queryResult.getString("visit_date"), "cloud");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class BrowsingHistoryParser {
     }
     public UrlEntry getNextSafariEntry(){
         try {
-            return new UrlEntry("Safari",this.username, queryResult.getString("url"), queryResult.getString("visit_time"));
+            return new UrlEntry("Safari",this.username, queryResult.getString("url"), queryResult.getString("visit_time"), "cloud");
         } catch (SQLException e) {
             e.printStackTrace();
         }

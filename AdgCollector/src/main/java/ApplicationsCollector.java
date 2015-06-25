@@ -32,11 +32,9 @@ public class ApplicationsCollector implements Collector {
                 String appPath= line.substring(pathIdx);
                 String firstFields = line.substring(0,pathIdx).trim();
                 String [] tokens = firstFields.split("\\s+");
-                AppEntry currApp = new AppEntry("ayme", appPath, tokens[1], tokens[0]);
-
+                AppEntry currApp = new AppEntry("ayme", appPath, tokens[1], tokens[0], "syst");
                 String currAppName = currApp.getAppName();
                 int currAppPid = currApp.getAppPID();
-
                 ArrayList<Integer> appPids = oldRunningApps.get(currAppName);
                 if(appPids==null){
                     entriesToAdd.add(currApp);
@@ -50,7 +48,6 @@ public class ApplicationsCollector implements Collector {
                         newRunningApps.put(currAppName, pids);
                     }
                     ArrayList<Integer> pids = newRunningApps.get(currAppName);
-                    if(pids==null)
                     pids.add(currAppPid);
                 }
                 else{

@@ -14,19 +14,18 @@ public class Main {
     static Collector[] collectors=new Collector[]{
 //            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
-            new ApplicationsCollector()
 //            new FacterCollector()
     };
     public static void main(String[] args) {
         collect();
-//        try {
-//            if(needUpload()){
-//                uploadData();
-//                updateLogs();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if(needUpload()){
+                uploadData();
+                updateLogs();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private static void collect(){
         for(Collector c: collectors)

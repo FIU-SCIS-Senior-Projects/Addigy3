@@ -48,6 +48,7 @@ public class BrowsingHistoryCollector implements Collector {
                 e.printStackTrace ();
             }
         }
+        new ApplicationsCollector().collectData();
     }
 
     @Override
