@@ -18,7 +18,7 @@
         };
         self.expandDomains=function(){
             self.toIncludeHtml=self.domainsIncludes;
-            self.modalTitle='Domains History';
+            self.modalTitle='Software Metering';
         };
         $('#graphModal').on('shown.bs.modal', function (e) {
             $timeout(function() {

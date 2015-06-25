@@ -6,7 +6,9 @@ import java.util.*;
  */
 
 public class ApplicationsCollector implements Collector {
-    public static final int APP_LIFE_IN_MIN=1;
+    public static final int APP_LIFE_IN_MIN=15;
+    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/logs/";
+    public static final String RUNNING_APPS_SAVE_FILE_TAIL = "runningApps.ser";
     @Override
     public Object getData() {
         return null;
@@ -19,67 +21,93 @@ public class ApplicationsCollector implements Collector {
 
     @Override
     public void collectData() {
-        HashMap<String, ArrayList<ProcEntry>> oldRunningApps = getRunningApps();
-        HashMap<String, ArrayList<ProcEntry>> newRunningApps = new HashMap<>();
-        List<AppEntry> entriesToAdd = new ArrayList<>();
-        if(oldRunningApps==null) oldRunningApps=new HashMap<>();
+        List<String> users = getUsersList();
+        for(String user:users){
+            HashMap<String, ArrayList<ProcEntry>> oldRunningApps = getRunningApps(user);
+            HashMap<String, ArrayList<ProcEntry>> newRunningApps = new HashMap<>();
+            List<AppEntry> entriesToAdd = new ArrayList<>();
+            if(oldRunningApps==null) oldRunningApps=new HashMap<>();
+            try {
+                Process process = Runtime.getRuntime().exec("bash scripts/iOSGetRunningApps.sh");
+                InputStream input = process.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                String line="";
+                while((line=reader.readLine())!=null){
+                    int pathIdx = line.indexOf("/");
+                    String appPath = line.substring(pathIdx);
+                    String firstFields = line.substring(0,pathIdx).trim();
+                    String [] tokens = firstFields.split("\\s+");
+                    AppEntry currApp = new AppEntry(user, appPath, tokens[1], tokens[0], "syst");
+                    String currAppName = currApp.getAppName();
+                    int currAppPid = currApp.getAppPID();
+                    long currAppStart=currApp.getStartTime();
+                    ProcEntry currProcEntry = new ProcEntry(currAppPid, currAppStart);
+                    ArrayList<ProcEntry> appPids = oldRunningApps.get(currAppName);
+                    if(appPids==null){
+                        entriesToAdd.add(currApp);
+                        ArrayList<ProcEntry> pids = new ArrayList<>();
+                        pids.add(currProcEntry);
+                        newRunningApps.put(currAppName, pids);
+                    }
+                    else if(appPids.contains(currProcEntry)){
+                        if(isNewEntry(currProcEntry.getProcStartTime())) {
+                            currApp.setStartTime(System.currentTimeMillis());
+                            entriesToAdd.add(currApp);
+                        }
+                        if(newRunningApps.get(currAppName)==null){
+                            ArrayList<ProcEntry> pids = new ArrayList<>();
+                            newRunningApps.put(currAppName, pids);
+                        }
+                        ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
+                        pids.add(currProcEntry);
+                    }
+                    else{
+                        entriesToAdd.add(currApp);
+                        if(newRunningApps.get(currAppName)==null){
+                            ArrayList<ProcEntry> pids = new ArrayList<>();
+                            newRunningApps.put(currAppName, pids);
+                        }
+                        ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
+                        pids.add(currProcEntry);
+                    }
+                }
+                addEntriesToCachedFile(entriesToAdd);
+                saveRunningApps(newRunningApps, user);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    private List<String> getUsersList (){
+        CommandFactory commandFac = new CommandFactory();
+        Set<String> users = new HashSet<>();
+        String line="";
         try {
-            Process process = Runtime.getRuntime().exec("bash scripts/iOSGetRunningApps.sh");
+            Process process = Runtime.getRuntime().exec(commandFac.getUsersCommand());
             InputStream input = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            String line="";
-            while((line=reader.readLine())!=null){
-                int pathIdx = line.indexOf("/");
-                String appPath= line.substring(pathIdx);
-                String firstFields = line.substring(0,pathIdx).trim();
-                String [] tokens = firstFields.split("\\s+");
-                AppEntry currApp = new AppEntry("ayme", appPath, tokens[1], tokens[0], "syst");
-                String currAppName = currApp.getAppName();
-                int currAppPid = currApp.getAppPID();
-                long currAppStart=currApp.getStartTime();
-                ProcEntry currProcEntry = new ProcEntry(currAppPid, currAppStart);
-                ArrayList<ProcEntry> appPids = oldRunningApps.get(currAppName);
-                if(appPids==null){
-                    entriesToAdd.add(currApp);
-                    ArrayList<ProcEntry> pids = new ArrayList<>();
-                    pids.add(currProcEntry);
-                    newRunningApps.put(currAppName, pids);
-                }
-                else if(appPids.contains(currProcEntry)){
-                    if(isNewEntry(currProcEntry.getProcStartTime())) {
-                        currApp.setStartTime(System.currentTimeMillis());
-                        entriesToAdd.add(currApp);
-                    }
-                    if(newRunningApps.get(currAppName)==null){
-                        ArrayList<ProcEntry> pids = new ArrayList<>();
-                        newRunningApps.put(currAppName, pids);
-                    }
-                    ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
-                    pids.add(currProcEntry);
-                }
-                else{
-                    entriesToAdd.add(currApp);
-                    if(newRunningApps.get(currAppName)==null){
-                        ArrayList<ProcEntry> pids = new ArrayList<>();
-                        newRunningApps.put(currAppName, pids);
-                    }
-                    ArrayList<ProcEntry> pids = newRunningApps.get(currAppName);
-                    pids.add(currProcEntry);
+            line=reader.readLine();
+            if(line!=null){
+                String tokens[] = line.split("\\s+");
+                for(String token:tokens) {
+                    users.add(token);
                 }
             }
-            addEntriesToCachedFile(entriesToAdd);
-            saveRunningApps(newRunningApps);
+            List<String> allUsers = new ArrayList<>();
+            allUsers.addAll(users);
+            return allUsers;
         }catch (Exception e){
             e.printStackTrace();
         }
+        return null;
     }
     public boolean isNewEntry(long appStartTime){
         long currTime = System.currentTimeMillis();
             return (currTime-appStartTime)>APP_LIFE_IN_MIN*60*1000;
     }
-    private void saveRunningApps(HashMap<String , ArrayList<ProcEntry>> runningApps){
+    private void saveRunningApps(HashMap<String , ArrayList<ProcEntry>> runningApps, String user){
         try{
-            FileOutputStream fos = new FileOutputStream("/Users/ayme/addigy/logs/runningApps.ser");
+            FileOutputStream fos = new FileOutputStream(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(runningApps);
             oos.close();
@@ -89,13 +117,13 @@ public class ApplicationsCollector implements Collector {
         }
     }
 
-    private HashMap<String, ArrayList<ProcEntry>> getRunningApps(){
-        File file = new File("/Users/ayme/addigy/logs/runningApps.ser");
+    private HashMap<String, ArrayList<ProcEntry>> getRunningApps(String user){
+        File file = new File(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
         if(!file.exists())
             return new HashMap<String, ArrayList<ProcEntry>>();
         HashMap<String, ArrayList<ProcEntry>> runningApps = null;
         try {
-            FileInputStream fis = new FileInputStream("/Users/ayme/addigy/logs/runningApps.ser");
+            FileInputStream fis = new FileInputStream(PROJECT_DIRECTORY + user + RUNNING_APPS_SAVE_FILE_TAIL);
             ObjectInputStream ois = new ObjectInputStream(fis);
             runningApps = (HashMap) ois.readObject();
             ois.close();

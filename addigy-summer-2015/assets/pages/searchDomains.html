@@ -36,13 +36,13 @@
         <div class="col-sm-4">
             <label>Application Type</label>
             <div class="btn-group" data-toggle="buttons">
-                <label ng-click="ctrl.cloudAppsSelected()" class="btn btn-default">
+                <label id="cloudBtn" ng-click="ctrl.cloudAppsSelected()" class="btn btn-default">
                     <input  type="radio" id="q156" name="quality[25]" value="1" />Cloud
                 </label>
-                <label ng-click="ctrl.allAppsSelected()"  class="btn btn-default active">
+                <label id="allTypesBtn" ng-click="ctrl.allAppsSelected()"  class="btn btn-default active">
                     <input checked="checked" type="radio" id="q157" name="quality[25]" value="2" />All
                 </label>
-                <label ng-click="ctrl.systemAppsSelected()"  class="btn btn-default">
+                <label id="systBtn" ng-click="ctrl.systemAppsSelected()"  class="btn btn-default">
                     <input type="radio" id="q157" name="quality[25]" value="2" />System
                 </label>
             </div>

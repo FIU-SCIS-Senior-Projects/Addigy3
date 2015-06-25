@@ -48,8 +48,9 @@
 
         function updateGraph(){
             var topQty=(self.selectedDomain==='All')?self.selectedTopNum:0;
+            var typeToSend=(self.selectedDomain!=='All')?'All':self.selectedType
             DataRequest.getDomainInfo(self.selectedDomain, self.selectedUser,
-                topQty, self.startDate, self.endDate, self.selectedType)
+                topQty, self.startDate, self.endDate, typeToSend)
                 .success(function(data, status, headers, config) {
                     self.domainsFiltered=data['domainList'];
                     if (self.domainsFiltered.length!==0) processDomainsData();
@@ -66,6 +67,16 @@
                 });
                 $("#domainSelect").select2().on("select2:select", function (e) {
                     self.selectedDomain = $('#domainSelect :selected').text();
+                    if(self.selectedDomain!=="All"){
+                        $('#cloudBtn').addClass('disabled');
+                        $('#allTypesBtn').addClass('disabled');
+                        $('#systBtn').addClass('disabled');
+                    }
+                    else{
+                        document.getElementById("cloudBtn").className = document.getElementById("cloudBtn").className.replace(/\bdisabled\b/,'');
+                        document.getElementById("allTypesBtn").className = document.getElementById("allTypesBtn").className.replace(/\bdisabled\b/,'');
+                        document.getElementById("systBtn").className = document.getElementById("systBtn").className.replace(/\bdisabled\b/,'');
+                    }
                     updateTopSelector();
                     updateGraph();
                 });
