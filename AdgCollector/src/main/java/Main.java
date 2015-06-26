@@ -3,18 +3,18 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
+import java.util.*;
 
 public class Main {
 
-    public static final String PROJECT_DIRECTORY = System.getProperty("user.home") + "/addigy/";
-    public static final String LAST_UPLOAD_TIME_PATH = PROJECT_DIRECTORY + "logs/lastUploadTime";
-//    public static final String LAST_UPLOAD_TIME_PATH = "./logs/lastUploadTime";
+    public static final String LOGS_PATH = "/var/log/";
+    public static final String LAST_UPLOAD_TIME_PATH = LOGS_PATH + "adgLastUploadTime";
     public static final long UPLOAD_INTERVAL_SEC = 2;
 
     static Collector[] collectors=new Collector[]{
-            new LoginHistoryCollector(),
-            new FacterCollector()
+//            new LoginHistoryCollector(),
+            new BrowsingHistoryCollector(),
+//            new FacterCollector()
     };
     public static void main(String[] args) {
         collect();

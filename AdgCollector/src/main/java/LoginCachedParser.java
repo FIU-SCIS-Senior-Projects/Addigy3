@@ -9,7 +9,8 @@ import java.util.*;
  * Created by ayme on 6/1/15.
  */
 public class LoginCachedParser {
-    public static final String LOGIN_HISTORY_PATH = "./logs/loginHistoryLog";
+    public static final String LOGS_PATH = "/var/log/";
+    public static final String LOGIN_HISTORY_PATH = LOGS_PATH+ "adgLoginHistoryLog";
     public LoginCachedParser(){
 
     }

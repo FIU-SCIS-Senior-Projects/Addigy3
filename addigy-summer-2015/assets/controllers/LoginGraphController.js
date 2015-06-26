@@ -12,6 +12,15 @@
         self.pointSelected=LoginDataService.pointSelected;
         self.calendarMaxDate=new Date();
         self.datePickedDate=LoginDataService.datePickedDate;
+        self.lineChartColors = [
+            {"fillColor": "rgba(60,141,188,0.2) ","strokeColor": "rgba(60,141,188,1) ","pointColor": "rgba(60,141,188,1) ", "pointHighlightStroke":"rgba(60,141,188,1) "},
+            {"fillColor": "rgba(141,188,60,0.2) ","strokeColor": "rgba(141,188,60,1) ","pointColor": "rgba(141,188,60,1) ", "pointHighlightStroke":"rgba(141,188,60,1) "},
+            {"fillColor": "rgba(60,188,187,0.2) ","strokeColor": "rgba(60,188,187,1) ","pointColor": "rgba(60,188,187,1) ", "pointHighlightStroke":"rgba(60,188,187,1) "},
+            {"fillColor": "rgba(188,60,141,0.2) ","strokeColor": "rgba(188,60,141,1) ","pointColor": "rgba(188,60,141,1) ", "pointHighlightStroke":"rgba(188,60,141,1) "},
+            {"fillColor": "rgba(188,107,60,0.2) ","strokeColor": "rgba(188,107,60,1) ","pointColor": "rgba(188,107,60,1) ", "pointHighlightStroke":"rgba(188,107,60,1) "},
+            {"fillColor": "rgba(188,60,77,0.2)  ","strokeColor": "rgba(188,60,77,1)  ","pointColor": "rgba(188,60,77,1)  ", "pointHighlightStroke":"rgba(188,60,77,1)  "},
+            {"fillColor": "rgba(60,188,171,0.2) ","strokeColor": "rgba(60,188,171,1) ","pointColor": "rgba(60,188,171,1) ", "pointHighlightStroke":"rgba(60,188,171,1) "}
+        ];
         self.getActivity=function(){
             LoginDataService.getActivity(self.datePickedDate.date);
         };
