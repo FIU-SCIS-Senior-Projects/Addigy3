@@ -10,6 +10,10 @@
 
             getFacter: function () {
                 return $http.post('http://127.0.0.1:8000/resource/getFacter/');
+            },
+
+            getMemory: function (selectedDate) {
+                return $http.post('http://127.0.0.1:8000/resource/getMemory/', {date: selectedDate});
             }
         }
     }]);

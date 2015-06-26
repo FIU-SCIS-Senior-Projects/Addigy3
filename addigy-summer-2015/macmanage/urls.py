@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     url(r'^resource/storeCollectedData/$', views.storeCollectedData, name='storeCollectedData'),
     url(r'^resource/getHistory/$', views.getHistory, name='getHistory'),
     url(r'^resource/getFacter/$', views.getFacter, name='getFacter'),
+    url(r'^resource/getMemory/$', views.getMemory, name='getMemory'),
 )
 

@@ -1,5 +1,7 @@
 __author__ = 'ayme'
 
+from datetime import datetime
+
 def storeLoginActivity(db,data):
     table = db.loginAudits
     loginData = data["loginHistory"]
@@ -52,5 +54,20 @@ def storeFacterReport(db, data):
     facterReport = data["facterReport"]
     connectorId = data['connectorId']
     orgId = data['orgId']
-    sp_serial_number = facterReport["sp_serial_number"]
-    postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'sp_serial_number':sp_serial_number, 'facterReport':facterReport}).inserted_id
+    postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'facterReport':facterReport}).inserted_id
+    return postid
+
+def storeAvailableMemory(db, data):
+    table = db.availableMemory
+
+    try:
+        facterReport = data["facterReport"]
+        for elem in facterReport:
+            mem = elem['memoryfree_mb']
+        connectorId = data['connectorId']
+        orgId = data['orgId']
+        postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'availMemory':mem, 'date': datetime.now()}).inserted_id
+    except Exception:
+        print(Exception)
+
+    return postid

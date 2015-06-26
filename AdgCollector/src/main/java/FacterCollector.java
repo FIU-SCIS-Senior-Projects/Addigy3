@@ -11,12 +11,11 @@ public class FacterCollector implements Collector {
             try{
                 String command = "./scripts/facter.sh";
                 String jsonSource = executeCommand(command);
-
-                System.out.println(jsonSource);
-
+                //System.out.println(jsonSource);
                 JSONObject obj = new JSONObject(new JSONTokener(jsonSource));
 
                 JSONArray jsonReport = new JSONArray().put(obj);
+                //JSONArray jsonReport = obj.getJSONArray("obj");
                 return jsonReport;
             }catch (Exception e) {
                 e.printStackTrace();
@@ -26,10 +25,7 @@ public class FacterCollector implements Collector {
         }
 
         public String getKey(){
-            String command = "uname -n";
-            String jsonKey = executeCommand(command);
-
-            return "facterReport-"+jsonKey;
+            return "facterReport";
         }
 
     public void collectData() {}

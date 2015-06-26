@@ -1,0 +1,42 @@
+<div ng-controller="FreeMemoryController as ctrl">
+<!--
+    <div id='login-chart'class="row">
+        <div ng-init="ctrl.getMemoryData()">
+            <canvas style="height: 250px" id="memory_canvas" class="chart chart-line" data="ctrl.data"
+                labels="ctrl.labels" legend="true" series="ctrl.series"
+                 options="{datasetFill : false,  scaleShowVerticalLines: false}">
+            </canvas>
+        </div>
+    </div>
+-->
+    <div class="row" ng-init="ctrl.getMemoryData()">
+        <div class="col-sm-4">
+            <p class="input-group">
+              <input ng-change="ctrl.getMemoryData()" type="text" class="form-control" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.datePickedDate.date"
+                     is-open="ctrl.opened"  max-date="{{ ctrl.calendarMaxDate }}"
+                     datepicker-options="ctrl.dateOptions" date-disabled="ctrl.disabled(date, mode)"
+                     ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="ctrl.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+
+
+        <div class="col-sm-2">
+            <label for="connectorId" class="pull-right">Computer: </label>
+        </div>
+        <div class="col-sm-6">
+            <input id="connectorId" type="text" class="form-control" ng-model="ctrl.connectorId"/>
+        </div>
+    </div>
+
+    <div id='login-chart'class="row">
+        <div>
+            <canvas id="line" class="chart chart-line" data="ctrl.data"
+              labels="ctrl.labels" legend="true" series="ctrl.series"
+              click="ctrl.onClick">
+            </canvas>
+        </div>
+    </div>
+</div>

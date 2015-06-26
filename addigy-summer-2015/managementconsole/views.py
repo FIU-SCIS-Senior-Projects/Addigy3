@@ -9,6 +9,7 @@ import managementconsole.collectors as collectors
 import managementconsole.dbhandler as dbhandler
 
 
+
 def index(request):
     return render(request, 'index.html')
 
@@ -33,8 +34,15 @@ def getFacter(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb
-    test = dbhandler.getFacter(db)
     jsonstr = json.dumps(dbhandler.getFacter(db), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
+def getMemory(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getMemory(db, request), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
@@ -43,8 +51,10 @@ def storeCollectedData(request):
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb #get the database ("addigydb")
     str=request.body.decode('utf-8')
-    data = ast.literal_eval(str)
+    data = json.loads(str)
     collectors.storeLoginActivity(db,data)
+    collectors.storeFacterReport(db,data)
+    collectors.storeAvailableMemory(db,data)
     jsonstr = json.dumps(str, cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 

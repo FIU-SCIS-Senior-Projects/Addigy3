@@ -14,10 +14,10 @@ public class Main {
 
     static Collector[] collectors=new Collector[]{
             new LoginHistoryCollector(),
-//            new FacterCollector()
+            new FacterCollector()
     };
     public static void main(String[] args) {
-//        collect();
+        collect();
         try {
             if(needUpload()){
                 uploadData();

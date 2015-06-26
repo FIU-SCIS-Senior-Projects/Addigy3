@@ -32,3 +32,27 @@ def getFacter(db):
         return query
     except Exception as e:
         return []
+
+def getMemory(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    dateSelected = datetime.datetime.strptime(dic['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    beginDate = dateSelected.replace(hour=0,minute=0,second=0)
+    endDate = beginDate + datetime.timedelta(1)
+    table = db.availableMemory
+    try:
+        query = table.aggregate([
+                   { '$match': { 'orgId': 'addigy', 'connectorId': '9876' } },
+                   {'$match': {'date': {'$gte': beginDate}}},
+                   { '$sort': { 'date': 1 } },
+                   { '$project': {'_id': 0, 'availMemory': '$availMemory', 'date': '$date'}}
+        ])
+    except Exception as e:
+        return []
+    docList = []
+    for doc in query:
+        t = doc['date']
+        doc['date'] = t.strftime("%Y-%m-%d %H:%M:%S")
+        docList.append(doc)
+    history = {'history': docList}
+    return history

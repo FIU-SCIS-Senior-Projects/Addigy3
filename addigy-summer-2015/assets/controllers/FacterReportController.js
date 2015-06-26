@@ -5,18 +5,39 @@
 (function () {
     angular.module('app').controller('FacterReportController', ['FacterReportService', function(FacterReportService, sce) {
         var self = this;
-        console.log("in controller facter");
-        self.showFacter = false;
-        FacterReportService.getFacter();
+        self.showFacter = true;
+        self.data = FacterReportService.data;
         self.table = FacterReportService.table;
 
-        self.displayTable = function(){
-            console.log("in displayTable");
-            self.showFacter=true;
-            self.table = FacterReportService.table;
-            console.log(self.table);
-            console.log("done in displayTable");
-            console.log(self.table);
+        self.displayFacter = function(){
+            FacterReportService.getFacter();
         }
+
+
+        function parseJson(json){
+            jsonStr = '{"';
+            output = "<div><table class='table table-condensed'>";
+
+            for(var key in json){
+                output += "<tr><td>" + key + "</td><td>";
+
+                if(key == "undefined" || json[key] == "undefined") {
+                    console.log(key + ": " +json[key]);
+                }
+                if( typeof(json[key]) == "object" && json[key] != null ){
+                    output += processFacterReport(json[key]);
+                    processFacterReport(json[key]);
+                }else{
+                    output += json[key];
+                }
+            }
+            output += "</td></tr></table></div>";
+            return output;
+        }
+
     }]);
 })();
+
+function displayTable() {
+    document.getElementById("facterTable").innerHTML = "hello world";
+}
