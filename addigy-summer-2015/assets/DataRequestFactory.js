@@ -10,6 +10,9 @@
             getFacter: function () {
                 return $http.post('/resource/getFacter/');
             },
+            getMemory: function (selectedDate) {
+                return $http.post('/resource/getMemory/', {date: selectedDate});
+            },
             getMostVisistedDomains: function () {
                 return $http.post('/resource/getMostVisistedDomains/');
             },

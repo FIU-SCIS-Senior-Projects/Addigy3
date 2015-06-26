@@ -22,7 +22,7 @@
             self.modalTitle='Software Metering';
         };
 
-	self.expandMemory=function(){
+	    self.expandMemory=function(){
             self.toIncludeHtml=self.memoryIncludes
             self.modalTitle='Available Memory';
         };
