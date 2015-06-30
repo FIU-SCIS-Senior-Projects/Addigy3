@@ -70,6 +70,7 @@ def storeCollectedData(request):
     data = ast.literal_eval(str)
     # collectors.storeLoginActivity(db,data)
     collectors.storeBrowsingHistory(db,data)
+    collectors.storeAvailableUpdates(db,data)
     jsonstr = json.dumps(str, cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 

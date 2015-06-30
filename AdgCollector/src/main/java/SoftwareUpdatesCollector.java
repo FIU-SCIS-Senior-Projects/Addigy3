@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class SoftwareUpdatesCollector implements Collector{
     @Override
     public Object getData() {
-        JSONObject machineUpdates = new JSONObject();
         JSONArray updates = new JSONArray();
         try {
             Process process = Runtime.getRuntime().exec("softwareupdate --list");
@@ -27,11 +26,10 @@ public class SoftwareUpdatesCollector implements Collector{
                 updates.put(label);
                 System.out.println(label);
             }
-            machineUpdates.put("updates", updates);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return machineUpdates;
+        return updates;
     }
 
     @Override
