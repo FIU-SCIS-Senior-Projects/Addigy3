@@ -112,3 +112,21 @@ def getMatchClause(dic):
     dateRange['$gte'] = startDate
     matchClause['visits'] = dateRange
     return matchClause
+
+def getUpdatesConnectorsCount(db, request):
+    body = request.body
+    # dic = ast.literal_eval(body.decode('utf'))
+    # orgId = dic['orgId'];
+    result = db.updatesAudits.aggregate([
+        {'$match': {'orgId': 'addigy'}},
+        {'$unwind': "$updates"},
+        {'$group': {'_id': '$orgId', 'connectorId': {'$addToSet': '$connectorId'}, 'updates': {'$addToSet': "$updates"}}},
+        {'$project': {'_id': 0, 'updates': 1, 'connectorId':1}}])
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    firstDoc = docList[0]
+    connectorsCount = len(firstDoc['connectorId'])
+    updatesCount = len(firstDoc['updates'])
+    connUpdates = {'updatesCount': updatesCount, 'connectorsCount':connectorsCount}
+    return connUpdates

@@ -7,11 +7,11 @@
         self.graphToShow='';
         self.toIncludeHtml=[];
         self.includeHtml=[];
-        self.loginIncludes=['/assets/pages/loginGraph.html', '/assets/pages/loginDetails.html'];
+        self.loginIncludes=['/assets/pages/loginGraph.html','/assets/pages/loginDetails.html'];
         self.facterIncludes=['/assets/pages/facterReport.html'];
         self.modalTitle='';
         self.domainsIncludes=['/assets/pages/browsingHistory.html','/assets/pages/searchDomains.html'];
-
+        self.updatesIncludes=['/assets/pages/updates.html'];
         self.expandLogin=function(){
             self.toIncludeHtml=self.loginIncludes;
             self.modalTitle='Login History';
@@ -19,6 +19,10 @@
         self.expandDomains=function(){
             self.toIncludeHtml=self.domainsIncludes;
             self.modalTitle='Software Metering';
+        };
+        self.expandUpdates=function(){
+            self.toIncludeHtml=self.updatesIncludes;
+            self.modalTitle='Software Updates';
         };
         $('#graphModal').on('shown.bs.modal', function (e) {
             $timeout(function() {

@@ -38,5 +38,6 @@
             var replaced = label.replace(":","");
             return replaced;
         };
+
     }]);
 })();

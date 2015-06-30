@@ -11,5 +11,7 @@ urlpatterns = patterns('',
     url(r'^resource/getMostVisistedDomains/$', views.getMostVisistedDomains, name='getMostVisistedDomains'),
     url(r'^resource/getAllDomains/$', views.getAllDomains, name='getAllDomains'),
     url(r'^resource/getDomainInfo/$', views.getDomainInfo, name='getDomainInfo'),
+    url(r'^resource/getMachineLoginHistory/$', views.getMachineLoginHistory, name='getMachineLoginHistory'),
+    url(r'^resource/getUpdatesConnectorsCount/$', views.getUpdatesConnectorsCount, name='getUpdatesConnectorsCount'),
 )
 
