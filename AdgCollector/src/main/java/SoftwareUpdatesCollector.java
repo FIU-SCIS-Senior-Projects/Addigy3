@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class SoftwareUpdatesCollector implements Collector{
     @Override
     public Object getData() {
+        System.out.println("Getting updates data to send to server...");
         JSONArray updates = new JSONArray();
         try {
             Process process = Runtime.getRuntime().exec("softwareupdate --list");

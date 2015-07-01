@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class BrowsingHistoryCachedParser {
     public static final String LOGS_PATH = "/var/log/";
-    public static final String BROWSING_HISTORY_PATH = LOGS_PATH + "BrowsingHistoryLog";
+    public static final String BROWSING_HISTORY_PATH = LOGS_PATH + "adgBrowsingHistoryLog";
     public BrowsingHistoryCachedParser(){
 
     }

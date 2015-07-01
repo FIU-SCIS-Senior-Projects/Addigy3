@@ -13,6 +13,7 @@ public class LoginHistoryCollector implements Collector{
 
     public String getKey() {return "loginHistory";}
     public Object getData() {
+        System.out.println("Getting login data to send...");
         try {
             return new LoginCachedParser().getUploadData();
         } catch (IOException e) {
@@ -21,6 +22,7 @@ public class LoginHistoryCollector implements Collector{
         return null;
     }
     public void collectData(){
+        System.out.println("Collecting login data...");
         ArrayList<String> linesToAdd  = new ArrayList<>();
         try {
             long lastCachedLogin = getLastCachedLoginTime();

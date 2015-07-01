@@ -132,13 +132,13 @@ public class ApplicationsCollector implements Collector {
             ioe.printStackTrace();
             return null;
         }
-        Set set = runningApps.entrySet();
-        Iterator iterator = set.iterator();
-        while(iterator.hasNext()) {
-            Map.Entry mentry = (Map.Entry)iterator.next();
-            System.out.print("key: "+ mentry.getKey() + " & Value: ");
-            System.out.println(mentry.getValue());
-        }
+//        Set set = runningApps.entrySet();
+//        Iterator iterator = set.iterator();
+//        while(iterator.hasNext()) {
+//            Map.Entry mentry = (Map.Entry)iterator.next();
+//            System.out.print("key: "+ mentry.getKey() + " & Value: ");
+//            System.out.println(mentry.getValue());
+//        }
         return runningApps;
     }
 

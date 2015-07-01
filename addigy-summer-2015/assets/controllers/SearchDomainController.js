@@ -38,6 +38,7 @@
             DataRequest.getAllDomains().
                 success(function(data, status, headers, config) {
                     var domainsData=data['allDomains'];
+                    console.log(domainsData);
                     self.allDomains=domainsData[0].domain;
                     self.allUsers=domainsData[0].username;
                 }).error(function(data, status, headers, config) {

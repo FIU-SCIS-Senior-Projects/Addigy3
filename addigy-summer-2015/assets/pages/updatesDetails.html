@@ -1,0 +1,15 @@
+<div ng-controller="UpdatesDetailsController as ctrl">
+    <li ng-repeat="(update, count) in ctrl.updatesCount">{{update}}: {{count}}</li>
+    <div ng-repeat="(update, count) in ctrl.updatesCount">
+        <div class="collapseHours">
+            <button data-toggle="collapse" data-target="{{ '#'+ update }}" href="" aria-expanded="false" aria-controls="{{ update}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update }}</i></button>
+        </div>
+        <div class="collapse" id="{{ update }}">
+            <div class="well users-table">
+                <div>
+                    <p>Updates details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

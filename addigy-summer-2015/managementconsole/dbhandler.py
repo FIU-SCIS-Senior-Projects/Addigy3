@@ -12,7 +12,6 @@ def getLoginHistory(db, request):
     table = db.loginAudits
     try:
         result = table.aggregate([
-            {'$match': {'orgId': 'addigy'}},
             {'$unwind': '$activity'},
             {'$match': {'activity.login': {'$lte': logout}, 'activity.logout': {'$gte': login}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},
@@ -51,7 +50,6 @@ def getMostVisistedDomains(db, request):
 def getAllDomains(db, request):
     try:
         result = db.browsingHistoryAudits.aggregate([
-            {'$match': {'orgId': 'addigy'}},
             {'$group': {'_id': "org_id", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$addToSet': '$domain'}, 'visits': {'$first': "$visits"}}},
             {'$project': {'_id': 0, 'domain': 1, 'username': 1}}]);
     except Exception as e:
@@ -130,3 +128,34 @@ def getUpdatesConnectorsCount(db, request):
     updatesCount = len(firstDoc['updates'])
     connUpdates = {'updatesCount': updatesCount, 'connectorsCount':connectorsCount}
     return connUpdates
+
+def getAvailableUpdates(db, request):
+    body = request.body
+    # dic = ast.literal_eval(body.decode('utf'))
+    # orgId = dic['orgId'];
+    machinesPerUpdate={}
+    result = db.updatesAudits.aggregate([
+        {'$match': {'orgId': 'addigy'}},
+        {'$unwind': "$updates"},
+        {'$group': {'_id': '$orgId', 'connectorId': {'$addToSet': '$connectorId'}, 'updates': {'$addToSet': "$updates"}}},
+        {'$project': {'_id': 0, 'updates': 1, 'connectorId': 1}}])
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    firstDoc = docList[0]
+    availUpdates = firstDoc['updates']
+    for update in availUpdates:
+        machineCount=getUpdateMachineCount(db, update)
+        machinesPerUpdate[update] = machineCount
+    return machinesPerUpdate
+
+def getUpdateMachineCount(db, update):
+    # result = db.runCommand('text', {'count': 'updatesAudits', 'query': {'updates': {'$elemMatch': update}}})
+    result = db.updatesAudits.aggregate([
+        {'$match': {'updates':update}},
+        {'$group': {'_id': 'null', 'count': {'$sum': 1}}}])
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    firstDoc = docList[0]
+    return firstDoc['count'];

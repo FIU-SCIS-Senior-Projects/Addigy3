@@ -2,8 +2,8 @@ __author__ = 'ayme'
 
 def storeLoginActivity(db,data):
     table = db.loginAudits
-    loginData = data["loginHistory"]
-    if loginData is not None:
+    if 'loginHistory' in data:
+        loginData = data["loginHistory"]
         loginUpdates = getLoginUpdates(loginData)
         connectorId = data['connectorId']
         orgId = data['orgId']
@@ -50,8 +50,8 @@ def getLoginUpdates(loginData):
 
 def storeBrowsingHistory(db,data):
     table = db.browsingHistoryAudits
-    browisngData = data['browsingHistory']
-    if browisngData is not None:
+    if 'browsingHistory' in data:
+        browisngData = data['browsingHistory']
         connectorId = data['connectorId']
         orgId = data['orgId']
         for elem in browisngData:
@@ -82,11 +82,11 @@ def storeFacterReport(db, data):
 
 def storeSoftwareUpdates(db,data):
     table = db.updatesAudits
-    softwareUpdates = data['softwareUpdates']
-    if softwareUpdates is not None:
+    if 'softwareUpdates' in data:
+        softwareUpdates = data['softwareUpdates']
         connectorId = data['connectorId']
         orgId = data['orgId']
         policy = 'policy1'
-        table.remove({{'orgId': orgId, 'connectorId': connectorId}});
+        table.remove({'orgId': orgId, 'connectorId': connectorId})
         table.insert({'orgId': orgId, 'connectorId': connectorId, 'policy': policy, 'updates': softwareUpdates})
 
