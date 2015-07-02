@@ -19,6 +19,7 @@
         self.graphData=[];
         self.startDate=0;
         self.endDate=0;
+        var faviconurl =
         self.lineChartColors = [
             {"fillColor": "rgba(60,141,188,0.2) ","strokeColor": "rgba(60,141,188,1) ","pointColor": "rgba(60,141,188,1) ", "pointHighlightStroke":"rgba(60,141,188,1) "},
             {"fillColor": "rgba(141,188,60,0.2) ","strokeColor": "rgba(141,188,60,1) ","pointColor": "rgba(141,188,60,1) ", "pointHighlightStroke":"rgba(141,188,60,1) "},
@@ -31,14 +32,13 @@
         self.options = {
             legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%>' +
             '<li><span style=\"padding: 8px; background-color:<%=datasets[i].strokeColor%>\">' +
-            '<img style=\"background-color:#F7F7D4;\" src="http://www.google.com/s2/favicons?domain=<%=datasets[i].label%>"/>' +
+            '<img style=\"background-color:#F7F7D4;\" src="<%=datasets[i].label.indexOf(".")===-1?"assets/img/mac_app_favicon.ico":"http://www.google.com/s2/favicons?domain="+datasets[i].label%>"/>' +
             '</span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
         }
         function getAllDomains(){
             DataRequest.getAllDomains().
                 success(function(data, status, headers, config) {
                     var domainsData=data['allDomains'];
-                    console.log(domainsData);
                     self.allDomains=domainsData[0].domain;
                     self.allUsers=domainsData[0].username;
                 }).error(function(data, status, headers, config) {

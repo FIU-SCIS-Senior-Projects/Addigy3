@@ -133,7 +133,7 @@ def getAvailableUpdates(db, request):
     body = request.body
     # dic = ast.literal_eval(body.decode('utf'))
     # orgId = dic['orgId'];
-    machinesPerUpdate={}
+    updatesMachines=[];
     result = db.updatesAudits.aggregate([
         {'$match': {'orgId': 'addigy'}},
         {'$unwind': "$updates"},
@@ -146,11 +146,13 @@ def getAvailableUpdates(db, request):
     availUpdates = firstDoc['updates']
     for update in availUpdates:
         machineCount=getUpdateMachineCount(db, update)
-        machinesPerUpdate[update] = machineCount
-    return machinesPerUpdate
+        currUpdate={}
+        currUpdate['update']=update
+        currUpdate['machineCount']=machineCount
+        updatesMachines.append(currUpdate)
+    return updatesMachines
 
 def getUpdateMachineCount(db, update):
-    # result = db.runCommand('text', {'count': 'updatesAudits', 'query': {'updates': {'$elemMatch': update}}})
     result = db.updatesAudits.aggregate([
         {'$match': {'updates':update}},
         {'$group': {'_id': 'null', 'count': {'$sum': 1}}}])

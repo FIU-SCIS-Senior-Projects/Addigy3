@@ -1,15 +1,45 @@
 <div ng-controller="UpdatesDetailsController as ctrl">
-    <li ng-repeat="(update, count) in ctrl.updatesCount">{{update}}: {{count}}</li>
-    <div ng-repeat="(update, count) in ctrl.updatesCount">
-        <div class="collapseHours">
-            <button data-toggle="collapse" data-target="{{ '#'+ update }}" href="" aria-expanded="false" aria-controls="{{ update}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update }}</i></button>
-        </div>
-        <div class="collapse" id="{{ update }}">
-            <div class="well users-table">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Update</th>
+                <th>Machines</th>
+            </tr>
+        </thead>
+        <tbody  ng-repeat="update in ctrl.updatesCount">
+          <tr>
+            <td>
                 <div>
-                    <p>Updates details</p>
+                    <div class="">
+                        <button data-toggle="collapse" data-target="{{ '#'+ update.update.hashCode() }}" href="" aria-expanded="false" aria-controls="{{ update.update.hashCode()}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update.update }}</i></button>
+                    </div>
+                </div>
+            </td>
+            <td>{{ update.machineCount }}</td>
+          </tr>
+          <tr>
+              <td colspan="2">
+                  <div class="collapse" id="{{ update.update.hashCode() }}">
+                        <div class="well users-table">
+                            <div>
+                                <p>Updates details</p>
+                            </div>
+                        </div>
+                    </div>
+              </td>
+          </tr>
+        </tbody>
+       <!-- <div ng-repeat="update in ctrl.updatesCount">
+            <div class="collapseHours">
+                <button data-toggle="collapse" data-target="{{ '#'+ update.update.hashCode() }}" href="" aria-expanded="false" aria-controls="{{ update.update.hashCode()}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update.update }}</i></button>
+            </div>
+            <div class="collapse" id="{{ update.update.hashCode() }}">
+                <div class="well users-table">
+                    <div>
+                        <p>Updates details</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>-->
+    </table>
 </div>
