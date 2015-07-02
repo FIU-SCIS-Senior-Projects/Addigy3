@@ -1,4 +1,5 @@
 __author__ = 'ayme'
+import uuid
 
 def storeLoginActivity(db,data):
     table = db.loginAudits
@@ -81,12 +82,30 @@ def storeFacterReport(db, data):
     postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'sp_serial_number':sp_serial_number, 'facterReport':facterReport}).inserted_id
 
 def storeSoftwareUpdates(db,data):
-    table = db.updatesAudits
     if 'softwareUpdates' in data:
+        table = db.machineUpdates
         softwareUpdates = data['softwareUpdates']
         connectorId = data['connectorId']
         orgId = data['orgId']
-        policy = 'policy1'
-        table.remove({'orgId': orgId, 'connectorId': connectorId})
-        table.insert({'orgId': orgId, 'connectorId': connectorId, 'policy': policy, 'updates': softwareUpdates})
+        updatesIds=[]
+        for update in softwareUpdates:
+            updatesIds.append(getUpdateId(db, update))
+        result = table.find({'orgId':orgId, 'connectorId': connectorId})
+        if result.count() == 0:
+            table.insert({'orgId':orgId, 'connectorId': connectorId, 'updates':updatesIds})
+        else:
+            table.update({'orgId':orgId, 'connectorId': connectorId}, {'$set': {'updates':updatesIds}})
 
+def getUpdateId(db, update):
+    table = db.updates
+    result = table.find({'updateName': update})
+    size = result.count()
+    updateId = 0
+    if size == 0:
+        updateId = uuid.uuid1().hex
+        table.insert_one({'updateId': updateId, 'updateName':update})
+    else:
+        for doc in result:
+            updateId = doc['updateId']
+            break
+    return updateId

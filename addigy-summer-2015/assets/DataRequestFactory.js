@@ -20,16 +20,12 @@
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
                     qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
             },
-            getMachineLoginHistory:function(connectorId, login, logout){
-                return $http.post('/resource/getLoginHistory/',{login: login,logout:logout,connectorId:connectorId});
-            },
             getUpdatesConnectorsCount:function(orgId){
                 return $http.post('/resource/getUpdatesConnectorsCount/',{orgId: orgId});
             },
             getAvailableUpdates:function(orgId){
                 return $http.post('/resource/getAvailableUpdates/',{orgId: orgId});
             }
-
         }
     }]);
 })();

@@ -115,42 +115,52 @@ def getUpdatesConnectorsCount(db, request):
     body = request.body
     # dic = ast.literal_eval(body.decode('utf'))
     # orgId = dic['orgId'];
-    result = db.updatesAudits.aggregate([
-        {'$match': {'orgId': 'addigy'}},
+    result = db.machineUpdates.aggregate([
         {'$unwind': "$updates"},
         {'$group': {'_id': '$orgId', 'connectorId': {'$addToSet': '$connectorId'}, 'updates': {'$addToSet': "$updates"}}},
         {'$project': {'_id': 0, 'updates': 1, 'connectorId':1}}])
     docList = []
     for doc in result:
         docList.append(doc)
+    if len(docList) == 0:
+        return {}
     firstDoc = docList[0]
     connectorsCount = len(firstDoc['connectorId'])
     updatesCount = len(firstDoc['updates'])
     connUpdates = {'updatesCount': updatesCount, 'connectorsCount':connectorsCount}
     return connUpdates
 
-def getAvailableUpdates(db, request):
-    body = request.body
-    # dic = ast.literal_eval(body.decode('utf'))
-    # orgId = dic['orgId'];
-    updatesMachines=[];
-    result = db.updatesAudits.aggregate([
-        {'$match': {'orgId': 'addigy'}},
-        {'$unwind': "$updates"},
-        {'$group': {'_id': '$orgId', 'connectorId': {'$addToSet': '$connectorId'}, 'updates': {'$addToSet': "$updates"}}},
-        {'$project': {'_id': 0, 'updates': 1, 'connectorId': 1}}])
-    docList = []
-    for doc in result:
-        docList.append(doc)
-    firstDoc = docList[0]
-    availUpdates = firstDoc['updates']
-    for update in availUpdates:
-        machineCount=getUpdateMachineCount(db, update)
-        currUpdate={}
-        currUpdate['update']=update
-        currUpdate['machineCount']=machineCount
-        updatesMachines.append(currUpdate)
-    return updatesMachines
+def getAvailableUpdates(db, data):
+    updatesMap={}
+    orgId = data['orgId'];
+    machines=[]
+    result = db.machineUpdates.find({'orgId': orgId})
+    for machine in result:
+        connectorId = machine['connectorId']
+        policyId = getMachinePolicy(db, connectorId)
+        machineUpdates = machine['updates']
+        for updateId in machineUpdates:
+            if not updateId in updatesMap:
+                updatesMap[updateId]=getUpdateName(db,updateId)
+        currMachine = {'orgId':machine['orgId'], 'connectorId':connectorId, 'policyId': policyId, 'updates': machineUpdates}
+        machines.append(currMachine)
+    return {'machinesUpdates': machines, 'updates': updatesMap}
+
+def getMachinePolicy(db, connectorId):
+    result = db.machinePolicies.find({'connectorId': connectorId})
+    if result.count() == 0:
+        return "none"
+    else:
+        doc = result[0]
+        return doc['policyId']
+
+def getUpdateName(db, updateId):
+    result = db.updates.find({'updateId': updateId})
+    if result.count() == 0:
+        return "none"
+    else:
+        doc = result[0]
+        return doc['updateName']
 
 def getUpdateMachineCount(db, update):
     result = db.updatesAudits.aggregate([
@@ -160,4 +170,5 @@ def getUpdateMachineCount(db, update):
     for doc in result:
         docList.append(doc)
     firstDoc = docList[0]
-    return firstDoc['count'];
+    return firstDoc['count']
+

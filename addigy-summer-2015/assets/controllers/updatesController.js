@@ -9,7 +9,7 @@
     google.setOnLoadCallback(function () {
         angular.bootstrap(document.body, ['app']);
     });
-    angular.module('app').controller('updatesController', ['DataRequest', function(DataRequest) {
+    angular.module('app').controller('UpdatesController', ['DataRequest', function(DataRequest) {
         var self = this;
         self.dataTable = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
@@ -25,7 +25,7 @@
         function getUpdatesConnectorsCount(){
             DataRequest.getUpdatesConnectorsCount().
                 success(function(data, status, headers, config) {
-                    console.log(data);
+                    //console.log(data);
                     var uCount = data['updatesCount'];
                     var connCount = data['connectorsCount']
                     self.dataTable.setValue(0, 1,uCount);

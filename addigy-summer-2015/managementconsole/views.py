@@ -75,16 +75,6 @@ def storeCollectedData(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
-def getMachineLoginHistory(request):
-    client = MongoClient()
-    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
-    db = client.addigydb #get the database ("addigydb")
-    str=request.body.decode('utf-8')
-    data = ast.literal_eval(str)
-    jsonstr = json.dumps(str, cls=ResponseEncoder)
-    return HttpResponse(jsonstr, content_type='application/json')
-
-@csrf_exempt
 def getUpdatesConnectorsCount(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
@@ -97,7 +87,9 @@ def getAvailableUpdates(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
     db = client.addigydb
-    jsonstr = json.dumps(dbhandler.getAvailableUpdates(db, request), cls=ResponseEncoder)
+    str=request.body.decode('utf-8')
+    data = ast.literal_eval(str)
+    jsonstr = json.dumps(dbhandler.getAvailableUpdates(db, data), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt

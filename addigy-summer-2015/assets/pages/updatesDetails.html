@@ -6,20 +6,20 @@
                 <th>Machines</th>
             </tr>
         </thead>
-        <tbody  ng-repeat="update in ctrl.updatesCount">
+        <tbody  ng-repeat="update in ctrl.updates">
           <tr>
             <td>
                 <div>
                     <div class="">
-                        <button data-toggle="collapse" data-target="{{ '#'+ update.update.hashCode() }}" href="" aria-expanded="false" aria-controls="{{ update.update.hashCode()}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update.update }}</i></button>
+                        <button data-toggle="collapse" data-target="{{ '#'+ update.hashCode() }}" href="" aria-expanded="false" aria-controls="{{ update.hashCode()}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update }}</i></button>
                     </div>
                 </div>
             </td>
-            <td>{{ update.machineCount }}</td>
+            <td>11</td>
           </tr>
           <tr>
               <td colspan="2">
-                  <div class="collapse" id="{{ update.update.hashCode() }}">
+                  <div class="collapse" id="{{ update.hashCode() }}">
                         <div class="well users-table">
                             <div>
                                 <p>Updates details</p>
@@ -29,17 +29,5 @@
               </td>
           </tr>
         </tbody>
-       <!-- <div ng-repeat="update in ctrl.updatesCount">
-            <div class="collapseHours">
-                <button data-toggle="collapse" data-target="{{ '#'+ update.update.hashCode() }}" href="" aria-expanded="false" aria-controls="{{ update.update.hashCode()}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ update.update }}</i></button>
-            </div>
-            <div class="collapse" id="{{ update.update.hashCode() }}">
-                <div class="well users-table">
-                    <div>
-                        <p>Updates details</p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
     </table>
 </div>

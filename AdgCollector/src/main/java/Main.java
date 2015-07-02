@@ -10,13 +10,13 @@ public class Main {
     public static final String LOGS_PATH = "/var/log/";
     public static final String LAST_UPLOAD_TIME_PATH = LOGS_PATH + "adgLastUploadTime";
     public static final long UPLOAD_INTERVAL_SEC = 0;
-    public static final String DEFAULT_ORG_ID = "addigy";
+    public static final String DEFAULT_ORG_ID = "Addigy";
     public static final String DEFAULT_CONNECTOR_ID = "1111";
 
     static Collector[] collectors=new Collector[]{
 //            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
-            new SoftwareUpdatesCollector()
+//            new SoftwareUpdatesCollector()
 //            new FacterCollector()
     };
     public static void main(String[] args) {
@@ -61,7 +61,7 @@ public class Main {
             toSend.put("orgId", orgId);
         }
         System.out.println(toSend.toString());
-        sendToServer(toSend.toString());
+//        sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
         createFileIfNotExists();

@@ -4,7 +4,7 @@
 (function () {
     angular.module('app').controller('UpdatesDetailsController', ['DataRequest', function(DataRequest) {
         var self = this;
-        self.updatesCount=[];
+        self.updates=[];
         self.updatesId={};
 
         function guid() {
@@ -17,15 +17,20 @@
             s4() + '-' + s4() + s4() + s4();
         }
         function getAvailableUpdates(){
-            DataRequest.getAvailableUpdates().
+            DataRequest.getAvailableUpdates('Addigy').
                 success(function(data, status, headers, config) {
                     console.log(data);
-                    var i;
-                    for(i=0;i<data.length;i++) {
-                        var curr = data[i];
-                        self.updatesCount.push(curr);
-                        self.updatesId[curr]=guid();
+                    var resultUpdates = data['updates'];
+                    for (var update in resultUpdates ){
+                        self.updates.push(resultUpdates[update])
                     }
+                    console.log(self.updates);
+                    //var i;
+                    //for(i=0;i<data.length;i++) {
+                    //    var curr = data[i];
+                    //    self.updatesCount.push(curr);
+                    //    self.updatesId[curr]=guid();
+                    //}
                 }).error(function(data, status, headers, config) {
                      console.log(data);
                 });
