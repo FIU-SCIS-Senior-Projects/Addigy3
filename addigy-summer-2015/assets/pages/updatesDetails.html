@@ -1,19 +1,26 @@
 <div ng-controller="UpdatesDetailsController as ctrl">
-    <div class="accordion">
-      <div id="null" class="panel-group" role="tablist" aria-multiselectable="true">
-          <div ng-repeat="node in ctrl.policyTree" ng-include="'tree'"></div>
-      </div>
-    </div>
-    <script type="text/ng-template" id="tree">
-        <div class="collapseHours">
-             <button data-toggle="collapse" data-target="{{ '#'+ node.policyId }}" href="" aria-expanded="false" aria-controls="{{ node.policyId}}" class="btn btn-box-tool"><i class="fa fa-play"> {{ node.policyId }}</i></button>
-         </div>
-        <div class="collapse" id="{{ node.policyId }}">
-            <div class="well users-table">
-                <div ng-repeat="node in node.children" ng-include="'tree'">
-                    <div class="panel panel-default" ></div>
+    <div ng-repeat="(updateId, updateName) in ctrl.updates">
+        <div class="accordion">
+          <div id="null" class="panel-group" role="tablist" aria-multiselectable="true">
+              <div ng-repeat="node in ctrl.policyTree | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'"></div>
+          </div>
+        </div>
+        <script type="text/ng-template" id="tree">
+            <div class="collapseHours">
+                 <button data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" href="" aria-expanded="false" aria-controls="{{ node.policyId+updateId}}" class="btn btn-box-tool">
+                     <i class="fa fa-play"></i>
+                     <span style="margin: 20px; color: #3C8DBC" class="">{{ updateName }}</span>
+                     <span style="margin: 20px; color: #8DBC3C" class="">{{ ctrl.policiesNames[node.policyId] }}</span>
+                     <span style="margin: 20px; color: #BC3C8D" class="">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} machines</span>
+                 </button>
+             </div>
+            <div class="collapse" id="{{ node.policyId+updateId }}">
+                <div class="well users-table">
+                    <div ng-repeat="node in node.children | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'">
+                        <div class="panel panel-default" ></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </script>
+        </script>
+    </div>
 </div>

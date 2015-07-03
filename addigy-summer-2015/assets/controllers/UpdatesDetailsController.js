@@ -4,25 +4,30 @@
 (function () {
     angular.module('app').controller('UpdatesDetailsController', ['DataRequest', function(DataRequest) {
         var self = this;
-        self.updates=[];
+        self.updates={};
         self.policiesLookup={};
         self.policies = {};
         self.policyTree = [];
+        self.machineUpdates = {};
+        self.policiesNames={};
         function getAvailableUpdates(){
             DataRequest.getAvailableUpdates('Addigy').
                 success(function(data, status, headers, config) {
-                    //console.log(data);
                     var resultUpdates = data['updates'];
                     for (var update in resultUpdates ){
-                        self.updates.push(resultUpdates[update])
+                        self.updates[update]=resultUpdates[update];
                     }
+                    var machUpdates = data['machinesUpdates'];
+                    machUpdates.forEach(function (machine) {
+                        self.machineUpdates[machine.policyId]=machine.updates;
+                    });
                     self.policies = data['policies']
                     createPoliciesLookup();
                     buildTree();
                 }).error(function(data, status, headers, config) {
                      console.log(data);
                 });
-        };
+        }
         getAvailableUpdates();
         String.prototype.hashCode = function() {
           var hash = 0, i, chr, len;
@@ -38,9 +43,10 @@
             var i;
             for(i=0; i< self.policies.length;i++){
                 var curr = self.policies[i];
-                var parent = curr['parent']
+                self.policiesNames[curr.policyId]=curr.policyName;
+                var parent = curr.parent;
                 if(parent !== null) {
-                    var policyId = curr['policyId'];
+                    var policyId = curr.policyId;
                     var children = self.policiesLookup[parent];
                     if (!children)
                         self.policiesLookup[parent] = [policyId];
@@ -69,11 +75,10 @@
                 treeList.push(rootNode);
                 self.policyTree.push(rootNode);
             }
-            console.log(treeList);
-            console.log(self.policyTree);
         }
         function getPolicyRoots(){
             var roots = [];
+            var i;
             for(i=0; i< self.policies.length;i++){
                 var curr = self.policies[i];
                 var parent = curr['parent'];
@@ -93,6 +98,31 @@
                 });
             }
             return root;
+        }
+        function getTotalUpdateCount(policyId, update){
+            var totalCount = 0;
+            totalCount+=getPolicyUpdateCount(policyId,update);
+            var descendants = getDescendants(policyId);
+            descendants.forEach(function(desc){
+                totalCount += getPolicyUpdateCount(desc, update)
+            });
+            return totalCount;
+        }
+        function getPolicyUpdateCount(policyId, update){
+            var updates = self.machineUpdates[policyId];
+            if(!updates)
+                return 0;
+            if (updates.indexOf(update)!=-1)
+                return 1;
+            return 0;
+        }
+        self.policyHasUpdates = function(update){
+            return function(item){
+              return getTotalUpdateCount(item.policyId, update)>0;
+            }
+        }
+        self.getPolicyTotalCount= function(policyId, update){
+            return getTotalUpdateCount(policyId, update);
         }
     }]);
 })();
