@@ -5,32 +5,20 @@
     angular.module('app').controller('UpdatesDetailsController', ['DataRequest', function(DataRequest) {
         var self = this;
         self.updates=[];
-        self.updatesId={};
-
-        function guid() {
-          function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-              .toString(16)
-              .substring(1);
-          }
-          return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-        }
+        self.policiesLookup={};
+        self.policies = {};
+        self.policyTree = [];
         function getAvailableUpdates(){
             DataRequest.getAvailableUpdates('Addigy').
                 success(function(data, status, headers, config) {
-                    console.log(data);
+                    //console.log(data);
                     var resultUpdates = data['updates'];
                     for (var update in resultUpdates ){
                         self.updates.push(resultUpdates[update])
                     }
-                    console.log(self.updates);
-                    //var i;
-                    //for(i=0;i<data.length;i++) {
-                    //    var curr = data[i];
-                    //    self.updatesCount.push(curr);
-                    //    self.updatesId[curr]=guid();
-                    //}
+                    self.policies = data['policies']
+                    createPoliciesLookup();
+                    buildTree();
                 }).error(function(data, status, headers, config) {
                      console.log(data);
                 });
@@ -46,5 +34,65 @@
           }
           return hash;
         };
+        function createPoliciesLookup(){
+            var i;
+            for(i=0; i< self.policies.length;i++){
+                var curr = self.policies[i];
+                var parent = curr['parent']
+                if(parent !== null) {
+                    var policyId = curr['policyId'];
+                    var children = self.policiesLookup[parent];
+                    if (!children)
+                        self.policiesLookup[parent] = [policyId];
+                    else
+                        children.push(policyId);
+                }
+            }
+        }
+        function getDescendants(policyId){
+            var children = self.policiesLookup[policyId];
+            if(!children)
+                return [];
+            var allChildren = [].concat(children);
+            children.forEach(function(child) {
+                allChildren = allChildren.concat(getDescendants(child));
+            });
+            return allChildren;
+        }
+        function buildTree(){
+            var treeList = [];
+            var i;
+            var roots = getPolicyRoots();
+            for(i=0; i< roots.length;i++){
+                var currRoot = roots[i];
+                var rootNode = getPolicyTree(currRoot);
+                treeList.push(rootNode);
+                self.policyTree.push(rootNode);
+            }
+            console.log(treeList);
+            console.log(self.policyTree);
+        }
+        function getPolicyRoots(){
+            var roots = [];
+            for(i=0; i< self.policies.length;i++){
+                var curr = self.policies[i];
+                var parent = curr['parent'];
+                if(parent === null)
+                    roots.push(curr['policyId']);
+            }
+            return roots;
+        }
+        function getPolicyTree(policyId){
+            var root = {"policyId": policyId, "parent":null, "children":[]};
+            var children = self.policiesLookup[policyId];
+            if(children) {
+                children.forEach(function (child) {
+                    var childNode = getPolicyTree(child);
+                    childNode.parent = root;
+                    root.children.push(childNode);
+                });
+            }
+            return root;
+        }
     }]);
 })();

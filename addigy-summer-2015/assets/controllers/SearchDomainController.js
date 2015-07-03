@@ -32,7 +32,7 @@
         self.options = {
             legendTemplate : '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%>' +
             '<li><span style=\"padding: 8px; background-color:<%=datasets[i].strokeColor%>\">' +
-            '<img style=\"background-color:#F7F7D4;\" src="<%=datasets[i].label.indexOf(".")===-1?"assets/img/mac_app_favicon.ico":"http://www.google.com/s2/favicons?domain="+datasets[i].label%>"/>' +
+            '<img style=\"background-color:#F7F7D4;\" src="<%=datasets[i].label.indexOf(".")===-1?"assets/img/mac_app_favicon-16x16.png":"http://www.google.com/s2/favicons?domain="+datasets[i].label%>"/>' +
             '</span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
         }
         function getAllDomains(){

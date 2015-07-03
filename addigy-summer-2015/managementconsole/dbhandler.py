@@ -144,7 +144,15 @@ def getAvailableUpdates(db, data):
                 updatesMap[updateId]=getUpdateName(db,updateId)
         currMachine = {'orgId':machine['orgId'], 'connectorId':connectorId, 'policyId': policyId, 'updates': machineUpdates}
         machines.append(currMachine)
-    return {'machinesUpdates': machines, 'updates': updatesMap}
+    policies = getOrgPolicies(db,orgId)
+    return {'machinesUpdates': machines, 'updates': updatesMap, 'policies': policies}
+
+def getOrgPolicies(db,orgId):
+    result = db.policies.find({'orgId': orgId}, {'_id':0})
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    return docList
 
 def getMachinePolicy(db, connectorId):
     result = db.machinePolicies.find({'connectorId': connectorId})
