@@ -84,12 +84,30 @@ def storeCollectedData(request):
 
     data = json.loads(str)
     collectors.verifyCollectorId(db,data)
-    # collectors.storeLoginActivity(db,data)
+    collectors.storeLoginActivity(db,data)
     collectors.storeFacterReport(db,data)
-    # collectors.storeAvailableMemory(db,data)
-    # collectors.storeBrowsingHistory(db,data)
-
+    collectors.storeAvailableMemory(db,data)
+    collectors.storeBrowsingHistory(db,data)
+    collectors.storeSoftwareUpdates(db,data)
     jsonstr = json.dumps(str, cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
+def getUpdatesConnectorsCount(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getUpdatesConnectorsCount(db, request), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
+def getAvailableUpdates(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    str=request.body.decode('utf-8')
+    data = ast.literal_eval(str)
+    jsonstr = json.dumps(dbhandler.getAvailableUpdates(db, data), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt

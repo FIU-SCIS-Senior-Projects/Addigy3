@@ -130,5 +130,20 @@
             this.logout=logout;
             this.connectorId = connectorId;
         }
+        self.getMachineLoginHistory=function(chosenDate){
+            self.selectedDate=chosenDate;
+            chosenDate.setHours(0,0,0,0);
+            var startTime=chosenDate.getTime()/1000;
+            chosenDate.setHours(23,0,0,0);
+            var endTime=chosenDate.getTime()/1000;
+            DataRequest.getHistory(startTime, endTime).
+                success(function(data, status, headers, config) {
+                    self.activities=data['loginHistory'];
+                    processLoginData();
+                }).error(function(data, status, headers, config) {
+                     console.log(data);
+                });
+        };
+
     }]);
 })();
