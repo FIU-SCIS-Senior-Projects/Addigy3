@@ -10,9 +10,13 @@
         self.policyTree = [];
         self.machineUpdates = {};
         self.policiesNames={};
+        self.machinePolicy={};
+        self.policiesUpdates={};
+
         function getAvailableUpdates(){
             DataRequest.getAvailableUpdates('Addigy').
                 success(function(data, status, headers, config) {
+                    console.log(data);
                     var resultUpdates = data['updates'];
                     for (var update in resultUpdates ){
                         self.updates[update]=resultUpdates[update];
@@ -20,6 +24,17 @@
                     var machUpdates = data['machinesUpdates'];
                     machUpdates.forEach(function (machine) {
                         self.machineUpdates[machine.policyId]=machine.updates;
+                        machine.updates.forEach(function (update){
+                            var policyUpdt = self.policiesUpdates[machine.policyId];
+                            if(!policyUpdt){
+                                policyUpdt = [];
+                                policyUpdt.push({"connectorId":machine.connectorId, "update":update});
+                                self.policiesUpdates[machine.policyId]=policyUpdt;
+                            }else{
+                                policyUpdt.push({"connectorId":machine.connectorId, "update":update});
+                            }
+                        });
+
                     });
                     self.policies = data['policies']
                     createPoliciesLookup();
@@ -120,9 +135,26 @@
             return function(item){
               return getTotalUpdateCount(item.policyId, update)>0;
             }
-        }
+        };
         self.getPolicyTotalCount= function(policyId, update){
             return getTotalUpdateCount(policyId, update);
-        }
+        };
+        self.policyHasChildren=function(policyId){
+            var children = self.policiesLookup[policyId];
+            if(!children) return false;
+            return children.length>0;
+        };
+        self.getConnectorId=function(policyId,update){
+            var policyUpdts = self.policiesUpdates[policyId];
+            if(!policyUpdts) return "connectorId not available";
+            var i;
+            for (i=0;i<policyUpdts.length;i++){
+                var currUpdt = policyUpdts[i];
+                if(currUpdt.update===update)
+                    return currUpdt.connectorId;
+
+            }
+            return "connectorId not available";
+        };
     }]);
 })();

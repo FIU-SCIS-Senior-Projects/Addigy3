@@ -3,6 +3,8 @@ import datetime
 import calendar
 import json
 import ast
+# ORG_ID = "c7ea34d4-00ba-11e5-a061-3d81414d18d9"
+ORG_ID = "Addigy"
 
 def getLoginHistory(db, request):
     body = request.body
@@ -12,6 +14,7 @@ def getLoginHistory(db, request):
     table = db.loginAudits
     try:
         result = table.aggregate([
+            {'$match':{'orgId':ORG_ID}},
             {'$unwind': '$activity'},
             {'$match': {'activity.login': {'$lte': logout}, 'activity.logout': {'$gte': login}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},
@@ -35,6 +38,7 @@ def getFacter(db):
 def getMostVisistedDomains(db, request):
     try:
         result = db.browsingHistoryAudits.aggregate([
+            {'$match': {'orgId': ORG_ID}},
             {'$unwind': "$visits"},
             {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
             {'$sort': {'size': -1}}, {'$limit': 5},
@@ -50,6 +54,7 @@ def getMostVisistedDomains(db, request):
 def getAllDomains(db, request):
     try:
         result = db.browsingHistoryAudits.aggregate([
+            {'$match': {'orgId': ORG_ID}},
             {'$group': {'_id': "org_id", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$addToSet': '$domain'}, 'visits': {'$first': "$visits"}}},
             {'$project': {'_id': 0, 'domain': 1, 'username': 1}}]);
     except Exception as e:
@@ -105,6 +110,7 @@ def getMatchClause(dic):
         matchClause['username'] = dic['user']
     if type != 'All':
         matchClause['type'] = dic['type']
+    matchClause['orgId'] = ORG_ID
     dateRange={}
     dateRange['$lte'] = endDate
     dateRange['$gte'] = startDate
@@ -116,6 +122,7 @@ def getUpdatesConnectorsCount(db, request):
     # dic = ast.literal_eval(body.decode('utf'))
     # orgId = dic['orgId'];
     result = db.machineUpdates.aggregate([
+        {'$match': {'orgId': ORG_ID}},
         {'$unwind': "$updates"},
         {'$group': {'_id': '$orgId', 'connectorId': {'$addToSet': '$connectorId'}, 'updates': {'$addToSet': "$updates"}}},
         {'$project': {'_id': 0, 'updates': 1, 'connectorId':1}}])
@@ -132,9 +139,9 @@ def getUpdatesConnectorsCount(db, request):
 
 def getAvailableUpdates(db, data):
     updatesMap={}
-    orgId = data['orgId'];
+    orgId = data['orgId']
     machines=[]
-    result = db.machineUpdates.find({'orgId': orgId})
+    result = db.machineUpdates.find({'orgId': ORG_ID})
     for machine in result:
         connectorId = machine['connectorId']
         policyId = getMachinePolicy(db, connectorId)
@@ -142,13 +149,13 @@ def getAvailableUpdates(db, data):
         for updateId in machineUpdates:
             if not updateId in updatesMap:
                 updatesMap[updateId]=getUpdateName(db,updateId)
-        currMachine = {'orgId':machine['orgId'], 'connectorId':connectorId, 'policyId': policyId, 'updates': machineUpdates}
+        currMachine = {'orgId': machine['orgId'], 'connectorId':connectorId, 'policyId': policyId, 'updates': machineUpdates}
         machines.append(currMachine)
     policies = getOrgPolicies(db,orgId)
     return {'machinesUpdates': machines, 'updates': updatesMap, 'policies': policies}
 
 def getOrgPolicies(db,orgId):
-    result = db.policies.find({'orgId': orgId}, {'_id':0})
+    result = db.policies.find({'orgId': ORG_ID}, {'_id':0})
     docList = []
     for doc in result:
         docList.append(doc)
@@ -169,14 +176,3 @@ def getUpdateName(db, updateId):
     else:
         doc = result[0]
         return doc['updateName']
-
-def getUpdateMachineCount(db, update):
-    result = db.updatesAudits.aggregate([
-        {'$match': {'updates':update}},
-        {'$group': {'_id': 'null', 'count': {'$sum': 1}}}])
-    docList = []
-    for doc in result:
-        docList.append(doc)
-    firstDoc = docList[0]
-    return firstDoc['count']
-

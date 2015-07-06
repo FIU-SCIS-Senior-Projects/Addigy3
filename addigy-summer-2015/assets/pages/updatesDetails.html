@@ -6,14 +6,22 @@
           </div>
         </div>
         <script type="text/ng-template" id="tree">
-            <div class="collapseHours">
-                 <button data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" href="" aria-expanded="false" aria-controls="{{ node.policyId+updateId}}" class="btn btn-box-tool">
-                     <i class="fa fa-play"></i>
-                     <span style="margin: 20px; color: #3C8DBC" class="">{{ updateName }}</span>
-                     <span style="margin: 20px; color: #8DBC3C" class="">{{ ctrl.policiesNames[node.policyId] }}</span>
-                     <span style="margin: 20px; color: #BC3C8D" class="">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} machines</span>
-                 </button>
+            <div ng-show="ctrl.policyHasChildren(node.policyId)" class="collapseHours">
+                 <div data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" href="" aria-expanded="false" aria-controls="{{ node.policyId+updateId}}" class="container btn btn-box-tool">
+                     <div class="col-sm-1"><i class="fa fa-play"></i></div>
+                     <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
+                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.policiesNames[node.policyId] }}</span></div>
+                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC3C8D">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} machine(s)</span></div>
+                     <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
+                     <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
+                 </div>
              </div>
+            <div ng-hide="ctrl.policyHasChildren(node.policyId)" class="container">
+                <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
+                <div class="col-sm-2" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.getConnectorId(node.policyId, updateId) }}</span></div>
+                <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
+                <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
+            </div>
             <div class="collapse" id="{{ node.policyId+updateId }}">
                 <div class="well users-table">
                     <div ng-repeat="node in node.children | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'">
