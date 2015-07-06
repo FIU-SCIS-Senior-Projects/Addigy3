@@ -2,14 +2,15 @@
  * Created by matthewsaunders on 6/19/15.
  */
 (function () {
-    angular.module('app').controller('FreeMemoryController', ['DataRequest', 'FreeMemoryService', function(DataRequest, FreeMemoryService) {
+    angular.module('app').controller('FreeMemoryController', ['DataRequest', 'FreeMemoryService', 'TenantsService', function(DataRequest, FreeMemoryService, TenantsService) {
         var self = this;
         self.data = FreeMemoryService.data;
         self.labels = FreeMemoryService.times;
         self.series = FreeMemoryService.series;
         self.datePickedDate=FreeMemoryService.datePickedDate;
         self.calendarMaxDate=new Date();
-        self.connectorId = 9876;
+        self.orgId = TenantsService.orgId;
+        self.selectedTenant = TenantsService.selectedTenant;
 
         self.formats = ['MMMM-dd-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         self.format = self.formats[0];
@@ -26,12 +27,16 @@
         };
 
         self.getMemoryData = function(){
-            FreeMemoryService.getMemoryData(self.datePickedDate.date);
+            FreeMemoryService.getMemoryData(self.orgId, self.selectedTenant);
         };
 
         self.onClick = function (points, evt) {
             console.log(points, evt);
           };
 
+        self.registerCallback = function(){
+            TenantsService.registerCallback(self.getMemoryData);
+        }
+        self.registerCallback();
     }]);
 })();

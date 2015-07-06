@@ -13,8 +13,8 @@ public class Main {
 
     static Collector[] collectors=new Collector[]{
 //            new LoginHistoryCollector(),
-            new BrowsingHistoryCollector(),
-//            new FacterCollector()
+//            new BrowsingHistoryCollector(),
+            new FacterCollector()
     };
     public static void main(String[] args) {
         collect();
@@ -35,19 +35,20 @@ public class Main {
         JSONObject toSend=new JSONObject();
         for(Collector c: collectors) {
             toSend.put(c.getKey(), c.getData());
-            toSend.put("connectorId", "9876");
+            toSend.put("connectorId", "testABC");
             toSend.put("orgId", "addigy");
         }
         System.out.println(toSend.toString());
         sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
-        createFileIfNotExists();
-        BufferedReader reader = new BufferedReader(new FileReader(LAST_UPLOAD_TIME_PATH));
-        String dateStr = reader.readLine();
-        long lastTime = Long.parseLong(dateStr);
-        long currTime = System.currentTimeMillis() / 1000L;
-        return (currTime-lastTime)>=UPLOAD_INTERVAL_SEC;
+//        createFileIfNotExists();
+//        BufferedReader reader = new BufferedReader(new FileReader(LAST_UPLOAD_TIME_PATH));
+//        String dateStr = reader.readLine();
+//        long lastTime = Long.parseLong(dateStr);
+//        long currTime = System.currentTimeMillis() / 1000L;
+//        return (currTime-lastTime)>=UPLOAD_INTERVAL_SEC;
+        return true;
     }
     public static void createFileIfNotExists() throws IOException {
         File file = new File(LAST_UPLOAD_TIME_PATH);

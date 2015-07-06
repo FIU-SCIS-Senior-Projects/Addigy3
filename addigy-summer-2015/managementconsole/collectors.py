@@ -78,7 +78,6 @@ def storeFacterReport(db, data):
     connectorId = data['connectorId']
     orgId = data['orgId']
     postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'facterReport':facterReport}).inserted_id
-    return postid
 
 def storeAvailableMemory(db, data):
     table = db.availableMemory
@@ -93,4 +92,40 @@ def storeAvailableMemory(db, data):
     except Exception:
         print(Exception)
 
-    return postid
+def verifyCollectorId(db,data):
+    table = db.tenants
+    org = data['orgId']
+    tenant = data['connectorId']
+    containsId = False
+    collectionExists = True
+
+    try:
+        result = table.aggregate([
+                {'$match': {'orgId': 'addigy'}}]);
+    except Exception as e:
+        #Check if error is collection DNE or if zero query results
+        collections = db.collection_names()
+        dbexists = False
+        for name in collections:
+            if name == 'tenants':
+                dbexists = True
+        if not dbexists:
+            collectionExists = False
+
+    if collectionExists:
+        # Check 'tenant' collection for existing org record
+        try:
+            for doc in result:
+                if doc['connectorId'] == tenant:
+                    containsId = True
+        except Exception as e:
+            pass # do nothing
+    else:
+        # create 'tenant' collection
+        db.create_collection('tenant')
+
+    # Insert tenant into collection if it does not already exist
+    if not containsId:
+        post_id = table.insert_one({'orgId': org, 'connectorId': tenant})
+
+    return

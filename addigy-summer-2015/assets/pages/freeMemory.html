@@ -1,15 +1,5 @@
 <div ng-controller="FreeMemoryController as ctrl">
-<!--
-    <div id='login-chart'class="row">
-        <div ng-init="ctrl.getMemoryData()">
-            <canvas style="height: 250px" id="memory_canvas" class="chart chart-line" data="ctrl.data"
-                labels="ctrl.labels" legend="true" series="ctrl.series"
-                 options="{datasetFill : false,  scaleShowVerticalLines: false}">
-            </canvas>
-        </div>
-    </div>
--->
-    <div class="row" ng-init="ctrl.getMemoryData()">
+    <div class="row">
         <div class="col-sm-4">
             <p class="input-group">
               <input ng-change="ctrl.getMemoryData()" type="text" class="form-control" datepicker-popup="{{ctrl.format}}" ng-model="ctrl.datePickedDate.date"
@@ -22,17 +12,18 @@
             </p>
         </div>
 
-
+<!--
         <div class="col-sm-2">
             <label for="connectorId" class="pull-right">Computer: </label>
         </div>
         <div class="col-sm-6">
-            <input id="connectorId" type="text" class="form-control" ng-model="ctrl.connectorId"/>
+            <input id="connectorId" type="text" class="form-control" ng-model="ctrl.selectedTenant.tenant"/>
         </div>
+-->
     </div>
 
     <div id='login-chart'class="row">
-        <div>
+        <div ng-model="ctrl.selectedTenant" ng-change="ctrl.getMemoryData()">
             <canvas id="line" class="chart chart-line" data="ctrl.data"
               labels="ctrl.labels" legend="true" series="ctrl.series"
               click="ctrl.onClick">

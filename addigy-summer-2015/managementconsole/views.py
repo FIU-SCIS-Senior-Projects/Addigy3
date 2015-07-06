@@ -68,6 +68,14 @@ def getMemory(request):
     return HttpResponse(jsonstr, content_type='application/json')
 
 @csrf_exempt
+def getTenants(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getTenants(db, request), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
 def storeCollectedData(request):
     client = MongoClient()
     valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
@@ -75,10 +83,11 @@ def storeCollectedData(request):
     str=request.body.decode('utf-8')
 
     data = json.loads(str)
-    collectors.storeLoginActivity(db,data)
+    collectors.verifyCollectorId(db,data)
+    # collectors.storeLoginActivity(db,data)
     collectors.storeFacterReport(db,data)
-    collectors.storeAvailableMemory(db,data)
-    collectors.storeBrowsingHistory(db,data)
+    # collectors.storeAvailableMemory(db,data)
+    # collectors.storeBrowsingHistory(db,data)
 
     jsonstr = json.dumps(str, cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
@@ -86,6 +95,14 @@ def storeCollectedData(request):
 @csrf_exempt
 def dummyEndpoint(request,option):
     jsonstr = json.dumps("Hello World: "+option, cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
+@csrf_exempt
+def getVolatileFacts(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getVolatileFacts(db, request), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
 

@@ -10,8 +10,8 @@
             getFacter: function () {
                 return $http.post('/resource/getFacter/');
             },
-            getMemory: function (selectedDate) {
-                return $http.post('/resource/getMemory/', {date: selectedDate});
+            getMemory: function (selectedDate, orgId, tenant) {
+                return $http.post('/resource/getMemory/', {date: selectedDate, orgId: orgId, tenant: tenant});
             },
             getMostVisistedDomains: function () {
                 return $http.post('/resource/getMostVisistedDomains/');
@@ -22,6 +22,9 @@
             getDomainInfo: function (domain, user, qtyToSelect, startDate, endDate, type) {
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
                     qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
+            },
+            getTenants: function (Id) {
+                return $http.post('/resource/getTenants/', {orgId: Id});
             }
         }
     }]);

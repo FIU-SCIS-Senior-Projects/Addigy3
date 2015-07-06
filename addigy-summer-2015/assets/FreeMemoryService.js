@@ -7,17 +7,15 @@
         self.activity = [];
         self.data = [];
         self.times = [];
-        self.series = ['Available Memory (Mb)'];
-        self.datePickedDate={'date':new Date()};
-        self.selectedDate=new Date();
+        self.series = ['Available Memory'];
+        self.datePickedDate = {
+            date: new Date()
+        }
 
-
-        self.getMemoryData = function(chosenDate){
-
-            self.selectedDate=chosenDate;
-            DataRequest.getMemory(self.selectedDate.toISOString()).
+        self.getMemoryData = function(orgId, selectedTenant){
+            console.log(orgId, selectedTenant);
+            DataRequest.getMemory(self.datePickedDate.date, orgId.org, selectedTenant.tenant).
                  success(function(data, status, headers, config) {
-                     self.activity = []
                      self.activity=data['history'];
                      processMemoryData();
                  }).error(function(data, status, headers, config) {
@@ -26,18 +24,15 @@
         }
 
         function processMemoryData(){
-            //clear out existing data
-            self.times.length=0;
-            self.data.length=0;
             tmp = [];
+            self.data.length=0;
+            self.times.length=0;
 
-            //populate data based on new date
             for(i=0; i<self.activity.length; i++){
                 var curr = self.activity[i];
                 var memory = curr.availMemory;
-                var datetime = curr.date;
-                //var time = datetime.split(' ')[1]
-                self.times.push(datetime);
+                var time = curr.date;
+                self.times.push(time);
                 tmp.push(parseFloat(memory));
             }
             self.data.push(tmp);

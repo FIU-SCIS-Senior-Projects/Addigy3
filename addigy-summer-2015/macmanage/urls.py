@@ -12,5 +12,7 @@ urlpatterns = patterns('',
     url(r'^resource/getMostVisistedDomains/$', views.getMostVisistedDomains, name='getMostVisistedDomains'),
     url(r'^resource/getAllDomains/$', views.getAllDomains, name='getAllDomains'),
     url(r'^resource/getDomainInfo/$', views.getDomainInfo, name='getDomainInfo'),
+    url(r'^resource/getTenants/$', views.getTenants, name='getTenants'),
+    url(r'^resource/getVolatileFacts/$', views.getVolatileFacts, name='getVolatileFacts'),
 )
 

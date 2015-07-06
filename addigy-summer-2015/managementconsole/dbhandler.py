@@ -36,13 +36,14 @@ def getFacter(db):
 def getMemory(db, request):
     body = request.body
     dic = ast.literal_eval(body.decode('utf'))
+    orgId = dic['orgId']
+    tenant = dic['tenant']
     dateSelected = datetime.datetime.strptime(dic['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
     beginDate = dateSelected.replace(hour=0,minute=0,second=0)
-    endDate = beginDate + datetime.timedelta(1)
     table = db.availableMemory
     try:
         query = table.aggregate([
-                   { '$match': { 'orgId': 'addigy', 'connectorId': '9876' } },
+                   { '$match': { 'orgId': orgId, 'connectorId': tenant } },
                    {'$match': {'date': {'$gte': beginDate}}},
                    { '$sort': { 'date': 1 } },
                    { '$project': {'_id': 0, 'availMemory': '$availMemory', 'date': '$date'}}
@@ -136,3 +137,42 @@ def getMatchClause(dic):
     dateRange['$gte'] = startDate
     matchClause['visits'] = dateRange
     return matchClause
+
+def getTenants(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    orgId = dic['orgId']
+    table = db.tenants
+    try:
+        query = table.aggregate([
+                   { '$match': { 'orgId': orgId } },
+                   { '$sort': {'connectorId': 1}},
+                   { '$project': {'_id': 0, 'connectorId': 1}}
+        ])
+    except Exception as e:
+        return []
+    docList = []
+    for doc in query:
+        docList.append(doc['connectorId'])
+    tenants = {'Tenants': docList}
+    return tenants
+
+def getVolatileFacts(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    startDate = dic['start']
+    endDate = dic['end']
+    table = db.facterAudits
+    # try:
+    #     query = table.aggregate([
+    #                { '$match': { 'orgId': orgId } },
+    #                { '$sort': {'connectorId': 1}},
+    #                { '$project': {'_id': 0, 'connectorId': 1}}
+    #     ])
+    # except Exception as e:
+    #     return []
+    # docList = []
+    # for doc in query:
+    #     docList.append(doc['connectorId'])
+    # tenants = {'Tenants': docList}
+    # return tenants
