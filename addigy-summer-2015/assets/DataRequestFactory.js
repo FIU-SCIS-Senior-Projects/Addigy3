@@ -22,6 +22,12 @@
             getDomainInfo: function (domain, user, qtyToSelect, startDate, endDate, type) {
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
                     qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
+            },
+            getUpdatesConnectorsCount:function(orgId){
+                return $http.post('/resource/getUpdatesConnectorsCount/',{orgId: orgId});
+            },
+            getAvailableUpdates:function(orgId){
+                return $http.post('/resource/getAvailableUpdates/',{orgId: orgId});
             }
         }
     }]);

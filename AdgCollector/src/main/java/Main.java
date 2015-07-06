@@ -9,18 +9,40 @@ public class Main {
 
     public static final String LOGS_PATH = "/var/log/";
     public static final String LAST_UPLOAD_TIME_PATH = LOGS_PATH + "adgLastUploadTime";
-    public static final long UPLOAD_INTERVAL_SEC = 2;
+    public static final long UPLOAD_INTERVAL_SEC = 0;
+    public static final String DEFAULT_ORG_ID = "Addigy";
+    public static final String DEFAULT_CONNECTOR_ID = "1111";
 
     static Collector[] collectors=new Collector[]{
 //            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
+//            new SoftwareUpdatesCollector()
 //            new FacterCollector()
     };
     public static void main(String[] args) {
+        String orgId="";
+        String connectorId="";
+        switch (args.length){
+            case 0:
+                orgId=DEFAULT_ORG_ID;
+                connectorId=DEFAULT_CONNECTOR_ID;
+                break;
+            case 1:
+                orgId=args[0];
+                connectorId=DEFAULT_CONNECTOR_ID;
+                break;
+            case 2:
+                orgId=args[0];
+                connectorId=args[1];
+                break;
+            default:
+                System.out.println("Proper Usage is: java -jar <OrgId> <ConnectorId>");
+                System.exit(0);
+        }
         collect();
         try {
             if(needUpload()){
-                uploadData();
+                uploadData(orgId, connectorId);
                 updateLogs();
             }
         } catch (IOException e) {
@@ -31,15 +53,15 @@ public class Main {
         for(Collector c: collectors)
             c.collectData();
     }
-    private static void uploadData() throws IOException {
+    private static void uploadData(String orgId, String connectorId) throws IOException {
         JSONObject toSend=new JSONObject();
         for(Collector c: collectors) {
             toSend.put(c.getKey(), c.getData());
-            toSend.put("connectorId", "9876");
-            toSend.put("orgId", "addigy");
+            toSend.put("connectorId", connectorId);
+            toSend.put("orgId", orgId);
         }
         System.out.println(toSend.toString());
-        sendToServer(toSend.toString());
+//        sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
         createFileIfNotExists();

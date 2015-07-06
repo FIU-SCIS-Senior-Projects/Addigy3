@@ -23,7 +23,7 @@ public class UrlEntry {
         else if (isSafariBrowser()) this.visitDate=convertSafariDate(visitDate);
         else this.visitDate=(Long.parseLong(visitDate)/1000);
         this.type=type;
-        System.out.println(visitDate);
+//        System.out.println(visitDate);
     }
     private boolean isChromeBrowser(){
         return this.browser.equals("Chrome");
