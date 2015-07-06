@@ -14,10 +14,10 @@ public class Main {
     public static final String DEFAULT_CONNECTOR_ID = "1111";
 
     static Collector[] collectors=new Collector[]{
-//            new LoginHistoryCollector(),
+            new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
-//            new SoftwareUpdatesCollector()
-//            new FacterCollector()
+            new SoftwareUpdatesCollector(),
+            new FacterCollector()
     };
     public static void main(String[] args) {
         String orgId="";
