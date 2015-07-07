@@ -140,13 +140,14 @@ def storeSoftwareUpdates(db,data):
         connectorId = data['connectorId']
         orgId = data['orgId']
         updatesIds=[]
-        for update in softwareUpdates:
-            updatesIds.append(getUpdateId(db, update))
-        result = table.find({'orgId':orgId, 'connectorId': connectorId})
-        if result.count() == 0:
-            table.insert({'orgId':orgId, 'connectorId': connectorId, 'updates':updatesIds})
-        else:
-            table.update({'orgId':orgId, 'connectorId': connectorId}, {'$set': {'updates':updatesIds}})
+        if softwareUpdates:
+            for update in softwareUpdates:
+                updatesIds.append(getUpdateId(db, update))
+            result = table.find({'orgId':orgId, 'connectorId': connectorId})
+            if result.count() == 0:
+                table.insert({'orgId':orgId, 'connectorId': connectorId, 'updates':updatesIds})
+            else:
+                table.update({'orgId':orgId, 'connectorId': connectorId}, {'$set': {'updates':updatesIds}})
 
 def getUpdateId(db, update):
     table = db.updates
@@ -155,7 +156,7 @@ def getUpdateId(db, update):
     updateId = 0
     if size == 0:
         updateId = uuid.uuid1().hex
-        table.insert_one({'updateId': updateId, 'updateName':update})
+        table.insert_one({'updateId': updateId, 'updateName': update['updateName'], 'updateApp': update['updateApp']})
     else:
         for doc in result:
             updateId = doc['updateId']

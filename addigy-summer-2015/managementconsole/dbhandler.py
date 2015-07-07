@@ -1,7 +1,5 @@
 
 import datetime
-import calendar
-import json
 import ast
 # ORG_ID = "c7ea34d4-00ba-11e5-a061-3d81414d18d9"
 ORG_ID = "Addigy"
@@ -164,7 +162,10 @@ def getUpdatesConnectorsCount(db, request):
 
 def getAvailableUpdates(db, data):
     updatesMap={}
+    updatesActivity={}
     orgId = data['orgId']
+    startDate = data['startDate']
+    endDate = data['endDate']
     machines=[]
     result = db.machineUpdates.find({'orgId': ORG_ID})
     for machine in result:
@@ -173,11 +174,17 @@ def getAvailableUpdates(db, data):
         machineUpdates = machine['updates']
         for updateId in machineUpdates:
             if not updateId in updatesMap:
-                updatesMap[updateId]=getUpdateName(db,updateId)
+                updatesMap[updateId] = getUpdateDetails(db,updateId)
         currMachine = {'orgId': machine['orgId'], 'connectorId':connectorId, 'policyId': policyId, 'updates': machineUpdates}
         machines.append(currMachine)
+
+    for update in updatesMap:
+        currUpdate = updatesMap[update];
+        updateApp = currUpdate['updateApp']
+        updateAct = getUpdatesActivity(db, updateApp, startDate, endDate)
+        updatesActivity[updateApp] = updateAct
     policies = getOrgPolicies(db,orgId)
-    return {'machinesUpdates': machines, 'updates': updatesMap, 'policies': policies}
+    return {'machinesUpdates': machines, 'updates': updatesMap, 'policies': policies, 'updatesActivity':updatesActivity}
 
 def getOrgPolicies(db,orgId):
     result = db.policies.find({'orgId': ORG_ID}, {'_id':0})
@@ -194,13 +201,34 @@ def getMachinePolicy(db, connectorId):
         doc = result[0]
         return doc['policyId']
 
-def getUpdateName(db, updateId):
+def getUpdateDetails(db, updateId):
     result = db.updates.find({'updateId': updateId})
     if result.count() == 0:
-        return "none"
+        return {}
     else:
         doc = result[0]
-        return doc['updateName']
+        return {'updateName': doc['updateName'], 'updateApp': doc['updateApp']}
+
+def getUpdatesActivity(db,updateName, startDate, endDate):
+    try:
+        result = db.browsingHistoryAudits.aggregate([
+            {'$match': {'orgId': ORG_ID, 'domain': updateName}},
+            {'$unwind': "$visits"},
+            {'$match': {'visits': {'$lte': endDate, '$gte': startDate}}},
+            {'$group': {'_id': "$domain", 'orgId': {'$first': '$orgId'}, 'connectorId': {'$first': '$connectorId'}, 'username' : {'$addToSet': '$username'}, 'domain': {'$first': '$domain'}, 'visits': {'$push':"$visits"}, 'size': {'$sum':1}}},
+            {'$sort': {'size': -1}},
+            {'$project': {'_id': 0, 'orgId': 1, 'connectorId': 1, 'username': 1, 'domain': 1, 'visits': 1, 'size': 1}}]) ;
+    except Exception as e:
+            return []
+    docList = []
+    for doc in result:
+        docList.append(doc)
+    if not docList:
+        return []
+    else:
+        firstDoc = docList[0]
+        return firstDoc['visits']
+
 
 def getTenants(db, request):
     body = request.body

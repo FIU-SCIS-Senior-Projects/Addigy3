@@ -29,8 +29,8 @@
             getUpdatesConnectorsCount:function(orgId){
                 return $http.post('/resource/getUpdatesConnectorsCount/',{orgId: orgId});
             },
-            getAvailableUpdates:function(orgId){
-                return $http.post('/resource/getAvailableUpdates/',{orgId: orgId});
+            getAvailableUpdates:function(orgId, startDate, endDate){
+                return $http.post('/resource/getAvailableUpdates/',{orgId: orgId, startDate:startDate, endDate:endDate});
             }
         }
     }]);

@@ -1,4 +1,11 @@
 <div ng-controller="UpdatesDetailsController as ctrl">
+    <div style="padding-top: 20px" class="col-md-12">
+        <div class="row">
+            <canvas style="height: 300px;" id="line" colours="ctrl.lineChartColors" class="chart chart-line" data="ctrl.graphData"
+                labels="ctrl.labels" legend="true" series="ctrl.series" click="onClick" options=ctrl.options>
+            </canvas>
+        </div>
+    </div>
     <div ng-repeat="(updateId, updateName) in ctrl.updates">
         <div class="accordion">
           <div id="null" class="panel-group" role="tablist" aria-multiselectable="true">
@@ -9,15 +16,15 @@
             <div ng-show="ctrl.policyHasChildren(node.policyId)" class="collapseHours">
                  <div data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" href="" aria-expanded="false" aria-controls="{{ node.policyId+updateId}}" class="container btn btn-box-tool">
                      <div class="col-sm-1"><i class="fa fa-play"></i></div>
-                     <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
+                     <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName.updateName }}</span></div>
                      <div class="col-sm-1" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.policiesNames[node.policyId] }}</span></div>
-                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC3C8D">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} machine(s)</span></div>
+                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC3C8D">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} device(s)</span></div>
                      <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
                      <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
                  </div>
              </div>
             <div ng-hide="ctrl.policyHasChildren(node.policyId)" class="container">
-                <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
+                <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName.updateName }}</span></div>
                 <div class="col-sm-2" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.getConnectorId(node.policyId, updateId) }}</span></div>
                 <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
                 <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>

@@ -19,7 +19,6 @@
         self.graphData=[];
         self.startDate=0;
         self.endDate=0;
-        var faviconurl =
         self.lineChartColors = [
             {"fillColor": "rgba(60,141,188,0.2) ","strokeColor": "rgba(60,141,188,1) ","pointColor": "rgba(60,141,188,1) ", "pointHighlightStroke":"rgba(60,141,188,1) "},
             {"fillColor": "rgba(141,188,60,0.2) ","strokeColor": "rgba(141,188,60,1) ","pointColor": "rgba(141,188,60,1) ", "pointHighlightStroke":"rgba(141,188,60,1) "},
@@ -54,6 +53,7 @@
                 topQty, self.startDate, self.endDate, typeToSend)
                 .success(function(data, status, headers, config) {
                     self.domainsFiltered=data['domainList'];
+                    console.log(self.domainsFiltered);
                     if (self.domainsFiltered.length!==0) processDomainsData();
                     else setValuesForNoDomains();
             }).error(function(data, status, headers, config) {
