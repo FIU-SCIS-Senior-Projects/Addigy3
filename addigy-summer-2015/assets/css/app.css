@@ -20,3 +20,10 @@
 .box.box-primary {
   border-top-color: #222D32 !important;
 }
+
+.dash-nav-bar{
+    background-color:#1F3A4D;
+}
+.dash-nav-bar a{
+    color:white;
+}

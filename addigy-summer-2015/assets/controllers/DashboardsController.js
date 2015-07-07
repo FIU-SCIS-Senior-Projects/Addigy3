@@ -2,7 +2,7 @@
  * Created by ayme on 5/27/15.
  */
 (function () {
-    angular.module('app').controller('AllGraphsController',['LoginDataService', '$timeout',function(LoginDataService, $timeout) {
+    angular.module('app').controller('DashboardsController',['LoginDataService', '$timeout',function(LoginDataService, $timeout) {
         var self = this;
         self.graphToShow='';
         self.toIncludeHtml=[];
