@@ -112,6 +112,7 @@
                 treeList.push(rootNode);
                 self.policyTree.push(rootNode);
             }
+            console.log(self.policyTree);
         }
         function getPolicyRoots(){
             var roots = [];
@@ -166,18 +167,23 @@
             if(!children) return false;
             return children.length>0;
         };
-        self.getConnectorId=function(policyId,update){
+        self.getDevices=function(policyId,update){
+            var devices = [];
             var policyUpdts = self.policiesUpdates[policyId];
-            if(!policyUpdts) return "connectorId not available";
+            if(!policyUpdts) return devices;
             var i;
             for (i=0;i<policyUpdts.length;i++){
                 var currUpdt = policyUpdts[i];
                 if(currUpdt.update===update)
-                    return currUpdt.connectorId;
-
+                    devices.push(currUpdt.connectorId);
             }
-            return "connectorId not available";
+            console.log(devices);
+            return devices;
         };
+        self.hasDevices=function(policyId,update){
+            var devices = self.getDevices(policyId,update);
+            return devices.length>0;
+        }
 
         function getEndDate(){
             var today=new Date();

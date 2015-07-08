@@ -62,9 +62,9 @@
                   <h4 class="modal-title">{{ ctrl.modalTitle }}</h4>
                 </div>
                 <div class="modal-body">
-                    <div ng-repeat="file in ctrl.includeHtml">
+                    <row ng-repeat="file in ctrl.includeHtml">
                         <div ng-include=file></div>
-                    </div>
+                    </row>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
