@@ -7,6 +7,9 @@
 
         self.startDate = VolatileDataService.startDate;
         self.endDate = VolatileDataService.endDate;
-
+        self.getVolatileFacts = VolatileDataService.getVolatileFacts;
+        self.data = VolatileDataService.data;
+        self.changeStartDate = VolatileDataService.changeStartDate;
+        self.initializeDates = VolatileDataService.initializeDates;
     }]);
 })();

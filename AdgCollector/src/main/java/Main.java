@@ -14,9 +14,9 @@ public class Main {
     public static final String DEFAULT_CONNECTOR_ID = "1111";
 
     static Collector[] collectors=new Collector[]{
-            new LoginHistoryCollector(),
-            new BrowsingHistoryCollector(),
-            new SoftwareUpdatesCollector(),
+            //new LoginHistoryCollector(),
+            //new BrowsingHistoryCollector(),
+            //new SoftwareUpdatesCollector(),
             new FacterCollector()
     };
     public static void main(String[] args) {
@@ -61,7 +61,7 @@ public class Main {
             toSend.put("orgId", orgId);
         }
         System.out.println(toSend.toString());
-//        sendToServer(toSend.toString());
+        sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
 //        createFileIfNotExists();

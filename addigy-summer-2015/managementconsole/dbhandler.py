@@ -3,8 +3,12 @@ import datetime
 import calendar
 import json
 import ast
+import types
 # ORG_ID = "c7ea34d4-00ba-11e5-a061-3d81414d18d9"
+from bson import ObjectId
+
 ORG_ID = "Addigy"
+volatileFacts = ["memoryfree", "memoryfree_mb", "sp_uptime", "system_uptime", "uptime_seconds"]
 
 def getLoginHistory(db, request):
     body = request.body
@@ -224,19 +228,51 @@ def getTenants(db, request):
 def getVolatileFacts(db, request):
     body = request.body
     dic = ast.literal_eval(body.decode('utf'))
-    startDate = dic['start']
-    endDate = dic['end']
+    startDate = datetime.datetime.strptime(dic['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    endDate = datetime.datetime.strptime(dic['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    start_id = ObjectId.from_datetime(startDate)
+    end_id = ObjectId.from_datetime(endDate)
+
     table = db.facterAudits
-    # try:
-    #     query = table.aggregate([
-    #                { '$match': { 'orgId': orgId } },
-    #                { '$sort': {'connectorId': 1}},
-    #                { '$project': {'_id': 0, 'connectorId': 1}}
-    #     ])
-    # except Exception as e:
-    #     return []
-    # docList = []
-    # for doc in query:
-    #     docList.append(doc['connectorId'])
-    # tenants = {'Tenants': docList}
-    # return tenants
+    try:
+        query = table.aggregate([
+                   { '$match': { 'orgId': ORG_ID } },
+                   {'$match': {'_id': {'$lte': end_id, '$gte': start_id}} },
+                   { '$sort': { '_id': 1 } },
+                   { '$project': {'_id': 1, 'facterReport': 1}}
+        ])
+    except Exception as e:
+        return []
+    docList = []
+    for doc in query:
+        facter = doc['facterReport']
+        docList.append(facter)
+    data = {'volatileData': docList}
+    return data
+
+def getNonvolatileTimeline(db, request):
+    body = request.body
+    dic = ast.literal_eval(body.decode('utf'))
+    startDate = datetime.datetime.strptime(dic['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    endDate = datetime.datetime.strptime(dic['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    start_id = ObjectId.from_datetime(startDate)
+    end_id = ObjectId.from_datetime(endDate)
+
+    table = db.facterAudits
+    try:
+        query = table.aggregate([
+                   { '$match': { 'orgId': 'Addigy' } },
+                   {'$match': {'_id': {'$lte': end_id, '$gte': start_id}} },
+                   { '$sort': { '_id': 1 } },
+                   { '$project': {'_id': 1, 'facterReport': 1, 'orgId': 1, 'connectorId': 1}}
+        ])
+    except Exception as e:
+        return []
+    docList = []
+    for doc in query:
+        facter = doc['facterReport']
+        timestamp = doc['_id'].generation_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        obj = {'facter': facter, 'timestamp': timestamp, 'orgId': doc['orgId'], 'connectorId': doc['connectorId']}
+        docList.append(obj)
+    data = {'timelineData': docList}
+    return data

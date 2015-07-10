@@ -13,6 +13,7 @@
         self.modalTitle='';
         self.domainsIncludes=['/assets/pages/browsingHistory.html','/assets/pages/searchDomains.html'];
         self.updatesIncludes=['/assets/pages/updatesDetails.html'];
+        self.timelineIncludes=['/assets/pages/timeline.html'];
         self.expandLogin=function(){
             self.toIncludeHtml=self.loginIncludes;
             self.modalTitle='Login History';
@@ -24,6 +25,10 @@
         self.expandUpdates=function(){
             self.toIncludeHtml=self.updatesIncludes;
             self.modalTitle='Software Updates';
+        };
+        self.expandTimeline=function(){
+            self.toIncludeHtml=self.timelineIncludes;
+            self.modalTitle='Event Timeline';
         };
         $('#graphModal').on('shown.bs.modal', function (e) {
             $timeout(function() {

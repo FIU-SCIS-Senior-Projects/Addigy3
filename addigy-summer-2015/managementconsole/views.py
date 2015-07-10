@@ -123,6 +123,14 @@ def getVolatileFacts(request):
     jsonstr = json.dumps(dbhandler.getVolatileFacts(db, request), cls=ResponseEncoder)
     return HttpResponse(jsonstr, content_type='application/json')
 
+@csrf_exempt
+def getNonvolatileTimeline(request):
+    client = MongoClient()
+    valid = client.addigydb.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD, mechanism='SCRAM-SHA-1')
+    db = client.addigydb
+    jsonstr = json.dumps(dbhandler.getNonvolatileTimeline(db, request), cls=ResponseEncoder)
+    return HttpResponse(jsonstr, content_type='application/json')
+
 
 class ResponseEncoder(json.JSONEncoder):
     def default(self, obj):

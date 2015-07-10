@@ -16,6 +16,6 @@ urlpatterns = patterns('',
     url(r'^resource/getAvailableUpdates/$', views.getAvailableUpdates, name='getAvailableUpdates'),
     url(r'^resource/getTenants/$', views.getTenants, name='getTenants'),
     url(r'^resource/getVolatileFacts/$', views.getVolatileFacts, name='getVolatileFacts'),
-
+    url(r'^resource/getNonvolatileTimeline/$', views.getNonvolatileTimeline, name='getNonvolatileTimeline'),
 )
 

@@ -1,0 +1,38 @@
+<div ng-controller="NonvolatileTimelineController as ctrl">
+    <div id='login-chart' class="row container-fluid">
+        <div ng-init="ctrl.initializeDates()" ng-model="ctrl.startDate.date" ng-change="ctrl.getTimeline()">
+
+            <!--
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(1)">1 day</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(7)">1 week</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(31)">1 month</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(93)">3 month</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(365)">1 year</button>
+            </div>
+            -->
+            <p>The 5 latest Non-Volatile events...</p>
+
+            <div style="margin-top:10px;">
+            <table class="table">
+                <tr>
+                    <th class="text-center">Property</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Time</th>
+                </tr>
+                <tr ng-repeat="d in ctrl.deltas|limitTo:5">
+                    <td class="text-center">{{ d.property }}</td>
+                    <td class="text-center">{{ d.date }}</td>
+                    <td class="text-center">{{ d.time }}</td>
+                </tr>
+                <tr>
+                    <td class="text-center">
+
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>

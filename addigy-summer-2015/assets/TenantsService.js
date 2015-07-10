@@ -15,6 +15,7 @@
         self.callbacks = [];
 
         self.getTenants = function(Id){
+            console.log(Id);
             self.orgId.org = Id;
             DataRequest.getTenants(self.orgId.org).
                  success(function(data, status, headers, config) {
