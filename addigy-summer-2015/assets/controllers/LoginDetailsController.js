@@ -14,12 +14,14 @@
             var day = date.getDate();
             return month+"/"+day+"/"+year;
         };
-        self.dateToOnlyTimeString = function (timestamp){
+        self.dateToTimeString = function (timestamp){
             var date = new Date(timestamp*1000);
             var militaryHour = date.getHours();
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
             var hours = militaryHour;
             var minutes = date.getMinutes();
-            var seconds = date.getSeconds();
             var ampm = 'AM';
             if(militaryHour>12){
                 ampm = 'PM';
@@ -27,8 +29,7 @@
             }
             var hourStr = hours<10?'0'+hours:''+hours;
             var minuteStr = minutes<10?'0'+minutes:''+minutes;
-            var secondStr = seconds<10?'0'+seconds:''+seconds;
-            return hourStr+":"+minuteStr+":"+secondStr+" "+ampm;
+            return month+"/"+day+"/"+year+"-"+ hourStr+":"+minuteStr+" "+ampm;
          };
         self.getUsersAtHour=function(hour){
             LoginDataService.usersAtHour.values=LoginDataService.usersPerHour[hour];

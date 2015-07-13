@@ -23,7 +23,7 @@
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
                     qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
             },
-	    getTenants: function (Id) {
+	        getTenants: function (Id) {
                 return $http.post('/resource/getTenants/', {orgId: Id});
             },
             getUpdatesConnectorsCount:function(orgId){

@@ -4,7 +4,7 @@
 (function () {
     angular.module('app').controller('LoginGraphController', ['DataRequest', 'LoginDataService', function(DataRequest, LoginDataService) {
         var self = this;
-        self.activities=LoginDataService.activities;
+        //self.activities=LoginDataService.activities;
         self.usersPerHour=LoginDataService.usersPerHour;
         self.labels = LoginDataService.labels;
         self.series = LoginDataService.series;
