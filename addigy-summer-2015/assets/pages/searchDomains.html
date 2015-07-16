@@ -21,19 +21,6 @@
             </select>
         </div>
         <div class="col-sm-4">
-            <label>Time Period</label>
-            <div class="btn-group" data-toggle="buttons">
-                <label ng-click="ctrl.lastWeekSelected()" class="btn btn-default active">
-                    <input checked="checked" type="radio" id="q156" name="quality[25]" value="1" />Last Week
-                </label>
-                <label ng-click="ctrl.lastMonthSelected()"  class="btn btn-default">
-                    <input type="radio" id="q157" name="quality[25]" value="2" />Last Month
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
             <label>Application Type</label>
             <div class="btn-group" data-toggle="buttons">
                 <label id="cloudBtn" ng-click="ctrl.cloudAppsSelected()" class="btn btn-default">
@@ -44,6 +31,22 @@
                 </label>
                 <label id="systBtn" ng-click="ctrl.systemAppsSelected()"  class="btn btn-default">
                     <input type="radio" id="q157" name="quality[25]" value="2" />System
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+            <label>Time Period</label>
+            <div class="btn-group" data-toggle="buttons">
+                <label ng-click="ctrl.lastDaySelected()" class="btn btn-default">
+                    <input type="radio" id="q155" name="quality[25]" value="1" />Last Day
+                </label>
+                <label ng-click="ctrl.lastWeekSelected()" class="btn btn-default active">
+                    <input checked="checked" type="radio" id="q156" name="quality[25]" value="2" />Last Week
+                </label>
+                <label ng-click="ctrl.lastMonthSelected()"  class="btn btn-default">
+                    <input type="radio" id="q157" name="quality[25]" value="3" />Last Month
                 </label>
             </div>
         </div>

@@ -229,7 +229,7 @@ public class BrowsingHistoryCollector implements Collector {
         String query = "SELECT urls.url, urls.title, urls.visit_count, " +
                 "urls.last_visit_time, visits.visit_time FROM urls, visits " +
                 "WHERE urls.id = visits.url AND visits.visit_time >" +lastDateInChromeFormat +
-                " order by visits.visit_time desc limit 10";
+                " order by visits.visit_time desc";
         return query;
     }
     private String getFirefoxQuery() throws IOException {
@@ -238,7 +238,7 @@ public class BrowsingHistoryCollector implements Collector {
                 "FROM moz_places, moz_historyvisits " +
                 "WHERE moz_places.id = moz_historyvisits.place_id " +
                 "AND moz_historyvisits.visit_date>" +lastCollected +
-                " order by moz_historyvisits.visit_date desc limit 10";
+                " order by moz_historyvisits.visit_date desc";
         return query;
     }
     private String getSafariQuery() throws IOException {
@@ -248,7 +248,7 @@ public class BrowsingHistoryCollector implements Collector {
                 "FROM history_visits, history_items " +
                 "WHERE history_visits.history_item = history_items.id " +
                 "AND visit_time>" +lastDateInSafariFormat +
-                " order by visit_time desc limit 10";
+                " order by visit_time desc";
         return query;
     }
 }
