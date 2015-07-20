@@ -12,37 +12,33 @@ public class Main {
     public static final long UPLOAD_INTERVAL_SEC = 0;
     public static final String DEFAULT_ORG_ID = "Addigy";
     public static final String DEFAULT_CONNECTOR_ID = "1111";
+    public static final String DEAFAULT_SERVER_ADDRESS = "http://127.0.0.1:8000/resource/storeCollectedData/";
+    public static HashMap<String, String> collectorSettings;
 
     static Collector[] collectors=new Collector[]{
             new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
             new SoftwareUpdatesCollector(),
-            new FacterCollector()
+//            new FacterCollector()
     };
+
     public static void main(String[] args) {
-        String orgId="";
-        String connectorId="";
-        switch (args.length){
-            case 0:
-                orgId=DEFAULT_ORG_ID;
-                connectorId=DEFAULT_CONNECTOR_ID;
+        collectorSettings = new HashMap<>();
+        collectorSettings.put("org", DEFAULT_ORG_ID);
+        collectorSettings.put("connector", DEFAULT_CONNECTOR_ID);
+        collectorSettings.put("server", DEAFAULT_SERVER_ADDRESS);
+
+        for (int i = 0; i < args.length; i++){
+            String key = args[i];
+            if(++i>args.length)
                 break;
-            case 1:
-                orgId=args[0];
-                connectorId=DEFAULT_CONNECTOR_ID;
-                break;
-            case 2:
-                orgId=args[0];
-                connectorId=args[1];
-                break;
-            default:
-                System.out.println("Proper Usage is: java -jar <OrgId> <ConnectorId>");
-                System.exit(0);
+            String value = args[i];
+            collectorSettings.put(key, value);
         }
         collect();
         try {
             if(needUpload()){
-                uploadData(orgId, connectorId);
+                uploadData();
                 updateLogs();
             }
         } catch (IOException e) {
@@ -53,33 +49,35 @@ public class Main {
         for(Collector c: collectors)
             c.collectData();
     }
-    private static void uploadData(String orgId, String connectorId) throws IOException {
+    private static void uploadData() throws IOException {
         JSONObject toSend=new JSONObject();
         for(Collector c: collectors) {
             toSend.put(c.getKey(), c.getData());
-            toSend.put("connectorId", connectorId);
-            toSend.put("orgId", orgId);
+            toSend.put("connectorId", collectorSettings.get("connector"));
+            toSend.put("orgId", collectorSettings.get("org"));
         }
         System.out.println(toSend.toString());
         sendToServer(toSend.toString());
     }
     private static boolean needUpload() throws IOException {
-//        createFileIfNotExists();
-//        BufferedReader reader = new BufferedReader(new FileReader(LAST_UPLOAD_TIME_PATH));
-//        String dateStr = reader.readLine();
-//        long lastTime = Long.parseLong(dateStr);
-//        long currTime = System.currentTimeMillis() / 1000L;
-//        return (currTime-lastTime)>=UPLOAD_INTERVAL_SEC;
-        return true;
+        if(timesFileWasCreated())
+            return true;
+        BufferedReader reader = new BufferedReader(new FileReader(LAST_UPLOAD_TIME_PATH));
+        String dateStr = reader.readLine();
+        long lastTime = Long.parseLong(dateStr);
+        long currTime = System.currentTimeMillis() / 1000L;
+        return (currTime-lastTime)>=UPLOAD_INTERVAL_SEC;
     }
-    public static void createFileIfNotExists() throws IOException {
+    public static boolean timesFileWasCreated() throws IOException {
         File file = new File(LAST_UPLOAD_TIME_PATH);
         if(!file.exists()) {
             file.createNewFile();
             FileWriter writer = new FileWriter(LAST_UPLOAD_TIME_PATH);
             writer.write(String.valueOf(System.currentTimeMillis() / 1000L));
             writer.close();
+            return true;
         }
+        return false;
     }
     private static void updateLogs() throws IOException {
         updateLastUploadDate();
@@ -94,7 +92,7 @@ public class Main {
         writer.close();
     }
     private static void sendToServer(String input) throws IOException {
-        URL url = new URL("http://127.0.0.1:8000/resource/storeCollectedData/");
+        URL url = new URL(collectorSettings.get("server"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
