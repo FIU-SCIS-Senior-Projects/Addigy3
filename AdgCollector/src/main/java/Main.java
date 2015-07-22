@@ -11,7 +11,7 @@ public class Main {
     public static final String LAST_UPLOAD_TIME_PATH = LOGS_PATH + "adgLastUploadTime";
     public static final long UPLOAD_INTERVAL_SEC = 0;
     public static final String DEFAULT_ORG_ID = "Addigy";
-    public static final String DEFAULT_CONNECTOR_ID = "1111";
+    public static final String DEFAULT_CONNECTOR_ID = "9999";
 
     static Collector[] collectors=new Collector[]{
             //new LoginHistoryCollector(),

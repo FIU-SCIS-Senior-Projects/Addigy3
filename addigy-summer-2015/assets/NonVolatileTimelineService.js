@@ -39,7 +39,9 @@
                  });
         }
 
-        volatileFacts = ["memoryfree", "memoryfree_mb", "sp_uptime", "system_uptime", "uptime_seconds"];
+        volatileFacts = ["memoryfree", "memoryfree_mb", "sp_uptime", "system_uptime", "uptime_seconds",
+                        "swapfree", "swapfree_mb", "mac_battery_charging", "sys_cpu_usage",
+                        "mac_battery_charge_percent", "uptime_hours", "mac_battery_cycles", "net_sock_info"];
 
         function processNonvolatileData(){
             self.data.length = 0;
@@ -88,7 +90,6 @@
                         baseReport[property] = currentFacter[property];
                     }else if(baseReport[property] != currentFacter[property] && typeof baseReport[property] != 'object'){
                         when = new Date(currentTimestamp);
-                        console.log(when);
                         obj = {
                             'time': when.toLocaleTimeString(),
                             'date': when.toLocaleDateString(),

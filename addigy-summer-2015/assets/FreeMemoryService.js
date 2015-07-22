@@ -28,11 +28,17 @@
             self.data.length=0;
             self.times.length=0;
 
+            labelFilter = Math.ceil(self.activity.length / 10);
+
             for(i=0; i<self.activity.length; i++){
                 var curr = self.activity[i];
                 var memory = curr.availMemory;
                 var time = curr.date;
-                self.times.push(time);
+                if(i%labelFilter == 0) {
+                    self.times.push(time);
+                }else{
+                    self.times.push("");
+                }
                 tmp.push(parseFloat(memory));
             }
             self.data.push(tmp);

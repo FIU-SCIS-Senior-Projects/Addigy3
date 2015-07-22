@@ -1,19 +1,23 @@
 <div ng-controller="VolatileDataController as ctrl">
     <div id='login-chart' class="row container-fluid">
-        <div ng-init="ctrl.initializeDates()" ng-model="ctrl.startDate.date" ng-change="ctrl.getMemoryData()">
+        <div ng-init="ctrl.initializeDates()" ng-model="ctrl.startDate.date" ng-change="ctrl.getVolatileFacts()">
 
             <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(1)">1d</button>
-                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(7)">1w</button>
-                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(31)">1m</button>
-                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(93)">3m</button>
-                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(365)">1y</button>
+              <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(1)">1 day</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(7)">1 week</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(31)">1 month</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(93)">3 month</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(365)">1 year</button>
             </div>
 
-            <p>Start Date: {{ ctrl.startDate.date }}</p>
-            <p>End Date: {{ ctrl.endDate.date }}</p>
-            <p>Data:</p>
-            <p>{{ ctrl.data }}</p>
+            <div id='login-chart'class="row container-fluid">
+                <div ng-init="ctrl.getVolatileFacts()" ng-model="ctrl.startDate" ng-change="ctrl.getVolatileFacts()">
+                    <canvas id="line" class="chart chart-line" data="ctrl.cpuMemData"
+                      labels="ctrl.labels" legend="true" series="ctrl.series"
+                      click="ctrl.onClick">
+                    </canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>

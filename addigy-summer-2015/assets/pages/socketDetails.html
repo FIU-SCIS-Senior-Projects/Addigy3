@@ -1,0 +1,55 @@
+<div ng-controller="SocketController as ctrl">
+    <div id='login-chart' class="row container" ng-init="ctrl.initializeDates()">
+        <!--
+        <div ng-repeat="hour in ctrl.hours">
+            <div></div>
+            <div ng-repeat="record in hour">
+                {{ record }}
+            </div>
+        </div>
+        -->
+
+        <div >
+        <div class="well">
+            <div ng-repeat="(hour, data) in ctrl.hours">
+                <div class="collapseHours">
+                    <button data-toggle="collapse" data-target="{{ '#'+hour }}" href="" aria-expanded="true" class="btn btn-box-tool"><i class="fa fa-play"> {{ ctrl.hoursLabels[hour] }}</i></button>
+                </div>
+                <div class="collapse" id="{{ hour }}">
+                    <div class="well users-table">
+                        <div ng-show="data.length==0">
+                            <p>No ports were connected at this time.</p>
+                        </div>
+                        <div ng-show="data.length>0">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr style="height: 40px">
+                                        <th>Source</th>
+                                        <th>Port #</th>
+                                        <th>Tenant</th>
+                                    </tr>
+                                </thead>
+                                <tr ng-repeat="record in data">
+                                    <td>{{ record.source }}</td>
+                                    <td>{{ record.ports }}</td>
+                                    <td>{{ record.tenants }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+
+
+
+
+
+        <!--
+        <p>{{ ctrl.hours }}</p>
+        -->
+
+    </div>
+</div>

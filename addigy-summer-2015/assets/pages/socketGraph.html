@@ -1,0 +1,20 @@
+<div ng-controller="SocketController as ctrl">
+    <div id='login-chart' class="row container-fluid" ng-init="ctrl.initializeDates()">
+        <div class="container">
+            <div class="container">
+                <div class="btn-group col-md-9" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(1)">Today</button>
+                    <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(7)">Last Week</button>
+                    <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDateByMonth()">Last Month</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <canvas id="line" class="chart chart-line" data="ctrl.graphData"
+                  labels="ctrl.graphLabels" legend="true" series="ctrl.graphSeries" colours="ctrl.lineChartColors"
+                  click="onClick">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>

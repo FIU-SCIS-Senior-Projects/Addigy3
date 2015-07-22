@@ -10,7 +10,7 @@
         self.getFacter = function(){
             DataRequest.getFacter().
                  success(function(data, status, headers, config) {
-                     self.data.push(data["facterReport"]);
+                     self.data.push(data["facterReport"].pop());
                      //self.table = processFacterReport(self.data[0]);
                     console.log(self.data[0]);
                  }).error(function(data, status, headers, config) {

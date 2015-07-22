@@ -18,7 +18,7 @@ def getLoginHistory(db, request):
     table = db.loginAudits
     try:
         result = table.aggregate([
-            {'$match':{'orgId':ORG_ID}},
+            {'$match':{'orgId':ORG_ID, 'connectorID':'1111'}},
             {'$unwind': '$activity'},
             {'$match': {'activity.login': {'$lte': logout}, 'activity.logout': {'$gte': login}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},
@@ -239,14 +239,17 @@ def getVolatileFacts(db, request):
                    { '$match': { 'orgId': ORG_ID } },
                    {'$match': {'_id': {'$lte': end_id, '$gte': start_id}} },
                    { '$sort': { '_id': 1 } },
-                   { '$project': {'_id': 1, 'facterReport': 1}}
+                   { '$project': {'_id': 1, 'facterReport': 1, 'connectorId': 1}}
         ])
     except Exception as e:
         return []
     docList = []
     for doc in query:
         facter = doc['facterReport']
-        docList.append(facter)
+        timestamp = doc['_id'].generation_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        connectorId = doc['connectorId']
+        obj = {'facter': facter, 'timestamp': timestamp, 'connectorId': connectorId};
+        docList.append(obj)
     data = {'volatileData': docList}
     return data
 

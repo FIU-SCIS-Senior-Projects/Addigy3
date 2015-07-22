@@ -1,0 +1,132 @@
+<div ng-controller="DashboardsController as ctrl" class="all-main">
+
+     <div class="row">
+         <div class="col-md-12">
+         <div class="box box-primary">
+            <div class="box-header with-border">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/organizationTenants.html'"></div>
+              </div>
+            </div>
+          </div>
+         </div>
+     </div>
+
+    <div class="row">
+        <!-- FACTER REPORT-->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Facter Report</h3>
+              <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#facterModal" data-widget="collapse" ng-click="ctrl.expandFacter()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/facterReport.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+        <!-- FREE MEMORY -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Available Memory</h3>
+              <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandMemory()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/freeMemory.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+	<!-- VOLATILE DATA -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">CPU and Memory Utilization</h3>
+                <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandCpuMemUtilization()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/volatileData.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NONVOLATILE TIMELINE -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Non-Volatile Event Timeline</h3>
+              <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandTimeline()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/nonvolatileTimeline.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
+	<!-- VOLATILE DATA -->
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Network Socket Data</h3>
+                <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandSocketInfo()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/socketGraph.html'"></div>
+                  <div ng-include="'/assets/pages/socketDetails.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+      <!-- Modal -->
+          <div class="modal fade" id="graphModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" style="color:white;" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">{{ ctrl.modalTitle }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div ng-repeat="file in ctrl.includeHtml">
+                        <div ng-include=file></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+

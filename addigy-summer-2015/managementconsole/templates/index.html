@@ -6,7 +6,8 @@
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/app.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/loginHistory.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/timeline.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/allGraphs.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/sockets.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="assets/css/dashboards.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/domainsHistory.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/lib/css/angular-chart.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/lib/css/font-awesome.min.css">
@@ -18,6 +19,13 @@
     <div class="main-header">
         <img src="assets/img/logo.png" alt="Addigy" />
     </div>
+
+    <ul ng-controller="IndexController as ctrl" class="nav nav-tabs dash-nav-bar">
+        <li ng-click = "ctrl.dash1Selected()" ng-class="ctrl.activeTab==0?'active':''"><a href="#dashboard1">Dashboard1</a></li>
+        <li ng-click = "ctrl.dash2Selected()" ng-class="ctrl.activeTab==1?'active':''"><a href="#dashboard2" >Dashboard2</a></li>
+        <li ng-click = "ctrl.injectSelected()" ng-class="ctrl.activeTab==2?'active':''"><a href="#injectFacter" >Inject Facter</a></li>
+    </ul>
+
 	<body class="main-background">
         <div ng-view></div>
 	</body>
@@ -38,11 +46,13 @@
     <script src="assets/FreeMemoryService.js"></script>
     <script src="assets/TenantsService.js"></script>
     <script src="assets/VolatileDataService.js"></script>
-    <script src="assets/NonvolatileTimelineService.js"></script>
+    <script src="assets/NonVolatileTimelineService.js"></script>
+    <script src="assets/SocketService.js"></script>
+    <script src="assets/controllers/IndexController.js"></script>
     <script src="assets/controllers/TenantsController.js"></script>
     <script src="assets/controllers/LoginGraphController.js"></script>
     <script src="assets/controllers/LoginDetailsController.js"></script>
-    <script src="assets/controllers/AllGraphsController.js"></script>
+    <script src="assets/controllers/DashboardsController.js"></script>
     <script src="assets/controllers/FacterReportController.js"></script>
     <script src="assets/controllers/BrowsingHistoryController.js"></script>
     <script src="assets/controllers/SearchDomainController.js"></script>
@@ -51,4 +61,6 @@
     <script src="assets/controllers/FreeMemoryController.js"></script>
     <script src="assets/controllers/VolatileDataController.js"></script>
     <script src="assets/controllers/NonvolatileTimelineController.js"></script>
+    <script src="assets/controllers/InjectFacterController.js"></script>
+    <script src="assets/controllers/SocketController.js"></script>
 </html>

@@ -3,6 +3,7 @@ from managementconsole import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^injectFacter/$', views.injectFacter, name='injectFacter'),
     url(r'^resource/dummyEndpoint/(?P<option>[-\w]+)/$', views.dummyEndpoint, name='dummyEndpoint'),
     url(r'^resource/listTables/$', views.listTables, name='listTables'),
     url(r'^resource/storeCollectedData/$', views.storeCollectedData, name='storeCollectedData'),

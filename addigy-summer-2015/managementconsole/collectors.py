@@ -104,7 +104,7 @@ def verifyCollectorId(db,data):
 
     try:
         result = table.aggregate([
-                {'$match': {'orgId': 'addigy'}}]);
+                {'$match': {'orgId': org}}]);
     except Exception as e:
         #Check if error is collection DNE or if zero query results
         collections = db.collection_names()

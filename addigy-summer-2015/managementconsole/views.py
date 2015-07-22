@@ -11,6 +11,9 @@ import managementconsole.dbhandler as dbhandler
 def index(request):
     return render(request, 'index.html')
 
+def injectFacter(request):
+    return render(request, 'injectFacter.html')
+
 @csrf_exempt
 def listTables(request):
     client = MongoClient()

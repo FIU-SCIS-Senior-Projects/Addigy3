@@ -92,7 +92,7 @@ header h1 {
 
 .cd-timeline-block {
   position: relative;
-  margin: 2em 0;
+  margin: 1em 0;
 }
 .cd-timeline-block:after {
   content: "";
@@ -107,7 +107,7 @@ header h1 {
 }
 @media only screen and (min-width: 1170px) {
   .cd-timeline-block {
-    margin: 4em 0;
+    margin: 2em 0;
   }
   .cd-timeline-block:first-child {
     margin-top: 0;
@@ -239,6 +239,11 @@ header h1 {
 .cd-timeline-content h2 {
   color: #303e49;
 }
+.cd-timeline-content h3 {
+  color: #303e49;
+  margin-top:5px;
+  margin-bottom:2px;
+}
 .cd-timeline-content p, .cd-timeline-content .cd-read-more, .cd-timeline-content .cd-date {
   font-size: 13px;
   font-size: 0.8125rem;
@@ -292,7 +297,7 @@ header h1 {
 @media only screen and (min-width: 1170px) {
   .cd-timeline-content {
     margin-left: 0;
-    padding: 1.6em;
+    /*padding: 1.6em;*/
     width: 45%;
   }
   .cd-timeline-content::before {
