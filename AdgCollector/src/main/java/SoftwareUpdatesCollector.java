@@ -23,9 +23,17 @@ public class SoftwareUpdatesCollector implements Collector{
                 String line = scanner.nextLine();
                 int startIndex = line.indexOf('*');
                 if (startIndex < 0) continue;
-                String label = line.substring(startIndex + 1);
-                updates.put(label);
-                System.out.println(label);
+                String update = line.substring(startIndex + 1);
+                line = scanner.nextLine();
+                int endIndex = line.indexOf("(");
+                String updateName = line.substring(0,endIndex);
+                updateName.replace("(?i)update", "");
+                updateName.trim();
+                JSONObject currUpdate = new JSONObject();
+                currUpdate.put("updateName",update);
+                currUpdate.put("updateApp", updateName);
+                updates.put(currUpdate);
+                System.out.println(currUpdate);
             }
         } catch (IOException e) {
             e.printStackTrace();

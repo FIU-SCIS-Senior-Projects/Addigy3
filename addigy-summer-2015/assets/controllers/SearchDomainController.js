@@ -13,13 +13,14 @@
         self.selectedUser="All";
         self.selectedType="All";
         self.daysLabels={};
+        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         self.visitsPerDayPerDomain={};
         self.labels=[];
         self.series=[];
         self.graphData=[];
         self.startDate=0;
         self.endDate=0;
-        var faviconurl =
+        self.labelsForDay=false;
         self.lineChartColors = [
             {"fillColor": "rgba(60,141,188,0.2) ","strokeColor": "rgba(60,141,188,1) ","pointColor": "rgba(60,141,188,1) ", "pointHighlightStroke":"rgba(60,141,188,1) "},
             {"fillColor": "rgba(141,188,60,0.2) ","strokeColor": "rgba(141,188,60,1) ","pointColor": "rgba(141,188,60,1) ", "pointHighlightStroke":"rgba(141,188,60,1) "},
@@ -54,6 +55,7 @@
                 topQty, self.startDate, self.endDate, typeToSend)
                 .success(function(data, status, headers, config) {
                     self.domainsFiltered=data['domainList'];
+                    //console.log(self.domainsFiltered);
                     if (self.domainsFiltered.length!==0) processDomainsData();
                     else setValuesForNoDomains();
             }).error(function(data, status, headers, config) {
@@ -92,13 +94,33 @@
             else $('#topSelect').prop('disabled', 'disabled');
         };
         self.lastMonthSelected=function(){
+            self.labelsForDay=false;
             var today=new Date();
             var oneMonthAgo=new Date();
             oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
             dateRangeChanged(today, oneMonthAgo);
+            populateGraphLabelsForDays();
+            updateGraph();
         };
         self.lastWeekSelected=function(){
-            setGraphForLastWeek();
+            self.labelsForDay=false;
+            var today=new Date();
+            var oneWeekAgo=new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
+            dateRangeChanged(today, oneWeekAgo);
+            populateGraphLabelsForDays();
+            updateGraph();
+        };
+        self.lastDaySelected=function(){
+            self.labelsForDay=true;
+            var today=new Date();
+            var oneDayAgo=new Date();
+            oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+            //dateRangeChanged(today, oneDayAgo);
+            self.startDate=oneDayAgo.getTime();
+            self.endDate=today.getTime();
+            populateGraphLabelsForHours();
+            updateGraph();
         };
         self.cloudAppsSelected=function(){
             self.selectedType="cloud";
@@ -112,26 +134,22 @@
             self.selectedType="syst";
             updateGraph();
         };
-        function setGraphForLastWeek (){
-            var today=new Date();
-            var oneWeekAgo=new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 6);
-            dateRangeChanged(today, oneWeekAgo);
-        }
         function dateRangeChanged(today, pastDate){
             today.setHours(23,59,0,0);
             pastDate.setHours(0,0,0,0);
             self.startDate=pastDate.getTime();
             self.endDate=today.getTime();
-            populateGraphLabels();
-            updateGraph();
         }
         Date.prototype.addDays = function(days) {
-            var dat = new Date(this.valueOf())
+            var dat = new Date(this.valueOf());
             dat.setDate(dat.getDate() + days);
             return dat;
-        }
-        function populateGraphLabels(){
+        };
+        Date.prototype.addHours= function(hours){
+            this.setHours(this.getHours()+hours);
+            return this;
+        };
+        function populateGraphLabelsForDays(){
             var i=0;
             var start = new Date(self.startDate);
             var end = new Date(self.endDate);
@@ -141,6 +159,29 @@
                 start = start.addDays(1);
                 i++;
             }
+        }
+        function populateGraphLabelsForHours(){
+            var i=0;
+            var start = new Date(self.startDate);
+            var end = new Date(self.endDate);
+            self.daysLabels={};
+            while(start <= end){
+                self.daysLabels[i]= getFormattedHoursLabel(start);
+                start = start.addHours(1);
+                i++;
+            }
+        }
+        function getFormattedHoursLabel(date){
+            var monthName = monthNames[date.getMonth()];
+            var militaryHour = date.getHours();
+            var day = date.getDate();
+            var hours = militaryHour;
+            var ampm = 'AM';
+            if(militaryHour>12){
+                ampm = 'PM';
+                hours = militaryHour % 12;
+            }
+            return monthName+" "+day+" - " + hours+" "+ampm;
         }
         function processDomainsData(){
             self.visitsPerDayPerDomain={};
@@ -152,7 +193,11 @@
                 var visits=currDomain['visits'];
                 for(j=0;j<visits.length;j++){
                     var visitDate=new Date(visits[j]);
-                    var visitDateStr=visitDate.toDateString();
+                    var visitDateStr = "";
+                    if(self.labelsForDay)
+                        visitDateStr = getFormattedHoursLabel(visitDate);
+                    else
+                        visitDateStr = visitDate.toDateString();
                     visitsPerDomain[visitDateStr] ? visitsPerDomain[visitDateStr].value += 1 :
                         visitsPerDomain[visitDateStr] = {value: 1};
                 }
@@ -180,7 +225,7 @@
                 self.graphData.push(domainGraphData);
             }
         }
-        setGraphForLastWeek();
+        self.lastWeekSelected();
 
         function setValuesForNoDomains(){
             self.series.splice(0,self.series.length);

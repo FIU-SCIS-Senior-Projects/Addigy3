@@ -14,7 +14,7 @@
         self.dataTable = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
           ['Updates', 0],
-          ['Machines', 0],
+          ['Devices', 0],
         ]);
         var options = {
           width: 800, height: 240,

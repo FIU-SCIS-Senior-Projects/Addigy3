@@ -80,6 +80,11 @@
             selected.setHours(0,0,0,0);
             return selected.getTime()/1000;
         }
+        function isLogoutAtShowingDate(logoutDate){
+            return (logoutDate.getDate() == self.selectedDate.getDate()
+            && logoutDate.getMonth() == self.selectedDate.getMonth()
+            && logoutDate.getFullYear() == self.selectedDate.getFullYear())
+        }
         function processLoginData(){
             if(isShowingToday()) populateTimesArray(getCurrentHour());
             else populateTimesArray(23);
@@ -95,9 +100,11 @@
                     var logoutHour = logoutDate.getHours();
                     if(loginDate.getMinutes()!=0&&loginHour!=23)
                         loginHour+=1;
-                    if(isStillLoggedIn(currAct.logout)){
+                    if(isStillLoggedIn(currAct.logout) || logoutDate.getDate()!==loginDate.getDate() || logoutDate.getDate()!==loginDate.getDate()){
                         if(isShowingToday())
                             logoutHour=getCurrentHour();
+                        else if(isLogoutAtShowingDate(logoutDate))
+                            loginHour = logoutDate.getHours();
                         else
                             logoutHour=23;
                     }
@@ -108,7 +115,6 @@
                     for(k=loginHour;k<=logoutHour;k++){
                         self.usersPerHour[self.hoursLabels[k]].push(new user(curr.username, currAct.login, currAct.logout, curr.connectorId));
                     }
-
                 }
             }
             populateGraphData();
@@ -130,20 +136,5 @@
             this.logout=logout;
             this.connectorId = connectorId;
         }
-        self.getMachineLoginHistory=function(chosenDate){
-            self.selectedDate=chosenDate;
-            chosenDate.setHours(0,0,0,0);
-            var startTime=chosenDate.getTime()/1000;
-            chosenDate.setHours(23,0,0,0);
-            var endTime=chosenDate.getTime()/1000;
-            DataRequest.getHistory(startTime, endTime).
-                success(function(data, status, headers, config) {
-                    self.activities=data['loginHistory'];
-                    processLoginData();
-                }).error(function(data, status, headers, config) {
-                     console.log(data);
-                });
-        };
-
     }]);
 })();

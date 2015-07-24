@@ -13,7 +13,10 @@
             DataRequest.getMostVisistedDomains().
                 success(function(data, status, headers, config) {
                     self.domains=data['mostVisited'];
-                    processDomainsData();
+                    if (self.domains.length===0)
+                        populateEmptyGraph();
+                    else
+                        processDomainsData();
                 }).error(function(data, status, headers, config) {
                      console.log(data);
                 });
@@ -31,5 +34,16 @@
             }
             self.graphData.push(domainsData);
         };
+        function populateEmptyGraph(){
+            var domainsData=[];
+            self.series.splice(0,self.series.length);
+            self.series.push("no domains found")
+            var i;
+            for(i=0; i< 5; i++){
+                self.labels.push("");
+                domainsData.push(0);
+            }
+            self.graphData.push(domainsData);
+        }
     }]);
 })();

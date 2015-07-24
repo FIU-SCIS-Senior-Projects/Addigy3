@@ -1,21 +1,5 @@
 <div ng-controller="DashboardsController as ctrl" class="all-main">
     <div class="row">
-        <!-- LOGIN CHART -->
-        <div class="col-md-6">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Login History</h3>
-              <div class="box-tools pull-right">
-                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandLogin()"><i class="fa fa-expand"></i></button>
-              </div>
-            </div>
-            <div class="box-body" style="display: block;">
-              <div class="chart login-chart">
-                <div ng-include="'/assets/pages/loginGraph.html'"></div>
-              </div>
-            </div>
-          </div>
-        </div>
         <!-- DOMAINS CHART -->
         <div class="col-md-6">
           <div class="box box-primary">
@@ -32,8 +16,6 @@
             </div>
           </div>
         </div>
-    </div>
-    <div class="row">
         <!-- UPDATES CHART -->
         <div class="col-md-6">
           <div class="box box-primary">
@@ -51,6 +33,24 @@
           </div>
         </div>
     </div>
+    <div class="row">
+         <!-- LOGIN CHART -->
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Login History</h3>
+              <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandLogin()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/loginGraph.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
     <div class="container">
       <!-- Modal -->
           <div class="modal fade" id="graphModal" role="dialog">
@@ -62,9 +62,9 @@
                   <h4 class="modal-title">{{ ctrl.modalTitle }}</h4>
                 </div>
                 <div class="modal-body">
-                    <div ng-repeat="file in ctrl.includeHtml">
+                    <row ng-repeat="file in ctrl.includeHtml">
                         <div ng-include=file></div>
-                    </div>
+                    </row>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

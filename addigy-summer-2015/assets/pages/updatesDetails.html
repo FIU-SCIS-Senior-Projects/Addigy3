@@ -1,34 +1,63 @@
 <div ng-controller="UpdatesDetailsController as ctrl">
-    <div ng-repeat="(updateId, updateName) in ctrl.updates">
-        <div class="accordion">
-          <div id="null" class="panel-group" role="tablist" aria-multiselectable="true">
-              <div ng-repeat="node in ctrl.policyTree | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'"></div>
-          </div>
+    <div style="padding-top: 20px" class="col-md-12">
+        <div class="row">
+            <canvas style="height: 300px;" id="line" colours="ctrl.lineChartColors" class="chart chart-line" data="ctrl.graphData"
+                labels="ctrl.labels" legend="true" series="ctrl.series" click="onClick" options=ctrl.options>
+            </canvas>
         </div>
-        <script type="text/ng-template" id="tree">
-            <div ng-show="ctrl.policyHasChildren(node.policyId)" class="collapseHours">
-                 <div data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" href="" aria-expanded="false" aria-controls="{{ node.policyId+updateId}}" class="container btn btn-box-tool">
-                     <div class="col-sm-1"><i class="fa fa-play"></i></div>
-                     <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
-                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.policiesNames[node.policyId] }}</span></div>
-                     <div class="col-sm-1" style="text-align: left;"><span style="color: #BC3C8D">{{ ctrl.getPolicyTotalCount(node.policyId, updateId) }} machine(s)</span></div>
-                     <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
-                     <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
-                 </div>
-             </div>
-            <div ng-hide="ctrl.policyHasChildren(node.policyId)" class="container">
-                <div class="col-sm-3" style="text-align: left;"><span style="color: #3C8DBC">{{ updateName }}</span></div>
-                <div class="col-sm-2" style="text-align: left;"><span style="color: #BC6B3C">{{ ctrl.getConnectorId(node.policyId, updateId) }}</span></div>
-                <div class="col-sm-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
-                <div class="col-sm-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
+    </div>
+    <div class="col-md-12">
+        <div ng-repeat="(updateId, updateName) in ctrl.updates">
+            <h4><i class="fa fa-arrow-circle-o-up" style="color: #337ab7;"></i> {{ updateName.updateName }} </h4>
+            <div class="">
+                <div ng-repeat="node in ctrl.policyTree | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'"></div>
             </div>
-            <div class="collapse" id="{{ node.policyId+updateId }}">
-                <div class="well users-table">
-                    <div ng-repeat="node in node.children | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'">
-                        <div class="panel panel-default" ></div>
+            <script type="text/ng-template" id="tree">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div>
+                            <a href="" data-toggle="collapse" data-target="{{ '#'+ node.policyId + updateId}}" aria-controls="{{ node.policyId+updateId}}" style="color: white;">
+                                {{ ctrl.policiesNames[node.policyId] }}
+                                <span class="pull-right">
+                                    <div class="col-md-1"><i class="fa fa-check" style="color:#5cb85c"></i></div>
+                                    <div class="col-md-1"><i class="fa fa-stop" style="color:#d9534f"></i></div>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="panel-body collapse" id="{{ node.policyId+updateId }}">
+                        <div class="">
+                            <div ng-show="ctrl.hasDevices(node.policyId, updateId)" class="panel panel-default">
+                                <!-- Default panel contents -->
+                                <div class="panel-heading">Devices</div>
+                                <!-- Table -->
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Connector Id</th>
+                                            <th>Update</th>
+                                            <th>Ignore</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="device in ctrl.getDevices(node.policyId, updateId)">
+                                            <td>{{device  }}</td>
+                                            <td><a href=""><i class="fa fa-check" style="color:#5cb85c"></i></a></td>
+                                            <td><a href=""><i class="fa fa-stop" style="color:#d9534f"></i></a> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                         </div>
+                        <div class="col-md-12" style="">
+                            <div  style="margin-left: 10px;">
+                                <div ng-repeat="node in node.children | filter: ctrl.policyHasUpdates(updateId)" ng-include="'tree'"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </script>
+
+            </script>
+        </div>
     </div>
 </div>

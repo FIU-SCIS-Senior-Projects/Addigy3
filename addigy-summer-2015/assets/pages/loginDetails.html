@@ -28,8 +28,8 @@
                                 <tr ng-repeat="user in ctrl.getUsersAtHour(label)">
                                     <td>{{ user.connectorId }}</td>
                                     <td>{{ user.username }}</td>
-                                    <td>{{ ctrl.dateToOnlyTimeString(user.login)}}</td>
-                                    <td>{{ ctrl.dateToOnlyTimeString(user.logout)}}</td>
+                                    <td>{{ ctrl.dateToTimeString(user.login)}}</td>
+                                    <td>{{ ctrl.dateToTimeString(user.logout)}}</td>
                                 </tr>
                             </table>
                         </div>
