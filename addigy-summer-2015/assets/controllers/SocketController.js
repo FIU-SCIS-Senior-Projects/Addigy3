@@ -86,7 +86,9 @@
         ];
 
         self.initializeDates = function(){
-            self.changeStartDate(1);
+            self.startDate.date = new Date();
+            self.startDate.date.setHours(0,0,0,0);
+            self.getSocketData();
         };
 
         self.changeStartDate = function(offset){
