@@ -9,7 +9,7 @@
             </div>
             <div class="form-group">
                 <label for="connectorId" class="box-title">Tenant:</label>
-                <select ng-change="ctrl.alertCallbacks()" ng-model="ctrl.selectedTenant.tenant" id="connectorId" class="dropdown form-control">
+                <select ng-init="ctrl.alertCallbacks()" ng-change="ctrl.alertCallbacks()" ng-model="ctrl.selectedTenant.tenant" id="connectorId" class="dropdown form-control">
                     <option ng-repeat="tenant in ctrl.tenants" value="{{ tenant }}">{{tenant}}</option>
                 </select>
             </div>

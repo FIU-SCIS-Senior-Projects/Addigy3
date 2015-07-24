@@ -76,11 +76,12 @@ def addNewDomainVisists(table,username,connectorId, domain, visitedDates):
     table.update({'connectorId': connectorId, 'username': username, 'domain':domain}, {'$push': {'visits': {'$each': visitedDates}}})
 
 def storeFacterReport(db, data):
-    table = db.facterAudits
-    facterReport = data["facterReport"]
-    connectorId = data['connectorId']
-    orgId = data['orgId']
-    postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'facterReport':facterReport}).inserted_id
+    if 'facterReport' in data:
+        table = db.facterAudits
+        facterReport = data["facterReport"]
+        connectorId = data['connectorId']
+        orgId = data['orgId']
+        postid = table.insert_one({'connectorId':connectorId, 'orgId':orgId, 'facterReport':facterReport}).inserted_id
 
 def storeAvailableMemory(db, data):
     table = db.availableMemory

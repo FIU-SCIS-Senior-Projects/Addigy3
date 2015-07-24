@@ -13,7 +13,6 @@
         }
 
         self.getMemoryData = function(orgId, selectedTenant){
-            console.log(orgId, selectedTenant);
             DataRequest.getMemory(self.datePickedDate.date, orgId.org, selectedTenant.tenant).
                  success(function(data, status, headers, config) {
                      self.activity=data['history'];

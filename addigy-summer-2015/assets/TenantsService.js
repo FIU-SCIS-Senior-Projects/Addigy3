@@ -15,7 +15,6 @@
         self.callbacks = [];
 
         self.getTenants = function(Id){
-            console.log(Id);
             self.orgId.org = Id;
             DataRequest.getTenants(self.orgId.org).
                  success(function(data, status, headers, config) {
@@ -32,6 +31,7 @@
                 self.tenants.push(self.activity[i]);
             }
             self.selectedTenant.tenant = self.tenants[0];
+            self.alertCallbacks();
         }
 
         self.registerCallback = function(fun){

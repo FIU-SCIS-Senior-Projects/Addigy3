@@ -23,7 +23,7 @@
                 return $http.post('/resource/getDomainInfo/', {domain:domain, user:user,
                     qtyToSelect:qtyToSelect, startDate:startDate, endDate:endDate, type:type});
             },
-	    getTenants: function (Id) {
+            getTenants: function (Id) {
                 return $http.post('/resource/getTenants/', {orgId: Id});
             },
             getUpdatesConnectorsCount:function(orgId){
@@ -31,7 +31,7 @@
             },
             getAvailableUpdates:function(orgId, startDate, endDate){
                 return $http.post('/resource/getAvailableUpdates/',{orgId: orgId, startDate:startDate, endDate:endDate});
-            }
+            },
             getVolatileFacts: function (startDate, endDate) {
                 return $http.post('/resource/getVolatileFacts/', {startDate: startDate, endDate: endDate});
             },

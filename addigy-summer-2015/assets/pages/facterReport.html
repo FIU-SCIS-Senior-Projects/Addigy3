@@ -1,24 +1,17 @@
 <div ng-controller="FacterReportController as ctrl">
 
-    <div >
-        <button ng-click="ctrl.displayFacter()">Display Facter Report</button>
+    <div>
+        <button data-toggle="collapse" data-target="#facterTable" href="" aria-expanded="false" class="btn btn-info">Display Facter Report</button>
+    </div>
+    <div class="collapse" id="facterTable">
+        <div ng-init="ctrl.displayFacter()">
+        <table ng-repeat="json in ctrl.data">
+            <tr ng-repeat="(key, value) in json">
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        </table>
+        </div>
     </div>
 
-    <div id="facterTable"></div>
-
-
-    <table ng-repeat="json in ctrl.data">
-        <tr ng-repeat="(key, value) in json">
-            <td>{{ key }}</td>
-            <td>{{ value }}</td>
-        </tr>
-    </table>
-
-    <!--
-    <div >
-        <button ng-click="ctrl.displayTable()">Display Facter Report</button>
-    </div>
-
-    <div bind-html-unsafe="ctrl.table"></div>
-    -->
 </div>
