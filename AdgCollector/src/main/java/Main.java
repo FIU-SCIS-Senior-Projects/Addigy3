@@ -12,8 +12,7 @@ public class Main {
     public static final long UPLOAD_INTERVAL_SEC = 0;
     public static final String DEFAULT_ORG_ID = "Addigy";
     public static final String DEFAULT_CONNECTOR_ID = "1111";
-    public static final String DEAFAULT_SERVER_ADDRESS = "http://127.0.0.1:8000/resource/storeCollectedData/";
-    public static HashMap<String, String> collectorSettings;
+    public static final String DEAFAULT_SERVER_ADDRESS = "http://127.0.0.1:8000/resource/storeCollectedData/";public static HashMap<String, String> collectorSettings;
 
     static Collector[] collectors=new Collector[]{
             new LoginHistoryCollector(),

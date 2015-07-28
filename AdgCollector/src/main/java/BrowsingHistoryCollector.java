@@ -39,17 +39,29 @@ public class BrowsingHistoryCollector implements Collector {
             System.out.println("For user: " + user);
             List<UrlEntry> urls = new ArrayList<>();
             try {
-                if(copyChromeDatabase(getUserPath(user)))
+                if (copyChromeDatabase(getUserPath(user)))
                     collectChromeData(urls, user);
-                if(copyFirefoxDatabase(getUserPath(user)))
+            }catch(Exception e){
+                e.printStackTrace();
+
+            }
+            try {
+                if (copyFirefoxDatabase(getUserPath(user)))
                     collectFirefoxDbInfo(urls, user);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try {
                 if(copySafariDatabase(getUserPath(user)))
                     collectSafariDbInfo(urls, user);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try {
                 addEntriesToCachedFile(urls);
                 saveLastCollectedTime();
-            }
-            catch (Exception e) {
-                e.printStackTrace ();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         new ApplicationsCollector().collectData();
