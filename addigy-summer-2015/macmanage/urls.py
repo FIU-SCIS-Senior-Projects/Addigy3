@@ -3,6 +3,7 @@ from managementconsole import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    url(r'^injectFacter/$', views.injectFacter, name='injectFacter'),
     url(r'^resource/dummyEndpoint/(?P<option>[-\w]+)/$', views.dummyEndpoint, name='dummyEndpoint'),
     url(r'^resource/listTables/$', views.listTables, name='listTables'),
     url(r'^resource/storeCollectedData/$', views.storeCollectedData, name='storeCollectedData'),
@@ -16,6 +17,6 @@ urlpatterns = patterns('',
     url(r'^resource/getAvailableUpdates/$', views.getAvailableUpdates, name='getAvailableUpdates'),
     url(r'^resource/getTenants/$', views.getTenants, name='getTenants'),
     url(r'^resource/getVolatileFacts/$', views.getVolatileFacts, name='getVolatileFacts'),
-
+    url(r'^resource/getNonvolatileTimeline/$', views.getNonvolatileTimeline, name='getNonvolatileTimeline'),
 )
 

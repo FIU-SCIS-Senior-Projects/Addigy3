@@ -5,12 +5,9 @@
     angular.module('app').controller('TenantsController', ['DataRequest', 'TenantsService', function(DataRequest, TenantsService) {
         var self = this;
         self.tenants = TenantsService.tenants;
-
         self.getTenants = TenantsService.getTenants;
-
         self.orgId = TenantsService.orgId;
         self.selectedTenant = TenantsService.selectedTenant;
-
         self.alertCallbacks = TenantsService.alertCallbacks;
     }]);
 })();

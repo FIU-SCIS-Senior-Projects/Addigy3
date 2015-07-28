@@ -11,6 +11,9 @@
         self.dash1Selected= function(){
             self.activeTab=0;
         };
+        self.injectSelected= function(){
+            self.activeTab=2;
+        };
 
     }]);
 })();

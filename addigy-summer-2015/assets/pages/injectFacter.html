@@ -1,0 +1,18 @@
+<div ng-controller="InjectFacterController as ctrl" class="all-main">
+    <div>
+        <div class="row">
+            <button ng-click="ctrl.initialFacter()">Display Facter Report</button>
+            <button ng-click="ctrl.injectData()">Inject Facter Report</button>
+        </div>
+        <div class="row">
+            <label for="org">OrgId</label>
+            <input name="org" ng-model="ctrl.data.org"/><br>
+            <label for="connector">ConnectorId</label>
+            <input name="connector" ng-model="ctrl.data.connector"/>
+            <textarea id="facterarea" class="col-md-12" name="ctrl.data.report" ng-model="ctrl.data.report" ng-init="ctrl.initialFacter()" ng-change="displatFacter()" rows="20"></textarea>
+        </div>
+
+    </div>
+
+</div>
+

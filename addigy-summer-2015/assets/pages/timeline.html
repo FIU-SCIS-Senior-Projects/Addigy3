@@ -1,0 +1,62 @@
+<div ng-controller="NonvolatileTimelineController as ctrl">
+    <div id='login-chart' class="row container-fluid">
+        <div ng-init="ctrl.initializeDates()" ng-model="ctrl.startDate.date" ng-change="ctrl.getTimeline()">
+
+            <div class="btn-group col-md-8 text-center" role="group" aria-label="...">
+              <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(1)">1 day</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(7)">1 week</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(31)">1 month</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(93)">3 months</button>
+                <button type="button" class="btn btn-default" ng-click="ctrl.changeStartDate(365)">1 year</button>
+            </div>
+            <div class="col-md-4 text-right">
+                <p>{{ ctrl.deltas.length }} events</p>
+            </div>
+
+            <div style="background-color: #F1F1F1; padding: 5px 0px; margin-top:10px;" class="col-md-12">
+                <div class="text-center">
+                        <h3>Today</h3>
+                    </div>
+            <section id="cd-timeline" class="cd-container">
+
+                <div class="cd-timeline-block" ng-repeat="d in ctrl.deltas"
+                     data-toggle="collapse" href="#collapse{{$index + 1}}" aria-expanded="false" aria-controls="collapseExample">
+
+                    <div class="cd-timeline-img cd-info">
+                        <i class="fa fa-cogs fa-2x"></i>
+                    </div> <!-- cd-timeline-img -->
+                    <div class="cd-timeline-content">
+                        <h3 class="demo">{{ d.property }}</h3>
+                        <p><i class="fa fa-clock-o"></i> {{ d.time }}</p>
+                        <div class="collapse" id="collapse{{$index + 1}}">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Old Value:</td>
+                                    <td>{{ d.oldValue }}</td>
+                                </tr>
+                                <tr>
+                                    <td>New Value:</td>
+                                    <td>{{ d.newValue }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Organization:</td>
+                                    <td>{{ d.orgId }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Machine:</td>
+                                    <td>{{ d.connectorId }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <span class="cd-date">{{ d.date }}</span>
+                    </div> <!-- cd-timeline-content -->
+                </div> <!-- cd-timeline-block -->
+
+
+            </section> <!-- cd-timeline -->
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -9,6 +9,8 @@
             templateUrl: 'assets/pages/dashboard1.html',
         }).when('/dashboard2',{
             templateUrl: 'assets/pages/dashboard2.html',
+        }).when('/injectFacter',{
+            templateUrl: 'assets/pages/inject.html',
         }).otherwise({
             redirectTo: '/'
         });

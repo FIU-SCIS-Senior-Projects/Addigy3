@@ -29,9 +29,8 @@
             </div>
           </div>
         </div>
-    </div>
-    <div class="row">
-	<div class="col-md-6">
+
+        <div class="col-md-6">
         <!-- FREE MEMORY -->
           <div class="box box-primary">
             <div class="box-header with-border">
@@ -47,15 +46,18 @@
             </div>
           </div>
         </div>
-
     </div>
     <div class="row">
 	<!-- VOLATILE DATA -->
         <div class="col-md-6">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Volatile Data</h3>
+              <h3 class="box-title">CPU and Memory Utilization</h3>
+                <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandCpuMemUtilization()"><i class="fa fa-expand"></i></button>
+              </div>
             </div>
+
             <div class="box-body" style="display: block;">
               <div class="chart login-chart">
                 <div ng-include="'/assets/pages/volatileData.html'"></div>
@@ -63,7 +65,47 @@
             </div>
           </div>
         </div>
+
+        <!-- NONVOLATILE TIMELINE -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Non-Volatile Event Timeline</h3>
+              <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandTimeline()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/nonvolatileTimeline.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
+
+    <div class="row">
+	<!-- VOLATILE DATA -->
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Network Socket Data</h3>
+                <div class="box-tools pull-right">
+                <button class="btn btn-box-tool" id="modal-button" data-toggle="modal" data-target="#graphModal" data-widget="collapse" ng-click="ctrl.expandSocketInfo()"><i class="fa fa-expand"></i></button>
+              </div>
+            </div>
+
+            <div class="box-body" style="display: block;">
+              <div class="chart login-chart">
+                <div ng-include="'/assets/pages/socketGraph.html'"></div>
+                  <div ng-include="'/assets/pages/socketDetails.html'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
     <div class="container">
       <!-- Modal -->
           <div class="modal fade" id="graphModal" role="dialog">

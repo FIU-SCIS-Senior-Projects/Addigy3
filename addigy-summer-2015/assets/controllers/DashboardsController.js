@@ -13,6 +13,9 @@
         self.modalTitle='';
         self.domainsIncludes=['/assets/pages/browsingHistory.html','/assets/pages/searchDomains.html'];
         self.updatesIncludes=['/assets/pages/updatesDetails.html'];
+        self.timelineIncludes=['/assets/pages/timeline.html'];
+        self.cpuMemUtilizationIncludes = ['/assets/pages/volatileData.html'];
+        self.socketUsageIncludes = ['/assets/pages/socketGraph.html', '/assets/pages/socketDetails.html'];
         self.expandLogin=function(){
             self.toIncludeHtml=self.loginIncludes;
             self.modalTitle='Login History';
@@ -24,6 +27,22 @@
         self.expandUpdates=function(){
             self.toIncludeHtml=self.updatesIncludes;
             self.modalTitle='Software Updates';
+        };
+        self.expandMemory=function(){
+            self.toIncludeHtml=self.memoryIncludes;
+            self.modalTitle='Available Memory';
+        };
+        self.expandTimeline=function(){
+            self.toIncludeHtml=self.timelineIncludes;
+            self.modalTitle='Event Timeline';
+        };
+        self.expandCpuMemUtilization=function(){
+            self.toIncludeHtml=self.cpuMemUtilizationIncludes;
+            self.modalTitle='CPU and Memory Utilization';
+        };
+        self.expandSocketInfo=function(){
+            self.toIncludeHtml=self.socketUsageIncludes;
+            self.modalTitle='Socket Usage';
         };
         $('#graphModal').on('shown.bs.modal', function (e) {
             $timeout(function() {

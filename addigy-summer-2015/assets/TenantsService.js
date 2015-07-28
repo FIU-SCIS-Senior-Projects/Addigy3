@@ -31,6 +31,7 @@
                 self.tenants.push(self.activity[i]);
             }
             self.selectedTenant.tenant = self.tenants[0];
+            self.alertCallbacks();
         }
 
         self.registerCallback = function(fun){

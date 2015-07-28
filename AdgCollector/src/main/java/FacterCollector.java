@@ -9,13 +9,11 @@ public class FacterCollector implements Collector {
         public Object getData(){
 
             try{
-                String command = "./scripts/facter.sh";
+                String command = "bash scripts/facter.sh";
                 String jsonSource = executeCommand(command);
-                //System.out.println(jsonSource);
                 JSONObject obj = new JSONObject(new JSONTokener(jsonSource));
 
                 JSONArray jsonReport = new JSONArray().put(obj);
-                //JSONArray jsonReport = obj.getJSONArray("obj");
                 return jsonReport;
             }catch (Exception e) {
                 e.printStackTrace();

@@ -18,7 +18,7 @@ public class Main {
             new LoginHistoryCollector(),
             new BrowsingHistoryCollector(),
             new SoftwareUpdatesCollector(),
-//            new FacterCollector()
+            new FacterCollector()
     };
 
     public static void main(String[] args) {
