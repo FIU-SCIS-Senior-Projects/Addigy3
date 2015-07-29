@@ -16,7 +16,7 @@ def getLoginHistory(db, request):
     table = db.loginAudits
     try:
         result = table.aggregate([
-            {'$match':{'orgId':ORG_ID, 'connectorID':'1111'}},
+            {'$match':{'orgId':ORG_ID}},
             {'$unwind': '$activity'},
             {'$match': {'activity.login': {'$lte': logout}, 'activity.logout': {'$gte': login}}},
             {'$group': {'_id': '$_id', 'orgId': {'$first': '$orgId'}, 'username': {'$first': '$username'}, 'connectorId': {'$first': '$connectorId'}, 'activity': {'$push': '$activity'}}},

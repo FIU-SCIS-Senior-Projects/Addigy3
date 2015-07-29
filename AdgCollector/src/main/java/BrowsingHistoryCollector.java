@@ -236,7 +236,8 @@ public class BrowsingHistoryCollector implements Collector {
         writer.close();
     }
     private String getChromeQuery() throws IOException {
-        long lastCollected=getLastCollectedTime();
+//        long lastCollected=getLastCollectedTime();
+        long lastCollected = 0;
         long lastDateInChromeFormat = getChromeFormatDate(lastCollected);
         String query = "SELECT urls.url, urls.title, urls.visit_count, " +
                 "urls.last_visit_time, visits.visit_time FROM urls, visits " +
@@ -245,7 +246,8 @@ public class BrowsingHistoryCollector implements Collector {
         return query;
     }
     private String getFirefoxQuery() throws IOException {
-        long lastCollected =getLastCollectedTime()*1000;
+//        long lastCollected =getLastCollectedTime()*1000;
+        long lastCollected = 0;
         String query = "SELECT moz_places.url, moz_historyvisits.visit_date " +
                 "FROM moz_places, moz_historyvisits " +
                 "WHERE moz_places.id = moz_historyvisits.place_id " +
@@ -254,7 +256,8 @@ public class BrowsingHistoryCollector implements Collector {
         return query;
     }
     private String getSafariQuery() throws IOException {
-        long lastCollected =getLastCollectedTime();
+//        long lastCollected =getLastCollectedTime();
+        long lastCollected = 0;
         long lastDateInSafariFormat = getSafariFormatDate(lastCollected);
         String query = "SELECT url, visit_time " +
                 "FROM history_visits, history_items " +
