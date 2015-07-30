@@ -17,8 +17,10 @@
           ['Devices', 0],
         ]);
         var options = {
-          width: 800, height: 240,
-          minorTicks: 5
+            width: 800, height: 240,
+            redFrom: 90, redTo: 100,
+            yellowFrom:75, yellowTo: 90,
+            minorTicks: 5
         };
         function getUpdatesConnectorsCount(){
             DataRequest.getUpdatesConnectorsCount().
