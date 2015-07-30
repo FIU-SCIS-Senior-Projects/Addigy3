@@ -41,7 +41,8 @@
 
         volatileFacts = ["memoryfree", "memoryfree_mb", "sp_uptime", "system_uptime", "uptime_seconds",
                         "swapfree", "swapfree_mb", "mac_battery_charging", "sys_cpu_usage",
-                        "mac_battery_charge_percent", "uptime_hours", "mac_battery_cycles", "net_sock_info"];
+                        "mac_battery_charge_percent", "uptime_hours", "mac_battery_cycles", "net_sock_info",
+                        "uptime_days", "swapsize_mb", "uptime"];
 
         function processNonvolatileData(){
             self.data.length = 0;
@@ -71,21 +72,32 @@
                 return [];
             }
             stack = [];
+            machines = {};
             baseReport = self.data[0].facter;
             for(i=1; i<self.data.length; i++){
+
+                currentMachine = self.data[i].connectorId;
                 currentFacter = self.data[i].facter;
                 currentTimestamp = self.data[i].timestamp;
+
+                if(!(currentMachine in machines)){
+                    machines[currentMachine] = currentFacter;
+                }
+                baseReport = machines[currentMachine];
+
                 for (var property in currentFacter) {
                     if(baseReport[property] == null) {
+                        when = new Date(currentTimestamp);
                         obj = {
-                            'timestamp': Date.parse(currentTimestamp),
+                            'time': when.toLocaleTimeString(),
+                            'date': when.toLocaleDateString(),
                             'orgId': self.data[i].orgId,
                             'connectorId': self.data[i].connectorId,
                             'property': property,
-                            'oldValue': baseReport[property],
+                            'oldValue': "Value '"+ property +"' not previously recorded",
                             'newValue': currentFacter[property]
                         };
-                        self.deltas.push(obj);
+                        stack.push(obj);
 
                         baseReport[property] = currentFacter[property];
                     }else if(baseReport[property] != currentFacter[property] && typeof baseReport[property] != 'object'){

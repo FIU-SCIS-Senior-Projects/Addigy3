@@ -70,20 +70,21 @@
 
             for(i=0; i<reports.length; i++){
                 facter = reports[i].facter.pop();
-                timestamp = reports[i].timestamp;
-                obj = {};
-                avail = parseFloat(facter.memoryfree_mb);
-                size = parseFloat(facter.memorysize_mb);
-                obj['memoryUsage'] = (size - avail) / size;
-                obj['cpuUsage'] = facter.sys_cpu_usage;
+                if(facter.hasOwnProperty('sys_cpu_usage') && facter.hasOwnProperty('memoryfree_mb')) {
+                    timestamp = reports[i].timestamp;
+                    obj = {};
+                    avail = parseFloat(facter.memoryfree_mb);
+                    size = parseFloat(facter.memorysize_mb);
+                    obj['memoryUsage'] = (size - avail) / size;
+                    obj['cpuUsage'] = facter.sys_cpu_usage;
 
-                cpuData.push(parseFloat(facter.sys_cpu_usage).toFixed(2));
-                memData.push((100 * (size - avail) / size).toFixed(2));
-                if(i%labelFilter == 0) {
-                    self.labels.push(new Date(timestamp).toLocaleString());
-                    //self.labels.push(timestamp);
-                }else{
-                    self.labels.push("");
+                    cpuData.push(parseFloat(facter.sys_cpu_usage).toFixed(2));
+                    memData.push((100 * (size - avail) / size).toFixed(2));
+                    if (i % labelFilter == 0) {
+                        self.labels.push(new Date(timestamp).toLocaleString());
+                    } else {
+                        self.labels.push("");
+                    }
                 }
             }
 
