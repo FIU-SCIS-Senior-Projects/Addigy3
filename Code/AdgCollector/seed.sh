@@ -2,7 +2,7 @@
 
 COUNTER=0
 while [  $COUNTER -lt 100 ]; do
-  java -jar target/adgcollector-1.0-SNAPSHOT-jar-with-dependencies.jar
+  sudo java -jar target/adgcollector-1.0-SNAPSHOT-jar-with-dependencies.jar server http://wda-dev.cis.fiu.edu:80/resource/storeCollectedData/ connector 8675 org Addigy
   let COUNTER=COUNTER+1 
-  sleep 300
+  sleep 600
 done

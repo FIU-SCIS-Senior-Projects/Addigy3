@@ -31,8 +31,16 @@
                                 </thead>
                                 <tr ng-repeat="record in data">
                                     <td>{{ record.source }}</td>
-                                    <td>{{ record.ports }}</td>
-                                    <td>{{ record.tenants }}</td>
+                                    <td>
+                                        <span ng-repeat="port in record.ports">
+                                            {{ port }}<span ng-show=" ! $last ">,</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                         <span ng-repeat="tenant in record.tenants">
+                                            {{ tenant }}<span ng-show=" ! $last ">,</span>
+                                        </span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

@@ -12,7 +12,8 @@
         self.data = {
             report: null,
             org: 'Addigy',
-            connector: '1111'
+            connector: '1111',
+            server: 'wda-dev.cis.fiu.edu'
         }
         self.table = FacterReportService.table;
 
@@ -23,7 +24,7 @@
 
         self.injectData = function(){
             console.log(self.data.report);
-            $http.post('http://127.0.0.1:8000/resource/storeCollectedData/', {orgId: self.data.org,
+            $http.post('http://'+self.data.server+'/resource/storeCollectedData/', {orgId: self.data.org,
                 connectorId:self.data.connector, facterReport: JSON.parse(self.data.report)}).
               success(function(data, status, headers, config) {
                 // this callback will be called asynchronously
